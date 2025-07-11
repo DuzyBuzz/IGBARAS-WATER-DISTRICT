@@ -127,8 +127,11 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void BillingControl_Load(object sender, EventArgs e)
         {
+            PlaceholderHelper.AddPlaceholder(searchPaymentTextBox, "👥 Search Transactions of Account");
             string query = "SELECT * FROM tb_payment";
             transactionsDataGridView.DataSource = DbHelper.GetTable(query);
+            
+
         }
 
     }
