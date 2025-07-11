@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,201 +21,13 @@ namespace IGBARAS_WATER_DISTRICT
             InitializeComponent();
         }
 
-        private void label_Click(object sender, EventArgs e)
+        private void printSaveButton_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void BillingControl_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void billingPanel_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel4_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel6_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label14_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel5_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label10_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label18_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label20_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel7_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel10_Paint(object sender, PaintEventArgs e)
-        {
-        }
-
-        private void tableLayoutPanel11_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel9_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel14_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label19_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label23_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label31_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel10_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label32_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel15_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel18_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel20_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-        private void tableLayoutPanel19_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel22_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel22_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label15_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label27_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label20_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label82_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label35_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel19_Paint_1(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label83_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void printButton_Click(object sender, EventArgs e)
-        {
-            // Capture the billingPanel as a high-quality bitmap
-            billingPanelImage = CapturePanel(billingPanel);
-
-            // Set print document to landscape
-            billingPrintDocument.DefaultPageSettings.Landscape = true;
+            // Set print document to portrait
+            billingPrintDocument.DefaultPageSettings.Landscape = false;
+
+            // Set all margins to 3 (unit: hundredths of an inch)
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
 
             // Show print dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
@@ -233,42 +46,90 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
         {
-            if (billingPanelImage == null)
-                return;
+            // Names for each copy
+            string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
 
-            // Get the Letter paper size in landscape (in hundredths of an inch)
-            // Letter: 8.5 x 11 inches, so landscape is 11 x 8.5
-            PaperSize letterLandscape = new PaperSize("Letter", 1100, 850); // 1/100 inch units
+            int copiesPerPage = copyNames.Length;
+            int availableHeight = e.MarginBounds.Height;
+            int availableWidth = e.MarginBounds.Width;
 
-            // Get the DPI of the printer
-            float dpiX = e.Graphics.DpiX;
-            float dpiY = e.Graphics.DpiY;
+            // Set spacing between copies (in pixels)
+            int spacing = 10;
+            int totalSpacing = spacing * (copiesPerPage - 1);
+            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
 
-            // Calculate the printable area in pixels
-            int printableWidth = (int)(e.PageBounds.Width * (dpiX / 100f));
-            int printableHeight = (int)(e.PageBounds.Height * (dpiY / 100f));
+            int targetWidth = availableWidth;
+            int targetHeight = copyHeight;
 
-            // Use MarginBounds for the actual printable area (excluding margins)
-            Rectangle marginBounds = e.MarginBounds;
+            for (int i = 0; i < copiesPerPage; i++)
+            {
+                // Set the label for the copy type
+                copyTypeLabel.Text = copyNames[i];
 
-            // Scale the image to fit the margin bounds, maintaining aspect ratio
-            float scale = Math.Min(
-                (float)marginBounds.Width / billingPanelImage.Width,
-                (float)marginBounds.Height / billingPanelImage.Height);
+                // Capture the panel as bitmap
+                Bitmap panelImage = CapturePanel(billingPanel);
 
-            int printWidth = (int)(billingPanelImage.Width * scale);
-            int printHeight = (int)(billingPanelImage.Height * scale);
+                // Calculate scale to fit width and height
+                float scale = Math.Min(
+                    (float)targetWidth / panelImage.Width,
+                    (float)targetHeight / panelImage.Height);
 
-            // Center the image
-            int x = marginBounds.Left + (marginBounds.Width - printWidth) / 2;
-            int y = marginBounds.Top + (marginBounds.Height - printHeight) / 2;
+                int printWidth = (int)(panelImage.Width * scale);
+                int printHeight = (int)(panelImage.Height * scale);
 
-            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
+                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
 
-            e.Graphics.DrawImage(billingPanelImage, new Rectangle(x, y, printWidth, printHeight));
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
+
+                panelImage.Dispose();
+
+                // Draw cut indication line after every copy
+                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
+                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
+                {
+                    // Measure the width of "✄"
+                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
+                    // Measure the width of one "┈"
+                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
+                    // Calculate total dashes to fill the width minus scissors
+                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
+                    int leftDashes = totalDashes / 2;
+                    int rightDashes = totalDashes - leftDashes;
+                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
+
+                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                    {
+                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
+                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
+                    }
+                }
+            }
         }
+
+
+
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label29_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BillingControl_Load(object sender, EventArgs e)
+        {
+            string query = "SELECT * FROM tb_payment";
+            transactionsDataGridView.DataSource = DbHelper.GetTable(query);
+        }
+
     }
 }

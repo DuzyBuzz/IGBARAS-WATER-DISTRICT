@@ -7,19 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace IGBARAS_WATER_DISTRICT
 {
     public partial class MainForm : Form
+
     {
+
         public MainForm()
         {
             InitializeComponent();
-        }
-
-        private void sidebarTimer_Tick(object sender, EventArgs e)
-        {
-
         }
         private void LoadControl(string controlName)
         {
@@ -48,20 +46,6 @@ namespace IGBARAS_WATER_DISTRICT
             LoadControl("Billing");
         }
 
-        private void paymentsButton_Click(object sender, EventArgs e)
-        {
-            LoadControl("Payments");
-        }
-
-        private void customersButton_Click(object sender, EventArgs e)
-        {
-            LoadControl("Customer");
-        }
-
-        private void agingAccountsButton_Click(object sender, EventArgs e)
-        {
-            LoadControl("Aging");
-        }
 
         private void settingsButton_Click(object sender, EventArgs e)
         {
@@ -81,6 +65,17 @@ namespace IGBARAS_WATER_DISTRICT
         private void MainForm_Load(object sender, EventArgs e)
         {
             LoadControl("Dashboard");
+            usernameLabel.Text = $"{UserCredentials.Username}";
+        }
+
+        private void accountsButton_Click(object sender, EventArgs e)
+        {
+            LoadControl("Accounts");
+        }
+
+        private void transactionsButton_Click(object sender, EventArgs e)
+        {
+            LoadControl("Transactions");
         }
     }
 }
