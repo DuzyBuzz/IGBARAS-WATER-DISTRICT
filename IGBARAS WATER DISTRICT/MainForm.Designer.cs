@@ -62,7 +62,7 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // sidebarPanel
             // 
-            sidebarPanel.BackColor = Color.LightSeaGreen;
+            sidebarPanel.BackColor = SystemColors.ActiveCaption;
             sidebarPanel.Controls.Add(logoutButton);
             sidebarPanel.Controls.Add(systemInformationButton);
             sidebarPanel.Controls.Add(settingsButton);
@@ -226,6 +226,7 @@ namespace IGBARAS_WATER_DISTRICT
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             Text = "IGBARAS Water District Billing";
+            WindowState = FormWindowState.Maximized;
             Load += MainForm_Load;
             sidebarPanel.ResumeLayout(false);
             ResumeLayout(false);

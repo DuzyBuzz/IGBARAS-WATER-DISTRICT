@@ -1,6 +1,6 @@
 ﻿namespace IGBARAS_WATER_DISTRICT
 {
-    partial class SystemInformation
+    partial class SystemInformationControl
     {
         /// <summary> 
         /// Required designer variable.
