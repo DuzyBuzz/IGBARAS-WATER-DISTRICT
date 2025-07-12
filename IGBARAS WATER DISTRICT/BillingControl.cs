@@ -15,7 +15,7 @@ namespace IGBARAS_WATER_DISTRICT
     public partial class BillingControl : UserControl
     {
         private Bitmap billingPanelImage;
-
+        private BillHelper billHelper = new BillHelper();
         public BillingControl()
         {
             InitializeComponent();
@@ -112,9 +112,6 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
-
-
-
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
@@ -125,14 +122,110 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
 
-        private void BillingControl_Load(object sender, EventArgs e)
+        private async void BillingControl_Load(object sender, EventArgs e)
         {
-            PlaceholderHelper.AddPlaceholder(searchPaymentTextBox, "👥 Search Transactions of Account");
-            string query = "SELECT * FROM tb_payment";
-            transactionsDataGridView.DataSource = DbHelper.GetTable(query);
-            
+            PlaceholderHelper.AddPlaceholder(searchBillTextBox, "🔎 Search Account #");
+            filterButton.Text = "Loading...";
+            filterButton.Enabled = false;
+
+            await billHelper.LoadAllBillsAsync(); // only 1 time, async
+            billDataGridView.DataSource = billHelper.AllBills; // initial load
+
+            filterButton.Text = "Filter";
+            filterButton.Enabled = true;
+            // Set auto-complete for account number
+            AutoCompleteHelper.FillTextBoxWithColumn("v_billing_summary", "accountno", searchBillTextBox);
+        }
+        private void FilterBillsInMemory(DateTime fromDate, DateTime toDate)
+        {
+            if (toDate < fromDate)
+            {
+                MessageBox.Show("To Date cannot be earlier than From Date.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataView view = new DataView(billHelper.AllBills);
+            view.RowFilter = $"datebilled >= #{fromDate:MM/dd/yyyy}# AND datebilled <= #{toDate:MM/dd/yyyy}#";
+
+            billDataGridView.DataSource = view;
+        }
+        private void SearchByAccountNo(string accountNo)
+        {
 
         }
 
+
+        private void fromDateTimePicker_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void toDateTimePicker_ValueChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void ApplyCombinedFilter(string accountNo, DateTime fromDate, DateTime toDate)
+        {
+            DataView view = new DataView(billHelper.AllBills);
+
+            string filter = $"accountno LIKE '%{accountNo.Replace("'", "''")}%' " +
+                            $"AND datebilled >= '#{fromDate:yyyy-MM-dd}#' AND datebilled <= '#{toDate:yyyy-MM-dd}#'";
+
+            view.RowFilter = filter;
+
+            billDataGridView.DataSource = view;
+        }
+
+
+        private void clearDateButton_Click(object sender, EventArgs e)
+        {
+            // Reset to show all data
+            billDataGridView.DataSource = billHelper.AllBills;
+
+            // Optional: reset date pickers
+            fromDateTimePicker.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            toDateTimePicker.Value = DateTime.Today;
+        }
+
+        private void filterButton_Click(object sender, EventArgs e)
+        {
+            DateTime fromDate = fromDateTimePicker.Value;
+            DateTime toDate = toDateTimePicker.Value;
+
+            if (toDate < fromDate)
+            {
+                MessageBox.Show("To Date cannot be earlier than From Date.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 🔍 Apply date filter using DataView
+            DataView view = new DataView(billHelper.AllBills);
+            view.RowFilter = $"datebilled >= '#{fromDate:yyyy-MM-dd}#' AND datebilled <= '#{toDate:yyyy-MM-dd}#'";
+
+            billDataGridView.DataSource = view;
+        }
+
+        private void tableLayoutPanel9_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel8_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void searchBillTextBox_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void searchButton_Click(object sender, EventArgs e)
+        {
+            ApplyCombinedFilter(searchBillTextBox.Text, fromDateTimePicker.Value, toDateTimePicker.Value);
+        }
     }
 }

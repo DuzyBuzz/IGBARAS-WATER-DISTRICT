@@ -119,7 +119,7 @@ namespace IGBARAS_WATER_DISTRICT
             transactionsButton.Name = "transactionsButton";
             transactionsButton.Size = new Size(206, 45);
             transactionsButton.TabIndex = 9;
-            transactionsButton.Text = "\U0001f91d Transactions";
+            transactionsButton.Text = "📝 Reports";
             transactionsButton.TextAlign = ContentAlignment.MiddleLeft;
             transactionsButton.Click += transactionsButton_Click;
             // 

@@ -88,7 +88,7 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     conn.Open();
 
-                    string query = "SELECT * FROM tb_desktopuser WHERE username = @username AND password = @password";
+                    string query = "SELECT * FROM tb_tabletuser WHERE username = @username AND password = @password";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
@@ -99,7 +99,7 @@ namespace IGBARAS_WATER_DISTRICT
                             if (reader.Read())
                             {
                                 // Get the values from database
-                                string userId = reader["user_id"].ToString();
+                                string userId = reader["deviceuserid"].ToString();
                                 string usernameFromDb = reader["username"].ToString();
 
                                 // Store in static class
