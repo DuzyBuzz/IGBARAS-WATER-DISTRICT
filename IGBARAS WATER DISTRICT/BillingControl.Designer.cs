@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillingControl));
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -107,7 +108,7 @@
             tableLayoutPanel20 = new TableLayoutPanel();
             tableLayoutPanel21 = new TableLayoutPanel();
             label84 = new Label();
-            label80 = new Label();
+            balanceLabel = new Label();
             label72 = new Label();
             label66 = new Label();
             label68 = new Label();
@@ -141,9 +142,9 @@
             label19 = new Label();
             label20 = new Label();
             label23 = new Label();
-            label24 = new Label();
-            label25 = new Label();
-            label26 = new Label();
+            previouseReadingLabel = new Label();
+            presentReadingLabel = new Label();
+            meterConsumedLabel = new Label();
             label18 = new Label();
             label27 = new Label();
             tableLayoutPanel11 = new TableLayoutPanel();
@@ -157,6 +158,7 @@
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
             billDataGridView = new DataGridView();
+            accountNumber = new DataGridViewTextBoxColumn();
             searchBillTextBox = new TextBox();
             loadingLabel = new Label();
             loadingProgressBar = new ProgressBar();
@@ -169,12 +171,16 @@
             nextButton = new Button();
             tableLayoutPanel14 = new TableLayoutPanel();
             panel1 = new Panel();
+            panel5 = new Panel();
+            billHistoryDataGridView = new DataGridView();
             panel3 = new Panel();
             button3 = new Button();
             button2 = new Button();
+            panel6 = new Panel();
             panel2 = new Panel();
             panel4 = new Panel();
             label90 = new Label();
+            errorProvider1 = new ErrorProvider(components);
             billingPanel.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel15.SuspendLayout();
@@ -203,17 +209,20 @@
             ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
+            panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)billHistoryDataGridView).BeginInit();
             panel3.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // billingPanel
             // 
-            billingPanel.Anchor = AnchorStyles.None;
+            billingPanel.Anchor = AnchorStyles.Left;
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel1);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(64, 20);
+            billingPanel.Location = new Point(12, 9);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(914, 493);
@@ -922,7 +931,7 @@
             copyTypeLabel.Name = "copyTypeLabel";
             copyTypeLabel.Size = new Size(357, 26);
             copyTypeLabel.TabIndex = 2;
-            copyTypeLabel.Text = "Print Preview";
+            copyTypeLabel.Text = "Invoice Billing";
             copyTypeLabel.TextAlign = ContentAlignment.MiddleRight;
             // 
             // tableLayoutPanel19
@@ -1278,7 +1287,7 @@
             tableLayoutPanel21.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tableLayoutPanel21.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tableLayoutPanel21.Controls.Add(label84, 3, 4);
-            tableLayoutPanel21.Controls.Add(label80, 3, 3);
+            tableLayoutPanel21.Controls.Add(balanceLabel, 3, 3);
             tableLayoutPanel21.Controls.Add(label72, 3, 1);
             tableLayoutPanel21.Controls.Add(label66, 1, 0);
             tableLayoutPanel21.Controls.Add(label68, 3, 0);
@@ -1319,16 +1328,16 @@
             label84.Text = "235,611.04";
             label84.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label80
+            // balanceLabel
             // 
-            label80.AutoSize = true;
-            label80.Dock = DockStyle.Fill;
-            label80.Location = new Point(295, 61);
-            label80.Name = "label80";
-            label80.Size = new Size(66, 19);
-            label80.TabIndex = 15;
-            label80.Text = "110,000.00";
-            label80.TextAlign = ContentAlignment.MiddleCenter;
+            balanceLabel.AutoSize = true;
+            balanceLabel.Dock = DockStyle.Fill;
+            balanceLabel.Location = new Point(295, 61);
+            balanceLabel.Name = "balanceLabel";
+            balanceLabel.Size = new Size(66, 19);
+            balanceLabel.TabIndex = 15;
+            balanceLabel.Text = "110,000.00";
+            balanceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label72
             // 
@@ -1710,9 +1719,9 @@
             tableLayoutPanel10.Controls.Add(label19, 0, 0);
             tableLayoutPanel10.Controls.Add(label20, 1, 0);
             tableLayoutPanel10.Controls.Add(label23, 2, 0);
-            tableLayoutPanel10.Controls.Add(label24, 0, 1);
-            tableLayoutPanel10.Controls.Add(label25, 1, 1);
-            tableLayoutPanel10.Controls.Add(label26, 2, 1);
+            tableLayoutPanel10.Controls.Add(previouseReadingLabel, 0, 1);
+            tableLayoutPanel10.Controls.Add(presentReadingLabel, 1, 1);
+            tableLayoutPanel10.Controls.Add(meterConsumedLabel, 2, 1);
             tableLayoutPanel10.Dock = DockStyle.Fill;
             tableLayoutPanel10.Location = new Point(0, 50);
             tableLayoutPanel10.Margin = new Padding(0);
@@ -1759,41 +1768,41 @@
             label23.Text = "Cu. M. Consumed";
             label23.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label24
+            // previouseReadingLabel
             // 
-            label24.AutoSize = true;
-            label24.Dock = DockStyle.Fill;
-            label24.Location = new Point(1, 28);
-            label24.Margin = new Padding(0);
-            label24.Name = "label24";
-            label24.Size = new Size(89, 27);
-            label24.TabIndex = 3;
-            label24.Text = "30";
-            label24.TextAlign = ContentAlignment.MiddleCenter;
+            previouseReadingLabel.AutoSize = true;
+            previouseReadingLabel.Dock = DockStyle.Fill;
+            previouseReadingLabel.Location = new Point(1, 28);
+            previouseReadingLabel.Margin = new Padding(0);
+            previouseReadingLabel.Name = "previouseReadingLabel";
+            previouseReadingLabel.Size = new Size(89, 27);
+            previouseReadingLabel.TabIndex = 3;
+            previouseReadingLabel.Text = "30";
+            previouseReadingLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label25
+            // presentReadingLabel
             // 
-            label25.AutoSize = true;
-            label25.Dock = DockStyle.Fill;
-            label25.Location = new Point(91, 28);
-            label25.Margin = new Padding(0);
-            label25.Name = "label25";
-            label25.Size = new Size(89, 27);
-            label25.TabIndex = 4;
-            label25.Text = "3070";
-            label25.TextAlign = ContentAlignment.MiddleCenter;
+            presentReadingLabel.AutoSize = true;
+            presentReadingLabel.Dock = DockStyle.Fill;
+            presentReadingLabel.Location = new Point(91, 28);
+            presentReadingLabel.Margin = new Padding(0);
+            presentReadingLabel.Name = "presentReadingLabel";
+            presentReadingLabel.Size = new Size(89, 27);
+            presentReadingLabel.TabIndex = 4;
+            presentReadingLabel.Text = "3070";
+            presentReadingLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // label26
+            // meterConsumedLabel
             // 
-            label26.AutoSize = true;
-            label26.Dock = DockStyle.Fill;
-            label26.Location = new Point(181, 28);
-            label26.Margin = new Padding(0);
-            label26.Name = "label26";
-            label26.Size = new Size(91, 27);
-            label26.TabIndex = 5;
-            label26.Text = "3040";
-            label26.TextAlign = ContentAlignment.MiddleCenter;
+            meterConsumedLabel.AutoSize = true;
+            meterConsumedLabel.Dock = DockStyle.Fill;
+            meterConsumedLabel.Location = new Point(181, 28);
+            meterConsumedLabel.Margin = new Padding(0);
+            meterConsumedLabel.Name = "meterConsumedLabel";
+            meterConsumedLabel.Size = new Size(91, 27);
+            meterConsumedLabel.TabIndex = 5;
+            meterConsumedLabel.Text = "3040";
+            meterConsumedLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label18
             // 
@@ -1943,17 +1952,26 @@
             billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             billDataGridView.BackgroundColor = Color.White;
+            billDataGridView.BorderStyle = BorderStyle.Fixed3D;
             billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountNumber });
             billDataGridView.Location = new Point(17, 63);
             billDataGridView.Name = "billDataGridView";
-            billDataGridView.Size = new Size(1340, 385);
+            billDataGridView.Size = new Size(1338, 385);
             billDataGridView.TabIndex = 2;
+            // 
+            // accountNumber
+            // 
+            accountNumber.DataPropertyName = "accountno";
+            accountNumber.HeaderText = "Account Number";
+            accountNumber.Name = "accountNumber";
             // 
             // searchBillTextBox
             // 
+            searchBillTextBox.Anchor = AnchorStyles.Top;
             searchBillTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             searchBillTextBox.Font = new Font("Arial", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchBillTextBox.Location = new Point(47, 32);
+            searchBillTextBox.Location = new Point(48, 23);
             searchBillTextBox.Name = "searchBillTextBox";
             searchBillTextBox.Size = new Size(371, 25);
             searchBillTextBox.TabIndex = 6;
@@ -1987,7 +2005,7 @@
             pageLabel.Anchor = AnchorStyles.Top;
             pageLabel.AutoSize = true;
             pageLabel.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            pageLabel.Location = new Point(672, 22);
+            pageLabel.Location = new Point(673, 13);
             pageLabel.Name = "pageLabel";
             pageLabel.Size = new Size(165, 32);
             pageLabel.TabIndex = 21;
@@ -1995,8 +2013,9 @@
             // 
             // searchButton
             // 
+            searchButton.Anchor = AnchorStyles.Top;
             searchButton.BackColor = Color.White;
-            searchButton.Location = new Point(434, 32);
+            searchButton.Location = new Point(435, 23);
             searchButton.Name = "searchButton";
             searchButton.Size = new Size(81, 26);
             searchButton.TabIndex = 15;
@@ -2015,10 +2034,10 @@
             // 
             // label86
             // 
-            label86.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label86.Anchor = AnchorStyles.Top;
             label86.AutoSize = true;
             label86.Font = new Font("Arial", 11.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label86.Location = new Point(996, 35);
+            label86.Location = new Point(997, 26);
             label86.Name = "label86";
             label86.Size = new Size(87, 17);
             label86.TabIndex = 18;
@@ -2026,10 +2045,10 @@
             // 
             // rowsNumberComboBox
             // 
-            rowsNumberComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            rowsNumberComboBox.Anchor = AnchorStyles.Top;
             rowsNumberComboBox.FormattingEnabled = true;
             rowsNumberComboBox.Items.AddRange(new object[] { "25", "50", "100", "500", "All" });
-            rowsNumberComboBox.Location = new Point(1089, 29);
+            rowsNumberComboBox.Location = new Point(1090, 20);
             rowsNumberComboBox.Name = "rowsNumberComboBox";
             rowsNumberComboBox.Size = new Size(85, 23);
             rowsNumberComboBox.TabIndex = 17;
@@ -2037,9 +2056,9 @@
             // 
             // prevButton
             // 
-            prevButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            prevButton.Anchor = AnchorStyles.Top;
             prevButton.BackColor = Color.White;
-            prevButton.Location = new Point(1189, 28);
+            prevButton.Location = new Point(1190, 19);
             prevButton.Name = "prevButton";
             prevButton.Size = new Size(81, 26);
             prevButton.TabIndex = 19;
@@ -2049,9 +2068,9 @@
             // 
             // nextButton
             // 
-            nextButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            nextButton.Anchor = AnchorStyles.Top;
             nextButton.BackColor = Color.White;
-            nextButton.Location = new Point(1276, 27);
+            nextButton.Location = new Point(1277, 18);
             nextButton.Name = "nextButton";
             nextButton.Size = new Size(81, 26);
             nextButton.TabIndex = 20;
@@ -2061,6 +2080,9 @@
             // 
             // tableLayoutPanel14
             // 
+            tableLayoutPanel14.AutoScroll = true;
+            tableLayoutPanel14.AutoSize = true;
+            tableLayoutPanel14.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
             tableLayoutPanel14.ColumnCount = 1;
             tableLayoutPanel14.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel14.Controls.Add(panel1, 0, 0);
@@ -2077,33 +2099,59 @@
             // panel1
             // 
             panel1.AutoScroll = true;
+            panel1.Controls.Add(panel5);
             panel1.Controls.Add(panel3);
+            panel1.Controls.Add(panel6);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(3, 3);
+            panel1.Location = new Point(4, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1389, 567);
+            panel1.Size = new Size(1387, 565);
             panel1.TabIndex = 0;
+            panel1.Paint += panel1_Paint;
+            // 
+            // panel5
+            // 
+            panel5.Anchor = AnchorStyles.Right;
+            panel5.BorderStyle = BorderStyle.Fixed3D;
+            panel5.Controls.Add(billHistoryDataGridView);
+            panel5.Location = new Point(956, 3);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(414, 560);
+            panel5.TabIndex = 23;
+            // 
+            // billHistoryDataGridView
+            // 
+            billHistoryDataGridView.AllowUserToAddRows = false;
+            billHistoryDataGridView.AllowUserToDeleteRows = false;
+            billHistoryDataGridView.BackgroundColor = Color.White;
+            billHistoryDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billHistoryDataGridView.Dock = DockStyle.Fill;
+            billHistoryDataGridView.Location = new Point(0, 0);
+            billHistoryDataGridView.Name = "billHistoryDataGridView";
+            billHistoryDataGridView.ReadOnly = true;
+            billHistoryDataGridView.Size = new Size(410, 556);
+            billHistoryDataGridView.TabIndex = 0;
             // 
             // panel3
             // 
-            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel3.Anchor = AnchorStyles.Left;
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
             panel3.Controls.Add(button3);
             panel3.Controls.Add(billingPanel);
             panel3.Controls.Add(button2);
             panel3.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            panel3.Location = new Point(167, 3);
+            panel3.Location = new Point(2, 3);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1041, 560);
+            panel3.Size = new Size(948, 560);
             panel3.TabIndex = 22;
             panel3.Paint += panel3_Paint;
             // 
             // button3
             // 
-            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button3.Anchor = AnchorStyles.None;
             button3.BackColor = Color.White;
-            button3.Location = new Point(753, 527);
+            button3.Location = new Point(809, 521);
             button3.Name = "button3";
             button3.Size = new Size(117, 26);
             button3.TabIndex = 22;
@@ -2112,15 +2160,23 @@
             // 
             // button2
             // 
-            button2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button2.Anchor = AnchorStyles.None;
             button2.BackColor = Color.White;
-            button2.Location = new Point(897, 527);
+            button2.Location = new Point(709, 521);
             button2.Name = "button2";
             button2.Size = new Size(81, 26);
             button2.TabIndex = 21;
             button2.Text = "🖨️ Print";
             button2.UseVisualStyleBackColor = false;
             button2.Click += printSaveButton_Click;
+            // 
+            // panel6
+            // 
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(1373, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(14, 565);
+            panel6.TabIndex = 23;
             // 
             // panel2
             // 
@@ -2130,15 +2186,15 @@
             panel2.Controls.Add(searchBillTextBox);
             panel2.Controls.Add(nextButton);
             panel2.Controls.Add(searchButton);
-            panel2.Controls.Add(billDataGridView);
             panel2.Controls.Add(prevButton);
             panel2.Controls.Add(pageLabel);
             panel2.Controls.Add(label86);
             panel2.Controls.Add(rowsNumberComboBox);
+            panel2.Controls.Add(billDataGridView);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 576);
+            panel2.Location = new Point(4, 576);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1389, 369);
+            panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
             // 
             // panel4
@@ -2146,18 +2202,23 @@
             panel4.Dock = DockStyle.Bottom;
             panel4.Location = new Point(0, 448);
             panel4.Name = "panel4";
-            panel4.Size = new Size(1372, 100);
+            panel4.Size = new Size(1370, 100);
             panel4.TabIndex = 23;
             // 
             // label90
             // 
+            label90.Anchor = AnchorStyles.Top;
             label90.AutoSize = true;
             label90.Font = new Font("Arial", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label90.Location = new Point(17, 36);
+            label90.Location = new Point(18, 27);
             label90.Name = "label90";
             label90.Size = new Size(24, 17);
             label90.TabIndex = 22;
             label90.Text = "🔎";
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
             // 
             // BillingControl
             // 
@@ -2219,9 +2280,12 @@
             ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             tableLayoutPanel14.ResumeLayout(false);
             panel1.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)billHistoryDataGridView).EndInit();
             panel3.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -2293,7 +2357,7 @@
         private TableLayoutPanel tableLayoutPanel21;
         private Label label84;
         private Label label82;
-        private Label label80;
+        private Label balanceLabel;
         private Label label72;
         private Label label66;
         private Label label68;
@@ -2340,9 +2404,9 @@
         private Label label19;
         private Label label20;
         private Label label23;
-        private Label label24;
-        private Label label25;
-        private Label label26;
+        private Label previouseReadingLabel;
+        private Label presentReadingLabel;
+        private Label meterConsumedLabel;
         private Label label18;
         private Label label27;
         private TableLayoutPanel tableLayoutPanel11;
@@ -2375,5 +2439,10 @@
         private Panel panel3;
         private Button button3;
         private Panel panel4;
+        private DataGridViewTextBoxColumn accountNumber;
+        private Panel panel5;
+        private DataGridView billHistoryDataGridView;
+        private Panel panel6;
+        private ErrorProvider errorProvider1;
     }
 }

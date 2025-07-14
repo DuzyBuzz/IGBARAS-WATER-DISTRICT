@@ -12,7 +12,7 @@ namespace IGBARAS_WATER_DISTRICT
     {
         private Bitmap billingPanelImage;
         private PaginationHelper pager = new PaginationHelper();
-        private string lastOrderByField = "bill_id";
+        private string lastOrderByField = "concessionaireno";
         private int currentCopyIndex = 0;
         private readonly string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
         public BillingControl()
@@ -34,7 +34,7 @@ namespace IGBARAS_WATER_DISTRICT
             pager.SetTotalRecords(GetTotalBillCount());
             UpdatePageLabel();
             UpdatePageButtons();
-            AutoCompleteHelper.FillTextBoxWithColumn("tb_bill", "accountno", searchBillTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumn("v_concessionaire_summary", "accountno", searchBillTextBox);
             await RunWithLoadingAsync(() => LoadPagedBillsAsync());
             SetDateNow();
         }
@@ -79,7 +79,7 @@ namespace IGBARAS_WATER_DISTRICT
         }
         private int GetTotalBillCount()
         {
-            string query = "SELECT COUNT(*) FROM tb_bill";
+            string query = "SELECT COUNT(*) FROM v_concessionaire_summary";
             using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
             {
                 conn.Open();
@@ -95,7 +95,7 @@ namespace IGBARAS_WATER_DISTRICT
             bool isAll = rowsNumberComboBox.SelectedItem?.ToString().ToLower() == "all";
 
             string baseQuery = $@"
-        SELECT * FROM tb_bill
+        SELECT * FROM v_concessionaire_summary
         {(string.IsNullOrWhiteSpace(filterKeyword) ? "" : "WHERE accountno LIKE @keyword")}
         ORDER BY {lastOrderByField} DESC
         {(isAll ? "" : $"LIMIT {pager.PageSize} OFFSET {pager.GetOffset()}")}";
@@ -244,6 +244,11 @@ namespace IGBARAS_WATER_DISTRICT
 
 
         private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
         }
