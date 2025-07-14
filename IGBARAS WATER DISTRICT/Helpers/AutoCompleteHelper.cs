@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
-namespace IGBARAS_WATER_DISTRICT
+namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal static class AutoCompleteHelper
     {

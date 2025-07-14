@@ -1,13 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿using IGBARAS_WATER_DISTRICT.Helpers;
+using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IGBARAS_WATER_DISTRICT
@@ -15,217 +11,193 @@ namespace IGBARAS_WATER_DISTRICT
     public partial class BillingControl : UserControl
     {
         private Bitmap billingPanelImage;
-        private BillHelper billHelper = new BillHelper();
+        private PaginationHelper pager = new PaginationHelper();
+        private string lastOrderByField = "bill_id";
+        private int currentCopyIndex = 0;
+        private readonly string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
         public BillingControl()
         {
             InitializeComponent();
+
+
+        }
+
+        private async void BillingControl_Load(object sender, EventArgs e)
+        {
+            pager.SetPageSize(25); // default rows per page
+            rowsNumberComboBox.SelectedIndex = 0; // default to 20 rows
+            pager.SetTotalRecords(GetTotalBillCount());
+            UpdatePageLabel();
+            UpdatePageButtons();
+            AutoCompleteHelper.FillTextBoxWithColumn("tb_bill", "accountno", searchBillTextBox);
+            await RunWithLoadingAsync(() => LoadPagedBillsAsync());
+
+        }
+        private async Task RunWithLoadingAsync(Func<Task> task)
+        {
+            try
+            {
+                ShowLoading();              // Show progress bar + label
+                await Task.Delay(50);       // Let the UI render loading state
+                await task();               // Run the async work
+            }
+            finally
+            {
+                HideLoading();              // Hide progress bar + label after done
+            }
+        }
+
+        private void ShowLoading()
+        {
+
+
+            if (loadingLabel == null)
+            {
+                loadingLabel = new Label();
+                loadingLabel.Text = "Loading...";
+                loadingLabel.AutoSize = true;
+                loadingLabel.Font = new Font("Segoe UI", 20, FontStyle.Italic);
+                loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
+                this.Controls.Add(loadingLabel);
+            }
+
+
+
+            loadingProgressBar.Visible = true;
+            loadingLabel.Visible = true;
+        }
+
+        private void HideLoading()
+        {
+            loadingProgressBar.Visible = false;
+            loadingLabel.Visible = false;
+        }
+        private int GetTotalBillCount()
+        {
+            string query = "SELECT COUNT(*) FROM tb_bill";
+            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
+        private async Task LoadPagedBillsAsync(string filterKeyword = "")
+        {
+            bool isAll = rowsNumberComboBox.SelectedItem?.ToString().ToLower() == "all";
+
+            string baseQuery = $@"
+        SELECT * FROM tb_bill
+        {(string.IsNullOrWhiteSpace(filterKeyword) ? "" : "WHERE accountno LIKE @keyword")}
+        ORDER BY {lastOrderByField} DESC
+        {(isAll ? "" : $"LIMIT {pager.PageSize} OFFSET {pager.GetOffset()}")}";
+
+            var parameters = string.IsNullOrWhiteSpace(filterKeyword)
+                ? null
+                : new MySqlParameter[] { new MySqlParameter("@keyword", $"%{filterKeyword}%") };
+
+            billDataGridView.DataSource = await Task.Run(() => DGVHelper.LoadData(baseQuery, parameters));
+        }
+
+
+
+        private async void rowsNumberComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string selected = rowsNumberComboBox.SelectedItem.ToString().ToLower();
+            int size = selected == "all" ? -1 : int.Parse(selected);
+
+            pager.SetPageSize(size);
+            pager.Reset();
+
+            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
+            UpdatePageLabel();
+            UpdatePageButtons();
+        }
+
+
+        private async void nextButton_Click(object sender, EventArgs e)
+        {
+            pager.NextPage();
+            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
+            UpdatePageLabel();
+            UpdatePageButtons();
+        }
+
+        private async void prevButton_Click(object sender, EventArgs e)
+        {
+            pager.PreviousPage();
+            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
+            UpdatePageLabel();
+            UpdatePageButtons();
+        }
+
+
+        private void UpdatePageLabel()
+        {
+            pageLabel.Text = pager.GetPageInfo();
+        }
+
+        private void UpdatePageButtons()
+        {
+            nextButton.Enabled = pager.CurrentPage < pager.TotalPages - 1;
+            prevButton.Enabled = pager.CurrentPage > 0;
         }
 
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-            // Set print document to portrait
-            billingPrintDocument.DefaultPageSettings.Landscape = false;
-
-            // Set all margins to 3 (unit: hundredths of an inch)
+            billingPrintDocument.DefaultPageSettings.Landscape = true;
             billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+            currentCopyIndex = 0; // Reset before printing
 
-            // Show print dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
                 billingPrintDocument.Print();
             }
         }
 
+        private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            billingPrintDocument.DefaultPageSettings.Landscape = true; // Ensure landscape for every page
+
+            if (currentCopyIndex < copyNames.Length)
+            {
+                copyTypeLabel.Text = copyNames[currentCopyIndex];
+                Bitmap panelImage = CapturePanel(billingPanel);
+
+                float scale = Math.Min(
+                    (float)e.MarginBounds.Width / panelImage.Width,
+                    (float)e.MarginBounds.Height / panelImage.Height);
+
+                int printWidth = (int)(panelImage.Width * scale);
+                int printHeight = (int)(panelImage.Height * scale);
+
+                int x = e.MarginBounds.Left + (e.MarginBounds.Width - printWidth) / 2;
+                int y = e.MarginBounds.Top + (e.MarginBounds.Height - printHeight) / 2;
+
+                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
+                panelImage.Dispose();
+
+                currentCopyIndex++;
+                e.HasMorePages = currentCopyIndex < copyNames.Length;
+            }
+            else
+            {
+                e.HasMorePages = false;
+            }
+        }
         private Bitmap CapturePanel(Control panel)
         {
-            // Create a bitmap with the size of the panel
             Bitmap bmp = new Bitmap(panel.Width, panel.Height);
             panel.DrawToBitmap(bmp, new Rectangle(0, 0, panel.Width, panel.Height));
             return bmp;
         }
 
-        private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
-        {
-            // Names for each copy
-            string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
-
-            int copiesPerPage = copyNames.Length;
-            int availableHeight = e.MarginBounds.Height;
-            int availableWidth = e.MarginBounds.Width;
-
-            // Set spacing between copies (in pixels)
-            int spacing = 10;
-            int totalSpacing = spacing * (copiesPerPage - 1);
-            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
-
-            int targetWidth = availableWidth;
-            int targetHeight = copyHeight;
-
-            for (int i = 0; i < copiesPerPage; i++)
-            {
-                // Set the label for the copy type
-                copyTypeLabel.Text = copyNames[i];
-
-                // Capture the panel as bitmap
-                Bitmap panelImage = CapturePanel(billingPanel);
-
-                // Calculate scale to fit width and height
-                float scale = Math.Min(
-                    (float)targetWidth / panelImage.Width,
-                    (float)targetHeight / panelImage.Height);
-
-                int printWidth = (int)(panelImage.Width * scale);
-                int printHeight = (int)(panelImage.Height * scale);
-
-                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
-                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
-
-                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-
-                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
-
-                panelImage.Dispose();
-
-                // Draw cut indication line after every copy
-                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
-                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
-                {
-                    // Measure the width of "✄"
-                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
-                    // Measure the width of one "┈"
-                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
-                    // Calculate total dashes to fill the width minus scissors
-                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
-                    int leftDashes = totalDashes / 2;
-                    int rightDashes = totalDashes - leftDashes;
-                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
-
-                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    {
-                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
-                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
-                    }
-                }
-            }
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void panel3_Paint(object sender, PaintEventArgs e)
         {
 
-        }
-
-        private void label29_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private async void BillingControl_Load(object sender, EventArgs e)
-        {
-            PlaceholderHelper.AddPlaceholder(searchBillTextBox, "🔎 Search Account #");
-            filterButton.Text = "Loading...";
-            filterButton.Enabled = false;
-
-            await billHelper.LoadAllBillsAsync(); // only 1 time, async
-            billDataGridView.DataSource = billHelper.AllBills; // initial load
-
-            filterButton.Text = "Filter";
-            filterButton.Enabled = true;
-            // Set auto-complete for account number
-            AutoCompleteHelper.FillTextBoxWithColumn("v_billing_summary", "accountno", searchBillTextBox);
-        }
-        private void FilterBillsInMemory(DateTime fromDate, DateTime toDate)
-        {
-            if (toDate < fromDate)
-            {
-                MessageBox.Show("To Date cannot be earlier than From Date.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DataView view = new DataView(billHelper.AllBills);
-            view.RowFilter = $"datebilled >= #{fromDate:MM/dd/yyyy}# AND datebilled <= #{toDate:MM/dd/yyyy}#";
-
-            billDataGridView.DataSource = view;
-        }
-        private void SearchByAccountNo(string accountNo)
-        {
-
-        }
-
-
-        private void fromDateTimePicker_ValueChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void toDateTimePicker_ValueChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-        private void ApplyCombinedFilter(string accountNo, DateTime fromDate, DateTime toDate)
-        {
-            DataView view = new DataView(billHelper.AllBills);
-
-            string filter = $"accountno LIKE '%{accountNo.Replace("'", "''")}%' " +
-                            $"AND datebilled >= '#{fromDate:yyyy-MM-dd}#' AND datebilled <= '#{toDate:yyyy-MM-dd}#'";
-
-            view.RowFilter = filter;
-
-            billDataGridView.DataSource = view;
-        }
-
-
-        private void clearDateButton_Click(object sender, EventArgs e)
-        {
-            // Reset to show all data
-            billDataGridView.DataSource = billHelper.AllBills;
-
-            // Optional: reset date pickers
-            fromDateTimePicker.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            toDateTimePicker.Value = DateTime.Today;
-        }
-
-        private void filterButton_Click(object sender, EventArgs e)
-        {
-            DateTime fromDate = fromDateTimePicker.Value;
-            DateTime toDate = toDateTimePicker.Value;
-
-            if (toDate < fromDate)
-            {
-                MessageBox.Show("To Date cannot be earlier than From Date.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            // 🔍 Apply date filter using DataView
-            DataView view = new DataView(billHelper.AllBills);
-            view.RowFilter = $"datebilled >= '#{fromDate:yyyy-MM-dd}#' AND datebilled <= '#{toDate:yyyy-MM-dd}#'";
-
-            billDataGridView.DataSource = view;
-        }
-
-        private void tableLayoutPanel9_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void tableLayoutPanel8_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void searchBillTextBox_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void searchButton_Click(object sender, EventArgs e)
-        {
-            ApplyCombinedFilter(searchBillTextBox.Text, fromDateTimePicker.Value, toDateTimePicker.Value);
         }
     }
 }

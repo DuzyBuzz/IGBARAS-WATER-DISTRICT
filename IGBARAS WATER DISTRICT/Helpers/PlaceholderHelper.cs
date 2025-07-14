@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace IGBARAS_WATER_DISTRICT
+namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     public static class PlaceholderHelper
     {

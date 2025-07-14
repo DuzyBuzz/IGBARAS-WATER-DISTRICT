@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IGBARAS_WATER_DISTRICT
+namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal class UserCredentials
     {

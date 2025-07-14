@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace IGBARAS_WATER_DISTRICT
+namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal static class DbHelper
     {
