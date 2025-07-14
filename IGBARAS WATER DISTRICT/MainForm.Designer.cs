@@ -76,7 +76,7 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             sidebarPanel.Location = new Point(0, 0);
             sidebarPanel.Name = "sidebarPanel";
-            sidebarPanel.Size = new Size(206, 710);
+            sidebarPanel.Size = new Size(206, 960);
             sidebarPanel.TabIndex = 1;
             // 
             // button2
@@ -86,7 +86,7 @@ namespace IGBARAS_WATER_DISTRICT
             button2.FlatStyle = FlatStyle.Flat;
             button2.Font = new Font("Arial", 12F);
             button2.ForeColor = Color.Black;
-            button2.Location = new Point(0, 575);
+            button2.Location = new Point(0, 825);
             button2.Name = "button2";
             button2.Size = new Size(206, 45);
             button2.TabIndex = 12;
@@ -101,7 +101,7 @@ namespace IGBARAS_WATER_DISTRICT
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Arial", 12F);
             button1.ForeColor = Color.Black;
-            button1.Location = new Point(0, 620);
+            button1.Location = new Point(0, 870);
             button1.Name = "button1";
             button1.Size = new Size(206, 45);
             button1.TabIndex = 11;
@@ -264,7 +264,7 @@ namespace IGBARAS_WATER_DISTRICT
             logoutButton.FlatStyle = FlatStyle.Flat;
             logoutButton.Font = new Font("Arial", 12F);
             logoutButton.ForeColor = Color.Red;
-            logoutButton.Location = new Point(0, 665);
+            logoutButton.Location = new Point(0, 915);
             logoutButton.Name = "logoutButton";
             logoutButton.Size = new Size(206, 45);
             logoutButton.TabIndex = 5;
@@ -277,19 +277,18 @@ namespace IGBARAS_WATER_DISTRICT
             mainPanel.Dock = DockStyle.Fill;
             mainPanel.Location = new Point(206, 0);
             mainPanel.Name = "mainPanel";
-            mainPanel.Size = new Size(1226, 710);
+            mainPanel.Size = new Size(1370, 960);
             mainPanel.TabIndex = 3;
             // 
             // MainForm
             // 
             AutoScroll = true;
-            ClientSize = new Size(1432, 710);
+            ClientSize = new Size(1576, 960);
             Controls.Add(mainPanel);
             Controls.Add(sidebarPanel);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "IGBARAS Water District Billing";
-            WindowState = FormWindowState.Maximized;
             Load += MainForm_Load;
             sidebarPanel.ResumeLayout(false);
             panel1.ResumeLayout(false);

@@ -21,7 +21,12 @@ namespace IGBARAS_WATER_DISTRICT
 
 
         }
-
+        private void SetDateNow()
+        {
+            // Set the current date and time to the label
+            dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
+            dateIssuedLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
+        }
         private async void BillingControl_Load(object sender, EventArgs e)
         {
             pager.SetPageSize(25); // default rows per page
@@ -31,7 +36,7 @@ namespace IGBARAS_WATER_DISTRICT
             UpdatePageButtons();
             AutoCompleteHelper.FillTextBoxWithColumn("tb_bill", "accountno", searchBillTextBox);
             await RunWithLoadingAsync(() => LoadPagedBillsAsync());
-
+            SetDateNow();
         }
         private async Task RunWithLoadingAsync(Func<Task> task)
         {
@@ -148,52 +153,95 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-            billingPrintDocument.DefaultPageSettings.Landscape = true;
-            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
-            currentCopyIndex = 0; // Reset before printing
+            // Set print document to portrait
+            billingPrintDocument.DefaultPageSettings.Landscape = false;
 
+            // Set all margins to 3 (unit: hundredths of an inch)
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+
+            // Show print dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
                 billingPrintDocument.Print();
             }
         }
 
-        private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
-        {
-            billingPrintDocument.DefaultPageSettings.Landscape = true; // Ensure landscape for every page
-
-            if (currentCopyIndex < copyNames.Length)
-            {
-                copyTypeLabel.Text = copyNames[currentCopyIndex];
-                Bitmap panelImage = CapturePanel(billingPanel);
-
-                float scale = Math.Min(
-                    (float)e.MarginBounds.Width / panelImage.Width,
-                    (float)e.MarginBounds.Height / panelImage.Height);
-
-                int printWidth = (int)(panelImage.Width * scale);
-                int printHeight = (int)(panelImage.Height * scale);
-
-                int x = e.MarginBounds.Left + (e.MarginBounds.Width - printWidth) / 2;
-                int y = e.MarginBounds.Top + (e.MarginBounds.Height - printHeight) / 2;
-
-                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
-                panelImage.Dispose();
-
-                currentCopyIndex++;
-                e.HasMorePages = currentCopyIndex < copyNames.Length;
-            }
-            else
-            {
-                e.HasMorePages = false;
-            }
-        }
         private Bitmap CapturePanel(Control panel)
         {
+            // Create a bitmap with the size of the panel
             Bitmap bmp = new Bitmap(panel.Width, panel.Height);
             panel.DrawToBitmap(bmp, new Rectangle(0, 0, panel.Width, panel.Height));
             return bmp;
         }
+
+        private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
+        {
+            // Names for each copy
+            string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
+
+            int copiesPerPage = copyNames.Length;
+            int availableHeight = e.MarginBounds.Height;
+            int availableWidth = e.MarginBounds.Width;
+
+            // Set spacing between copies (in pixels)
+            int spacing = 10;
+            int totalSpacing = spacing * (copiesPerPage - 1);
+            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
+
+            int targetWidth = availableWidth;
+            int targetHeight = copyHeight;
+
+            for (int i = 0; i < copiesPerPage; i++)
+            {
+                // Set the label for the copy type
+                copyTypeLabel.Text = copyNames[i];
+
+                // Capture the panel as bitmap
+                Bitmap panelImage = CapturePanel(billingPanel);
+
+                // Calculate scale to fit width and height
+                float scale = Math.Min(
+                    (float)targetWidth / panelImage.Width,
+                    (float)targetHeight / panelImage.Height);
+
+                int printWidth = (int)(panelImage.Width * scale);
+                int printHeight = (int)(panelImage.Height * scale);
+
+                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
+                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
+
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
+
+                panelImage.Dispose();
+
+                // Draw cut indication line after every copy
+                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
+                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
+                {
+                    // Measure the width of "✄"
+                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
+                    // Measure the width of one "┈"
+                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
+                    // Calculate total dashes to fill the width minus scissors
+                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
+                    int leftDashes = totalDashes / 2;
+                    int rightDashes = totalDashes - leftDashes;
+                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
+
+                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                    {
+                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
+                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
+                    }
+                }
+            }
+        }
+
 
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
