@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IGBARAS_WATER_DISTRICT.Helpers
@@ -8,68 +9,72 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
     public static class DGVHelper
     {
         /// <summary>
-        /// Executes a SQL SELECT query and returns a DataTable.
+        /// Loads data into a DataGridView with optional filtering and loading form support.
         /// </summary>
-        public static DataTable LoadData(string query, MySqlParameter[] parameters = null)
+        public static async Task LoadDataToGridAsync(
+            DataGridView dgv,
+            string tableName,
+            Form parentForm = null,
+            Form loadingForm = null,
+            string filterColumn = "",
+            object filterValue = null)
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                // Show loading form if provided
+                if (loadingForm != null)
                 {
-                    conn.Open();
+                    loadingForm.Show();
+                    loadingForm.Refresh(); // Force paint immediately
+                }
 
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                // Disable parent UI (optional)
+                if (parentForm != null) parentForm.Enabled = false;
+
+                await Task.Run(() =>
+                {
+                    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
                     {
-                        if (parameters != null)
-                            cmd.Parameters.AddRange(parameters);
+                        conn.Open();
 
-                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        string query = $"SELECT * FROM `{tableName}`";
+                        if (!string.IsNullOrWhiteSpace(filterColumn) && filterValue != null)
                         {
-                            DataTable table = new DataTable();
-                            adapter.Fill(table);
-                            return table;
+                            query += $" WHERE `{filterColumn}` = @filterValue";
+                        }
+
+                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                        {
+                            if (!string.IsNullOrWhiteSpace(filterColumn) && filterValue != null)
+                            {
+                                cmd.Parameters.AddWithValue("@filterValue", filterValue);
+                            }
+
+                            using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                            {
+                                DataTable dt = new DataTable();
+                                adapter.Fill(dt);
+
+                                // Invoke back to the main thread to update the UI
+                                dgv.Invoke((MethodInvoker)(() =>
+                                {
+                                    dgv.DataSource = dt;
+                                    dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                                }));
+                            }
                         }
                     }
-                }
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading data:\n" + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
+                MessageBox.Show("❌ Failed to load data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-
-        /// <summary>
-        /// Executes a parameterized SQL SELECT query and binds the result to a DataGridView.
-        /// </summary>
-        public static void LoadDataWithParameters(DataGridView dataGridView, string query, MySqlParameter[] parameters)
-        {
-            try
+            finally
             {
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-                {
-                    conn.Open();
-
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        if (parameters != null)
-                            cmd.Parameters.AddRange(parameters);
-
-                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
-                        {
-                            DataTable table = new DataTable();
-                            adapter.Fill(table);
-
-                            dataGridView.DataSource = table;
-                            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading filtered data:\n" + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Close loading form if shown
+                if (loadingForm != null) loadingForm.Close();
+                if (parentForm != null) parentForm.Enabled = true;
             }
         }
     }

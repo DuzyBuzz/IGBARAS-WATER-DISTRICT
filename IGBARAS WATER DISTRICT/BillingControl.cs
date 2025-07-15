@@ -12,7 +12,6 @@ namespace IGBARAS_WATER_DISTRICT
     {
         private Bitmap billingPanelImage;
         private PaginationHelper pager = new PaginationHelper();
-        private string lastOrderByField = "concessionaireno";
         private int currentCopyIndex = 0;
         private readonly string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
         public BillingControl()
@@ -26,130 +25,118 @@ namespace IGBARAS_WATER_DISTRICT
             // Set the current date and time to the label
             dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
             dateIssuedLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
+            dueDateLbael.Text = DateTime.Now.AddDays(14).ToString("MMMM dd, yyyy");
+
         }
-        private async void BillingControl_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Extracts the zone code from the start of the account number and formats it into a 3-digit string.
+        /// </summary>
+        public string GetZonePrefixFromAccountNo(string accountNo)
         {
-            pager.SetPageSize(25); // default rows per page
-            rowsNumberComboBox.SelectedIndex = 0; // default to 20 rows
-            pager.SetTotalRecords(GetTotalBillCount());
-            UpdatePageLabel();
-            UpdatePageButtons();
-            AutoCompleteHelper.FillTextBoxWithColumn("v_concessionaire_summary", "accountno", searchBillTextBox);
-            await RunWithLoadingAsync(() => LoadPagedBillsAsync());
-            SetDateNow();
+            if (string.IsNullOrWhiteSpace(accountNo) || accountNo.Length < 2)
+                return "001"; // default to Zone 1 if invalid
+
+            string zone = accountNo.Substring(0, 2); // get '01', '02', etc.
+
+            if (int.TryParse(zone, out int zoneNum))
+                return zoneNum.ToString("D3"); // convert to "001", "002", etc.
+
+            return "001"; // fallback if parsing fails
         }
-        private async Task RunWithLoadingAsync(Func<Task> task)
+        public int GetZoneStartRange(string zoneCode)
         {
-            try
-            {
-                ShowLoading();              // Show progress bar + label
-                await Task.Delay(50);       // Let the UI render loading state
-                await task();               // Run the async work
-            }
-            finally
-            {
-                HideLoading();              // Hide progress bar + label after done
-            }
-        }
+            string query = "SELECT start_range FROM tb_zone WHERE zonecode = @zonecode LIMIT 1";
 
-        private void ShowLoading()
-        {
-
-
-            if (loadingLabel == null)
-            {
-                loadingLabel = new Label();
-                loadingLabel.Text = "Loading...";
-                loadingLabel.AutoSize = true;
-                loadingLabel.Font = new Font("Segoe UI", 20, FontStyle.Italic);
-                loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
-                this.Controls.Add(loadingLabel);
-            }
-
-
-
-            loadingProgressBar.Visible = true;
-            loadingLabel.Visible = true;
-        }
-
-        private void HideLoading()
-        {
-            loadingProgressBar.Visible = false;
-            loadingLabel.Visible = false;
-        }
-        private int GetTotalBillCount()
-        {
-            string query = "SELECT COUNT(*) FROM v_concessionaire_summary";
             using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
             {
                 conn.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    return Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.Parameters.AddWithValue("@zonecode", zoneCode);
+
+                    object result = cmd.ExecuteScalar();
+
+                    if (result != null && result != DBNull.Value)
+                        return Convert.ToInt32(result);
+                    else
+                        return 1; // fallback if not found
+                }
+            }
+        }
+        public int GetZoneNoFromDB(string zoneCode)
+        {
+            string query = "SELECT zoneno FROM tb_zone WHERE zonecode = @zonecode LIMIT 1";
+
+            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@zonecode", zoneCode);
+                    object result = cmd.ExecuteScalar();
+
+                    return result != null && result != DBNull.Value
+                        ? Convert.ToInt32(result)
+                        : 1; // default to Zone 1 if not found
                 }
             }
         }
 
-        private async Task LoadPagedBillsAsync(string filterKeyword = "")
+
+        public string GenerateNextBillCode(string zoneCode, DateTime billMonth)
         {
-            bool isAll = rowsNumberComboBox.SelectedItem?.ToString().ToLower() == "all";
+            int zoneNo = GetZoneNoFromDB(zoneCode);
+            int baseStart = ((zoneNo - 1) * 200) + 1;
+            int monthOffset = (billMonth.Month - 1) * 400;
+            int startingNumber = baseStart + monthOffset;
 
-            string baseQuery = $@"
-        SELECT * FROM v_concessionaire_summary
-        {(string.IsNullOrWhiteSpace(filterKeyword) ? "" : "WHERE accountno LIKE @keyword")}
-        ORDER BY {lastOrderByField} DESC
-        {(isAll ? "" : $"LIMIT {pager.PageSize} OFFSET {pager.GetOffset()}")}";
+            // Extract zone prefix (e.g. "001", "002", etc.)
+            string prefix = zoneCode; // already in "003" format
 
-            var parameters = string.IsNullOrWhiteSpace(filterKeyword)
-                ? null
-                : new MySqlParameter[] { new MySqlParameter("@keyword", $"%{filterKeyword}%") };
 
-            billDataGridView.DataSource = await Task.Run(() => DGVHelper.LoadData(baseQuery, parameters));
+            // Query latest billcode for that zone and month
+            string query = @"
+        SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED))
+        FROM tb_bill
+        WHERE LEFT(billcode, 3) = @prefix
+          AND MONTH(datebilled) = @month
+          AND YEAR(datebilled) = @year";
+
+            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            {
+                conn.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@prefix", prefix);
+                    cmd.Parameters.AddWithValue("@month", billMonth.Month);
+                    cmd.Parameters.AddWithValue("@year", billMonth.Year);
+
+                    object result = cmd.ExecuteScalar();
+                    int latest = (result != DBNull.Value && result != null)
+                                ? Convert.ToInt32(result)
+                                : startingNumber - 1;
+
+                    int next = latest + 1;
+                    return $"{prefix}-{next.ToString("D7")}";
+                }
+            }
+        }
+
+        private async void BillingControl_Load(object sender, EventArgs e)
+        {
+
+            using (var loadingForm = new LoadingForm())
+            {
+                Form parentForm = this.FindForm(); // 🟢 Converts the parent to a Form
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
+            }
+
+            AutoCompleteHelper.FillTextBoxWithColumn("v_account_detailes", "accountno", searchAccountNumberTextBox);
+            SetDateNow();
+
         }
 
 
-
-        private async void rowsNumberComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string selected = rowsNumberComboBox.SelectedItem.ToString().ToLower();
-            int size = selected == "all" ? -1 : int.Parse(selected);
-
-            pager.SetPageSize(size);
-            pager.Reset();
-
-            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
-            UpdatePageLabel();
-            UpdatePageButtons();
-        }
-
-
-        private async void nextButton_Click(object sender, EventArgs e)
-        {
-            pager.NextPage();
-            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
-            UpdatePageLabel();
-            UpdatePageButtons();
-        }
-
-        private async void prevButton_Click(object sender, EventArgs e)
-        {
-            pager.PreviousPage();
-            await RunWithLoadingAsync(() => LoadPagedBillsAsync(searchBillTextBox.Text.Trim()));
-            UpdatePageLabel();
-            UpdatePageButtons();
-        }
-
-
-        private void UpdatePageLabel()
-        {
-            pageLabel.Text = pager.GetPageInfo();
-        }
-
-        private void UpdatePageButtons()
-        {
-            nextButton.Enabled = pager.CurrentPage < pager.TotalPages - 1;
-            prevButton.Enabled = pager.CurrentPage > 0;
-        }
 
         private void printSaveButton_Click(object sender, EventArgs e)
         {
@@ -242,13 +229,110 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
+        private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow selectedRow = accountDataGridView.Rows[e.RowIndex];
+                string accountNo = selectedRow.Cells["accountno"].Value?.ToString();
+                accountNumberTextBox.Text = accountNo;
+                accountnoBillHistory.Text = $"Account ID: {accountNo}";
 
+                if (!string.IsNullOrWhiteSpace(accountNo))
+                {
+                    LoadAccountBillHistory(accountNo);
+
+                    // 🔧 Manually update the invoice label here:
+                    string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
+                    string nextBillCode = GenerateNextBillCode(zonePrefix, DateTime.Now);
+                    string[] parts = nextBillCode.Split('-');
+                    if (parts.Length == 2)
+                    {
+                        invoiceLabel.Text = parts[1];
+                    }
+                }
+            }
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+
+        private void LoadAccountBillHistory(string accountNo)
+        {
+            // Call helper to load billing summary rows where accountno = accountNo
+            DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("v_billing_summary", "accountno", accountNo);
+
+            if (billData != null)
+            {
+                billDataGridView.DataSource = billData;
+                billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            }
+        }
+
+        private async void searchButton_Click(object sender, EventArgs e)
+        {
+            string keyword = searchAccountNumberTextBox.Text.Trim();
+
+            using (var loadingForm = new LoadingForm()) // ✅ Make sure this matches your form name
+            {
+                Form parentForm = this.FindForm(); // ✅ This gets the parent MainForm
+
+                if (parentForm == null)
+                {
+                    MessageBox.Show("Parent form not found. Cannot continue.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
+                }
+                else
+                {
+                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm, "accountno", keyword);
+                }
+            }
+        }
+
+
+
+        private void searchAccountNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(searchAccountNumberTextBox.Text) && searchAccountNumberTextBox.TextLength < 3)
+
+            {
+                clearButton.Enabled = false;
+            }
+            else
+            {
+                clearButton.Enabled = true;
+            }
+        }
+
+        private async void clearButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(searchAccountNumberTextBox.Text))
+            {
+                using (var loadingForm = new LoadingForm())
+                {
+                    Form parentForm = this.FindForm(); // 🟢 Converts the parent to a Form
+                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
+                }
+            }
+            searchAccountNumberTextBox.Text = string.Empty;
+        }
+
+        private void accountNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
+            string accountNo = accountNumberTextBox.Text.Trim();
+            string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
+            string nextBillCode = GenerateNextBillCode(zonePrefix, DateTime.Now);
+            string[] parts = nextBillCode.Split('-');
+            if (parts.Length == 2)
+            {
+                invoiceLabel.Text = parts[1];
+            }
+        }
+
+        private void label32_Click(object sender, EventArgs e)
         {
 
         }
