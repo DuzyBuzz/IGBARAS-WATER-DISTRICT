@@ -28,30 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadingForm));
+            components = new System.ComponentModel.Container();
+            loadingLabel = new Label();
+            animationTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
+            // 
+            // loadingLabel
+            // 
+            loadingLabel.AutoSize = true;
+            loadingLabel.BackColor = SystemColors.ControlLightLight;
+            loadingLabel.Dock = DockStyle.Fill;
+            loadingLabel.Font = new Font("Arial", 150F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            loadingLabel.Location = new Point(0, 0);
+            loadingLabel.Name = "loadingLabel";
+            loadingLabel.Size = new Size(971, 222);
+            loadingLabel.TabIndex = 0;
+            loadingLabel.Text = "Loading...";
+            loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // LoadingForm
             // 
             AutoScaleDimensions = new SizeF(17F, 34F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.ControlDark;
-            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            BackColor = SystemColors.Control;
             BackgroundImageLayout = ImageLayout.Zoom;
-            ClientSize = new Size(309, 209);
+            ClientSize = new Size(971, 222);
             ControlBox = false;
+            Controls.Add(loadingLabel);
             Font = new Font("Arial", 21.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(7);
             Name = "LoadingForm";
-            Opacity = 0.9D;
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "LoadingForm";
+            Load += LoadingForm_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private Label loadingLabel;
+        private System.Windows.Forms.Timer animationTimer;
     }
 }

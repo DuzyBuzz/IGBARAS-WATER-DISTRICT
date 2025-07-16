@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal static class AutoCompleteHelper
     {
-        // Set your connection string ONCE here (you can also move it to a config file)
-
         /// <summary>
-        /// Fills a TextBox with AutoComplete suggestions based on a column from a given table.
+        /// Fills a TextBox with AutoComplete suggestions based on one or more columns from a given table or view.
         /// </summary>
-        /// <param name="tableName">Table name (e.g., tb_bill)</param>
-        /// <param name="columnName">Column to use for AutoComplete (e.g., accountno)</param>
+        /// <param name="tableName">Table or view name (e.g., v_account_detailes)</param>
+        /// <param name="columnNames">Array of column names to pull suggestions from (e.g., new[] { "accountno", "fullname" })</param>
         /// <param name="textBox">The TextBox control to apply AutoComplete to</param>
-        public static void FillTextBoxWithColumn(string tableName, string columnName, TextBox textBox)
+        public static void FillTextBoxWithColumns(string tableName, string[] columnNames, TextBox textBox)
         {
             try
             {
@@ -22,20 +22,33 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                 {
                     conn.Open();
 
-                    string query = $"SELECT DISTINCT `{columnName}` FROM `{tableName}` ORDER BY `{columnName}` ASC;";
+                    // Join column names into SQL SELECT
+                    string selectColumns = string.Join(", ", columnNames.Select(col => $"`{col}`"));
+                    string query = $"SELECT DISTINCT {selectColumns} FROM `{tableName}`";
+
                     MySqlCommand cmd = new MySqlCommand(query, conn);
                     MySqlDataReader reader = cmd.ExecuteReader();
 
+                    // Collection for autocomplete suggestions
                     AutoCompleteStringCollection suggestions = new AutoCompleteStringCollection();
+                    HashSet<string> seen = new HashSet<string>(); // Prevent duplicates
 
                     while (reader.Read())
                     {
-                        if (!reader.IsDBNull(0))
-                        { 
-                            suggestions.Add(reader.GetString(0));
+                        foreach (var col in columnNames)
+                        {
+                            if (!reader.IsDBNull(reader.GetOrdinal(col)))
+                            {
+                                string value = reader[col]?.ToString();
+                                if (!string.IsNullOrWhiteSpace(value) && seen.Add(value))
+                                {
+                                    suggestions.Add(value);
+                                }
+                            }
                         }
                     }
 
+                    // Apply to textbox
                     textBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
                     textBox.AutoCompleteSource = AutoCompleteSource.CustomSource;
                     textBox.AutoCompleteCustomSource = suggestions;

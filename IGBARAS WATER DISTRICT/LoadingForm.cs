@@ -1,20 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IGBARAS_WATER_DISTRICT
 {
     public partial class LoadingForm : Form
     {
+        private int dotCount = 0;
+
         public LoadingForm()
         {
             InitializeComponent();
         }
+
+        private void LoadingForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
+
     }
 }

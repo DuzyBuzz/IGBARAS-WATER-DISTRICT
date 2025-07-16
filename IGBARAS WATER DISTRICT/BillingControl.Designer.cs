@@ -134,7 +134,6 @@
             label75 = new Label();
             label78 = new Label();
             tableLayoutPanel7 = new TableLayoutPanel();
-            label93 = new Label();
             tableLayoutPanel8 = new TableLayoutPanel();
             tableLayoutPanel9 = new TableLayoutPanel();
             label17 = new Label();
@@ -151,10 +150,14 @@
             label27 = new Label();
             tableLayoutPanel13 = new TableLayoutPanel();
             tableLayoutPanel27 = new TableLayoutPanel();
+            discountIDLabel = new TextBox();
+            label32 = new Label();
+            label26 = new Label();
             tableLayoutPanel11 = new TableLayoutPanel();
             label24 = new Label();
             textBox1 = new TextBox();
             label25 = new Label();
+            label93 = new Label();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -184,10 +187,20 @@
             panel2 = new Panel();
             accountnoBillHistory = new Label();
             billDataGridView = new DataGridView();
+            bill_id = new DataGridViewTextBoxColumn();
+            billcode = new DataGridViewTextBoxColumn();
+            accountnoHis = new DataGridViewTextBoxColumn();
+            datebilled = new DataGridViewTextBoxColumn();
+            duedate = new DataGridViewTextBoxColumn();
+            previousreading = new DataGridViewTextBoxColumn();
+            presentreading = new DataGridViewTextBoxColumn();
+            meterconsumed = new DataGridViewTextBoxColumn();
+            charge = new DataGridViewTextBoxColumn();
+            billcharge = new DataGridViewTextBoxColumn();
+            amountpaid = new DataGridViewTextBoxColumn();
+            balance = new DataGridViewTextBoxColumn();
+            paid = new DataGridViewCheckBoxColumn();
             label90 = new Label();
-            label26 = new Label();
-            label32 = new Label();
-            discountIDLabel = new TextBox();
             billingPanel.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel15.SuspendLayout();
@@ -1637,21 +1650,6 @@
             tableLayoutPanel7.Size = new Size(626, 172);
             tableLayoutPanel7.TabIndex = 7;
             // 
-            // label93
-            // 
-            label93.AutoSize = true;
-            label93.BackColor = Color.White;
-            label93.Dock = DockStyle.Fill;
-            label93.Font = new Font("Calibri", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label93.ForeColor = Color.Crimson;
-            label93.Location = new Point(6, 117);
-            label93.Margin = new Padding(5);
-            label93.Name = "label93";
-            label93.Size = new Size(301, 49);
-            label93.TabIndex = 4;
-            label93.Text = "\"THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX\"";
-            label93.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // tableLayoutPanel8
             // 
             tableLayoutPanel8.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
@@ -1879,6 +1877,41 @@
             tableLayoutPanel27.Size = new Size(311, 110);
             tableLayoutPanel27.TabIndex = 0;
             // 
+            // discountIDLabel
+            // 
+            discountIDLabel.BorderStyle = BorderStyle.None;
+            discountIDLabel.Dock = DockStyle.Fill;
+            discountIDLabel.Font = new Font("Calibri", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            discountIDLabel.Location = new Point(156, 1);
+            discountIDLabel.Margin = new Padding(0);
+            discountIDLabel.Multiline = true;
+            discountIDLabel.Name = "discountIDLabel";
+            discountIDLabel.Size = new Size(154, 53);
+            discountIDLabel.TabIndex = 6;
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Dock = DockStyle.Fill;
+            label32.Location = new Point(4, 55);
+            label32.Name = "label32";
+            label32.Size = new Size(148, 54);
+            label32.TabIndex = 2;
+            label32.Text = "SC/PWD/NAAC/MOV/SP Signature";
+            label32.TextAlign = ContentAlignment.MiddleCenter;
+            label32.Click += label32_Click;
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Dock = DockStyle.Fill;
+            label26.Location = new Point(4, 1);
+            label26.Name = "label26";
+            label26.Size = new Size(148, 53);
+            label26.TabIndex = 0;
+            label26.Text = "SC/PWD/NAAC/MOV/SP ID No.\t";
+            label26.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // tableLayoutPanel11
             // 
             tableLayoutPanel11.ColumnCount = 2;
@@ -1933,6 +1966,21 @@
             label25.TabIndex = 6;
             label25.Text = "₱";
             label25.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label93
+            // 
+            label93.AutoSize = true;
+            label93.BackColor = Color.White;
+            label93.Dock = DockStyle.Fill;
+            label93.Font = new Font("Calibri", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label93.ForeColor = Color.Crimson;
+            label93.Location = new Point(6, 117);
+            label93.Margin = new Padding(5);
+            label93.Name = "label93";
+            label93.Size = new Size(301, 49);
+            label93.TabIndex = 4;
+            label93.Text = "\"THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX\"";
+            label93.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // billingPrintDocument
             // 
@@ -2178,7 +2226,8 @@
             accountno.HeaderText = "Account ID";
             accountno.Name = "accountno";
             accountno.ReadOnly = true;
-            accountno.Width = 91;
+            accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            accountno.Width = 72;
             // 
             // fullname
             // 
@@ -2186,7 +2235,8 @@
             fullname.HeaderText = "Full Name";
             fullname.Name = "fullname";
             fullname.ReadOnly = true;
-            fullname.Width = 86;
+            fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            fullname.Width = 67;
             // 
             // businessname
             // 
@@ -2194,7 +2244,8 @@
             businessname.HeaderText = "Business Name";
             businessname.Name = "businessname";
             businessname.ReadOnly = true;
-            businessname.Width = 112;
+            businessname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            businessname.Width = 93;
             // 
             // contactno
             // 
@@ -2202,7 +2253,8 @@
             contactno.HeaderText = "Contact #";
             contactno.Name = "contactno";
             contactno.ReadOnly = true;
-            contactno.Width = 84;
+            contactno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            contactno.Width = 65;
             // 
             // barangay
             // 
@@ -2210,7 +2262,8 @@
             barangay.HeaderText = "Barangay";
             barangay.Name = "barangay";
             barangay.ReadOnly = true;
-            barangay.Width = 81;
+            barangay.SortMode = DataGridViewColumnSortMode.NotSortable;
+            barangay.Width = 62;
             // 
             // dateinstalled
             // 
@@ -2218,7 +2271,8 @@
             dateinstalled.HeaderText = "Date Installed";
             dateinstalled.Name = "dateinstalled";
             dateinstalled.ReadOnly = true;
-            dateinstalled.Width = 103;
+            dateinstalled.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dateinstalled.Width = 84;
             // 
             // panel6
             // 
@@ -2258,6 +2312,7 @@
             billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             billDataGridView.BackgroundColor = Color.White;
             billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billDataGridView.Columns.AddRange(new DataGridViewColumn[] { bill_id, billcode, accountnoHis, datebilled, duedate, previousreading, presentreading, meterconsumed, charge, billcharge, amountpaid, balance, paid });
             billDataGridView.Location = new Point(26, 63);
             billDataGridView.Name = "billDataGridView";
             billDataGridView.ReadOnly = true;
@@ -2266,6 +2321,125 @@
             billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
             billDataGridView.Size = new Size(1328, 271);
             billDataGridView.TabIndex = 24;
+            // 
+            // bill_id
+            // 
+            bill_id.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            bill_id.DataPropertyName = "bill_id";
+            bill_id.HeaderText = "bill_id";
+            bill_id.Name = "bill_id";
+            bill_id.ReadOnly = true;
+            bill_id.Width = 63;
+            // 
+            // billcode
+            // 
+            billcode.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            billcode.DataPropertyName = "billcode";
+            billcode.HeaderText = "billcode";
+            billcode.Name = "billcode";
+            billcode.ReadOnly = true;
+            billcode.Width = 74;
+            // 
+            // accountnoHis
+            // 
+            accountnoHis.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            accountnoHis.DataPropertyName = "accountno";
+            accountnoHis.HeaderText = "accountno";
+            accountnoHis.Name = "accountnoHis";
+            accountnoHis.ReadOnly = true;
+            accountnoHis.Width = 89;
+            // 
+            // datebilled
+            // 
+            datebilled.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            datebilled.DataPropertyName = "datebilled";
+            datebilled.HeaderText = "datebilled";
+            datebilled.Name = "datebilled";
+            datebilled.ReadOnly = true;
+            datebilled.Width = 84;
+            // 
+            // duedate
+            // 
+            duedate.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            duedate.DataPropertyName = "duedate";
+            duedate.HeaderText = "duedate";
+            duedate.Name = "duedate";
+            duedate.ReadOnly = true;
+            duedate.Width = 75;
+            // 
+            // previousreading
+            // 
+            previousreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            previousreading.DataPropertyName = "previousreading";
+            previousreading.HeaderText = "previousreading";
+            previousreading.Name = "previousreading";
+            previousreading.ReadOnly = true;
+            previousreading.Width = 117;
+            // 
+            // presentreading
+            // 
+            presentreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            presentreading.DataPropertyName = "presentreading";
+            presentreading.HeaderText = "presentreading";
+            presentreading.Name = "presentreading";
+            presentreading.ReadOnly = true;
+            presentreading.Width = 111;
+            // 
+            // meterconsumed
+            // 
+            meterconsumed.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            meterconsumed.DataPropertyName = "meterconsumed";
+            meterconsumed.HeaderText = "meterconsumed";
+            meterconsumed.Name = "meterconsumed";
+            meterconsumed.ReadOnly = true;
+            meterconsumed.Width = 119;
+            // 
+            // charge
+            // 
+            charge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            charge.DataPropertyName = "charge";
+            charge.HeaderText = "charge";
+            charge.Name = "charge";
+            charge.ReadOnly = true;
+            charge.Width = 68;
+            // 
+            // billcharge
+            // 
+            billcharge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            billcharge.DataPropertyName = "billcharge";
+            billcharge.HeaderText = "billcharge";
+            billcharge.Name = "billcharge";
+            billcharge.ReadOnly = true;
+            billcharge.Width = 84;
+            // 
+            // amountpaid
+            // 
+            amountpaid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            amountpaid.DataPropertyName = "amountpaid";
+            amountpaid.HeaderText = "amountpaid";
+            amountpaid.Name = "amountpaid";
+            amountpaid.ReadOnly = true;
+            amountpaid.Width = 97;
+            // 
+            // balance
+            // 
+            balance.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            balance.DataPropertyName = "balance";
+            balance.HeaderText = "balance";
+            balance.Name = "balance";
+            balance.ReadOnly = true;
+            balance.Width = 73;
+            // 
+            // paid
+            // 
+            paid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            paid.DataPropertyName = "paid";
+            paid.HeaderText = "paid";
+            paid.Name = "paid";
+            paid.ReadOnly = true;
+            paid.Resizable = DataGridViewTriState.True;
+            paid.SortMode = DataGridViewColumnSortMode.Automatic;
+            paid.Width = 55;
             // 
             // label90
             // 
@@ -2277,41 +2451,6 @@
             label90.Size = new Size(24, 17);
             label90.TabIndex = 22;
             label90.Text = "🔎";
-            // 
-            // label26
-            // 
-            label26.AutoSize = true;
-            label26.Dock = DockStyle.Fill;
-            label26.Location = new Point(4, 1);
-            label26.Name = "label26";
-            label26.Size = new Size(148, 53);
-            label26.TabIndex = 0;
-            label26.Text = "SC/PWD/NAAC/MOV/SP ID No.\t";
-            label26.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label32
-            // 
-            label32.AutoSize = true;
-            label32.Dock = DockStyle.Fill;
-            label32.Location = new Point(4, 55);
-            label32.Name = "label32";
-            label32.Size = new Size(148, 54);
-            label32.TabIndex = 2;
-            label32.Text = "SC/PWD/NAAC/MOV/SP Signature";
-            label32.TextAlign = ContentAlignment.MiddleCenter;
-            label32.Click += label32_Click;
-            // 
-            // discountIDLabel
-            // 
-            discountIDLabel.BorderStyle = BorderStyle.None;
-            discountIDLabel.Dock = DockStyle.Fill;
-            discountIDLabel.Font = new Font("Calibri", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            discountIDLabel.Location = new Point(156, 1);
-            discountIDLabel.Margin = new Padding(0);
-            discountIDLabel.Multiline = true;
-            discountIDLabel.Name = "discountIDLabel";
-            discountIDLabel.Size = new Size(154, 53);
-            discountIDLabel.TabIndex = 6;
             // 
             // BillingControl
             // 
@@ -2522,12 +2661,6 @@
         private Label accountnoBillHistory;
         private TableLayoutPanel tableLayoutPanel24;
         private Panel panel6;
-        private DataGridViewTextBoxColumn accountno;
-        private DataGridViewTextBoxColumn fullname;
-        private DataGridViewTextBoxColumn businessname;
-        private DataGridViewTextBoxColumn contactno;
-        private DataGridViewTextBoxColumn barangay;
-        private DataGridViewTextBoxColumn dateinstalled;
         private DataGridView billDataGridView;
         private TableLayoutPanel tableLayoutPanel25;
         private TableLayoutPanel tableLayoutPanel26;
@@ -2546,5 +2679,24 @@
         private Label label32;
         private Label label26;
         private TextBox discountIDLabel;
+        private DataGridViewTextBoxColumn accountno;
+        private DataGridViewTextBoxColumn fullname;
+        private DataGridViewTextBoxColumn businessname;
+        private DataGridViewTextBoxColumn contactno;
+        private DataGridViewTextBoxColumn barangay;
+        private DataGridViewTextBoxColumn dateinstalled;
+        private DataGridViewTextBoxColumn bill_id;
+        private DataGridViewTextBoxColumn billcode;
+        private DataGridViewTextBoxColumn accountnoHis;
+        private DataGridViewTextBoxColumn datebilled;
+        private DataGridViewTextBoxColumn duedate;
+        private DataGridViewTextBoxColumn previousreading;
+        private DataGridViewTextBoxColumn presentreading;
+        private DataGridViewTextBoxColumn meterconsumed;
+        private DataGridViewTextBoxColumn charge;
+        private DataGridViewTextBoxColumn billcharge;
+        private DataGridViewTextBoxColumn amountpaid;
+        private DataGridViewTextBoxColumn balance;
+        private DataGridViewCheckBoxColumn paid;
     }
 }

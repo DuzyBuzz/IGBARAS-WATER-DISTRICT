@@ -10,10 +10,6 @@ namespace IGBARAS_WATER_DISTRICT
 {
     public partial class BillingControl : UserControl
     {
-        private Bitmap billingPanelImage;
-        private PaginationHelper pager = new PaginationHelper();
-        private int currentCopyIndex = 0;
-        private readonly string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
         public BillingControl()
         {
             InitializeComponent();
@@ -29,7 +25,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
         /// <summary>
-        /// Extracts the zone code from the start of the account number and formats it into a 3-digit string.
+        /// This takes the first 2 digits of the account number (e.g., "01", "02") and turns it into a zone prefix like "001", "002".
         /// </summary>
         public string GetZonePrefixFromAccountNo(string accountNo)
         {
@@ -43,26 +39,12 @@ namespace IGBARAS_WATER_DISTRICT
 
             return "001"; // fallback if parsing fails
         }
-        public int GetZoneStartRange(string zoneCode)
-        {
-            string query = "SELECT start_range FROM tb_zone WHERE zonecode = @zonecode LIMIT 1";
-
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@zonecode", zoneCode);
-
-                    object result = cmd.ExecuteScalar();
-
-                    if (result != null && result != DBNull.Value)
-                        return Convert.ToInt32(result);
-                    else
-                        return 1; // fallback if not found
-                }
-            }
-        }
+        /// <summary>
+        ///  This connects to the database and checks which zone number matches the zoneCode like "001", "002".
+        ///    If not found, it defaults to Zone 1.
+        ///    this help know the start range for invoice number per zone 
+        ///    for example zone 1 starts at 1 - 200 the invoice will be 001-0000001 to 001-0000200 then next month it will be 001-0000201
+        /// </summary>
         public int GetZoneNoFromDB(string zoneCode)
         {
             string query = "SELECT zoneno FROM tb_zone WHERE zonecode = @zonecode LIMIT 1";
@@ -82,16 +64,21 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
-
+        /// <summary>
+        ///  gets the zoneno to calculate the starting number for the next bill code. zone 1-1, zone 2 -201, etc.
+        ///     adds a months offset to the starting number based on the month of the billMonth parameter. jan = 0, feb = 400, mar = 800, etc.
+        ///     
+        /// </summary>
         public string GenerateNextBillCode(string zoneCode, DateTime billMonth)
         {
+            //the zoneCode is expected to be in the format "001", "002", etc.
             int zoneNo = GetZoneNoFromDB(zoneCode);
             int baseStart = ((zoneNo - 1) * 200) + 1;
             int monthOffset = (billMonth.Month - 1) * 400;
             int startingNumber = baseStart + monthOffset;
 
             // Extract zone prefix (e.g. "001", "002", etc.)
-            string prefix = zoneCode; // already in "003" format
+            string prefix = zoneCode; 
 
 
             // Query latest billcode for that zone and month
@@ -124,16 +111,16 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
-
+            PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Search for Fullname or Account Number.");
             using (var loadingForm = new LoadingForm())
             {
-                Form parentForm = this.FindForm(); // 🟢 Converts the parent to a Form
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
+                // 🟢 Converts the parent to a Form
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", loadingForm);
             }
 
-            AutoCompleteHelper.FillTextBoxWithColumn("v_account_detailes", "accountno", searchAccountNumberTextBox);
-            SetDateNow();
 
+            AutoCompleteHelper.FillTextBoxWithColumns("v_account_detailes",new string[] { "accountno", "fullname" },searchAccountNumberTextBox);
+            SetDateNow();
         }
 
 
@@ -271,55 +258,51 @@ namespace IGBARAS_WATER_DISTRICT
         {
             string keyword = searchAccountNumberTextBox.Text.Trim();
 
-            using (var loadingForm = new LoadingForm()) // ✅ Make sure this matches your form name
+            using (var loadingForm = new LoadingForm())
             {
-                Form parentForm = this.FindForm(); // ✅ This gets the parent MainForm
-
-                if (parentForm == null)
-                {
-                    MessageBox.Show("Parent form not found. Cannot continue.");
-                    return;
-                }
-
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
-                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
+                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", loadingForm);
                 }
                 else
                 {
-                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm, "accountno", keyword);
+                    await DGVHelper.LoadDataToGridAsync(
+                        accountDataGridView,
+                        "v_account_detailes",
+                        loadingForm,
+                        new string[] { "accountno", "fullname" },
+                        new object[] { keyword, keyword }
+                    );
                 }
             }
         }
+
+
+
 
 
 
         private void searchAccountNumberTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(searchAccountNumberTextBox.Text) && searchAccountNumberTextBox.TextLength < 3)
 
-            {
-                clearButton.Enabled = false;
-            }
-            else
-            {
-                clearButton.Enabled = true;
-            }
         }
 
-        private async void clearButton_Click(object sender, EventArgs e)
+        private void clearButton_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(searchAccountNumberTextBox.Text))
             {
-                using (var loadingForm = new LoadingForm())
-                {
-                    Form parentForm = this.FindForm(); // 🟢 Converts the parent to a Form
-                    await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", parentForm, loadingForm);
-                }
+                LoadingAsyncAccountDGV();
             }
             searchAccountNumberTextBox.Text = string.Empty;
         }
+        private async void LoadingAsyncAccountDGV()
+        {
+            using (var loadingForm = new LoadingForm())
+            {
 
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_account_detailes", loadingForm);
+            }
+        }
         private void accountNumberTextBox_TextChanged(object sender, EventArgs e)
         {
             string accountNo = accountNumberTextBox.Text.Trim();
