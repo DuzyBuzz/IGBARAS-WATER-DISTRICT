@@ -100,7 +100,7 @@ namespace IGBARAS_WATER_DISTRICT
                             if (reader.Read())
                             {
                                 // Get the values from database
-                                string userId = reader["deviceuserid"].ToString();
+                                string userId = reader["devicecode"].ToString();
                                 string usernameFromDb = reader["username"].ToString();
 
                                 // Store in static class

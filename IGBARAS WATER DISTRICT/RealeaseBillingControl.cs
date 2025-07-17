@@ -33,21 +33,30 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-
+            // Set page orientation
             billingPrintDocument.DefaultPageSettings.Landscape = false;
+
+            //  Set small margins (optional: adjust for borderless or compact layout)
             billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
 
+            // Set paper size to Legal (8.5 x 14 inches = 850 x 1400 hundredths of an inch)
+            PaperSize legalSize = new PaperSize("Legal", 850, 1400);
+            billingPrintDocument.DefaultPageSettings.PaperSize = legalSize;
+
+            // Show Print Dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
+                // Proceed with printing
                 billingPrintDocument.Print();
 
-                // ✅ Validate if data exists
+                // Validate if billing data is selected
                 if (selectedBillingData == null || selectedBillingData.Length < 17)
                 {
                     MessageBox.Show("No selected billing data. Please select an account first.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                // Validate and Save Billing
                 if (CheckBillingDate())
                 {
                     InsertToBillingTable(selectedBillingData);
@@ -64,86 +73,97 @@ namespace IGBARAS_WATER_DISTRICT
 
         private Bitmap CapturePanel(Control panel)
         {
+            // Create a bitmap with the size of the panel
             Bitmap bmp = new Bitmap(panel.Width, panel.Height);
             panel.DrawToBitmap(bmp, new Rectangle(0, 0, panel.Width, panel.Height));
             return bmp;
         }
+        private void PrepareAndPrintDocument()
+        {
+            // Set up print document
+            billingPrintDocument.DefaultPageSettings.Landscape = false;
+
+            // Set paper size to Legal (8.5 x 14 inches)
+            PaperSize legalSize = new PaperSize("Legal", 850, 1400); // width and height in hundredths of an inch
+            billingPrintDocument.DefaultPageSettings.PaperSize = legalSize;
+
+            // Optional: Set margins
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(50, 50, 50, 50); // 0.5 inch margin
+
+            // Trigger the printing
+            PrintPreviewDialog preview = new PrintPreviewDialog();
+            preview.Document = billingPrintDocument;
+            preview.ShowDialog(); // or use billingPrintDocument.Print(); for direct print
+        }
 
         private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
         {
-            // Copy names for each printed version
+            // Names for each copy
             string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
 
             int copiesPerPage = copyNames.Length;
-            int spacing = 10; // Space between copies
-
-            // Get total space for all copies with spacing
-            int totalSpacing = spacing * (copiesPerPage - 1);
-            int usableHeight = e.MarginBounds.Height - totalSpacing;
-            int copyHeight = usableHeight / copiesPerPage;
+            int availableHeight = e.MarginBounds.Height;
             int availableWidth = e.MarginBounds.Width;
+
+            // Set spacing between copies (in pixels)
+            int spacing = 10;
+            int totalSpacing = spacing * (copiesPerPage - 1);
+            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
+
+            int targetWidth = availableWidth;
+            int targetHeight = copyHeight;
 
             for (int i = 0; i < copiesPerPage; i++)
             {
-                // Set label text before capturing
+                // Set the label for the copy type
                 copyTypeLabel.Text = copyNames[i];
 
-                // Capture the panel
-                using (Bitmap panelImage = CapturePanel(billingPanel))
+                // Capture the panel as bitmap
+                Bitmap panelImage = CapturePanel(billingPanel);
+
+                // Calculate scale to fit width and height
+                float scale = Math.Min(
+                    (float)targetWidth / panelImage.Width,
+                    (float)targetHeight / panelImage.Height);
+
+                int printWidth = (int)(panelImage.Width * scale);
+                int printHeight = (int)(panelImage.Height * scale);
+
+                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
+                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
+
+                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+
+                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
+
+                panelImage.Dispose();
+
+                // Draw cut indication line after every copy
+                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
+                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
                 {
-                    // Compute scale to fit within target width and height
-                    float scale = Math.Min(
-                        (float)availableWidth / panelImage.Width,
-                        (float)copyHeight / panelImage.Height);
+                    // Measure the width of "✄"
+                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
+                    // Measure the width of one "┈"
+                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
+                    // Calculate total dashes to fill the width minus scissors
+                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
+                    int leftDashes = totalDashes / 2;
+                    int rightDashes = totalDashes - leftDashes;
+                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
 
-                    int scaledWidth = (int)(panelImage.Width * scale);
-                    int scaledHeight = (int)(panelImage.Height * scale);
-
-                    // Center horizontally, position vertically per copy
-                    int x = e.MarginBounds.Left + (availableWidth - scaledWidth) / 2;
-                    int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - scaledHeight) / 2;
-
-                    // Draw scaled image with quality settings
-                    e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                    e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                    e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-
-                    e.Graphics.DrawImage(panelImage, new Rectangle(x, y, scaledWidth, scaledHeight));
-                }
-
-                // Draw professional cut line between copies
-                if (i < copiesPerPage - 1)
-                {
-                    int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
-
-                    using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
+                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
                     {
-                        float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
-                        float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
-                        int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
-                        int leftDashes = totalDashes / 2;
-                        int rightDashes = totalDashes - leftDashes;
-
-                        string cutLine = new string('┈', leftDashes) + "✄" + new string('┈', rightDashes);
-
-                        RectangleF textRect = new RectangleF(
-                            e.MarginBounds.Left,
-                            lineY - 8,
-                            e.MarginBounds.Width,
-                            16);
-
-                        using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center })
-                        {
-                            e.Graphics.DrawString(cutLine, cutFont, Brushes.Black, textRect, sf);
-                        }
+                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
+                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
                     }
                 }
             }
-
-            // No more pages to print
-            e.HasMorePages = false;
         }
+        /// <summary>
 
         /// <summary>
         /// end of the print save button click event.
@@ -390,8 +410,8 @@ namespace IGBARAS_WATER_DISTRICT
             string balance = selectedRow.Cells["balancex"].Value?.ToString();
             string districtno = selectedRow.Cells["districtno"].Value?.ToString();
 
-                    selectedBillingData = new string[]
-                    {
+            selectedBillingData = new string[]
+            {
             accountNo,
             fullname,
             address,
@@ -409,7 +429,7 @@ namespace IGBARAS_WATER_DISTRICT
             discounted,
             billCode,
             districtno
-                    };
+            };
 
 
             // Senior Citizen
@@ -600,7 +620,7 @@ namespace IGBARAS_WATER_DISTRICT
         private void LoadAccountBillHistory(string accountNo)
         {
             // Call helper to load billing summary rows where accountno = accountNo
-            DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("v_billing_summary", "accountno", accountNo);
+            DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("tb_bill", "accountno", accountNo);
 
             if (billData != null)
             {
@@ -843,6 +863,27 @@ namespace IGBARAS_WATER_DISTRICT
         private void accountDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+        private void printOnlyButton_Click(object sender, EventArgs e)
+        {
+            billingPrintDocument.DefaultPageSettings.Landscape = false;
+
+            //  Set small margins (optional: adjust for borderless or compact layout)
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+
+            // Set paper size to Legal (8.5 x 14 inches = 850 x 1400 hundredths of an inch)
+            PaperSize legalSize = new PaperSize("Legal", 850, 1400);
+            billingPrintDocument.DefaultPageSettings.PaperSize = legalSize;
+
+            // Show Print Dialog
+            if (billingPrintDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Proceed with printing
+                billingPrintDocument.Print();
+
+                 MessageBox.Show("Print Billing record Print successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
         }
     }
 }

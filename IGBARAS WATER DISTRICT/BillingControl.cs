@@ -233,6 +233,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+            userIdLabel.Text = $"{UserCredentials.UserId}";
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
             SetDateNow();
@@ -240,11 +241,11 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_water_account_detailes", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
-            AutoCompleteHelper.FillTextBoxWithColumns("v_water_account_detailes", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumns("concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
         }
 
 
@@ -294,9 +295,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-            // 🟦 Extract and safely convert meter consumed
-            string meterConsumedStr = selectedRow.Cells["meterconsumedAccount"].Value?.ToString();
-
+ 
 
 
             // 🟦 Update UI fields
@@ -318,7 +317,7 @@ namespace IGBARAS_WATER_DISTRICT
                 fromReadingDateLabel.Text = readingInfo.ReadingDate.ToString("MMMM dd, yyyy");
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
-                balanceLabel.Text = readingInfo.Arrears.ToString();
+                arrearsLabel.Text = readingInfo.Arrears.ToString();
                 int meterConsumedReading = 0;
 
                 // ➕ Calculate present reading
@@ -357,7 +356,7 @@ namespace IGBARAS_WATER_DISTRICT
         private void LoadAccountBillHistory(string accountNo)
         {
             // Call helper to load billing summary rows where accountno = accountNo
-            DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("v_billing_summary", "accountno", accountNo);
+            DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("tb_bill", "accountno", accountNo);
 
             if (billData != null)
             {
@@ -526,7 +525,7 @@ namespace IGBARAS_WATER_DISTRICT
             // Apply balance from balanceLabel
             // -------------------------------
             decimal previousBalance = 0;
-            if (decimal.TryParse(balanceLabel.Text, out decimal balance))
+            if (decimal.TryParse(arrearsLabel.Text, out decimal balance))
             {
                 previousBalance = balance;
             }
@@ -538,7 +537,7 @@ namespace IGBARAS_WATER_DISTRICT
             decimal amountDue = (totalAmount - totalDiscount) + previousBalance;
 
             // Show final payable amount
-            amountDueLabel.Text = amountDue.ToString("N2");
+            chargeLabel.Text = amountDue.ToString("N2");
         }
 
 
@@ -568,10 +567,18 @@ namespace IGBARAS_WATER_DISTRICT
             thirtyQuantityLabel.Text = thirtyUnitPriceLabel.Text = thirtyAmountLabel.Text = "";
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
+            presentReadingTextBox.Text = "";
 
+            // Clear discount and tax labels
+            discountedLabel.Text = "0%";
+            discountedAmountLabel.Text = "0.00";
+            taxExemptedLabel.Text = "0%";
+            exemptedAmountLabel.Text = "0.00";
+            arrearsLabel.Text = "0.00";
+            chargeLabel.Text = "0.00";
             // Also clear totals
             totalQuantityLabel.Text = "";
-            totalAmountLabel.Text = "";
+            totalAmountLabel.Text = "0.00";
         }
 
         private async void syncButton_Click(object sender, EventArgs e)
@@ -579,7 +586,7 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_water_account_detailes", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
             }
         }
 
