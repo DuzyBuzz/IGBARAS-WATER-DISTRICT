@@ -157,6 +157,7 @@
             tableLayoutPanel14 = new TableLayoutPanel();
             label93 = new Label();
             button2 = new Button();
+            account = new DataGridView();
             tableLayoutPanel1.SuspendLayout();
             panel3.SuspendLayout();
             billingPanel.SuspendLayout();
@@ -184,20 +185,23 @@
             tableLayoutPanel12.SuspendLayout();
             tableLayoutPanel13.SuspendLayout();
             tableLayoutPanel14.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)account).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(panel3, 0, 0);
+            tableLayoutPanel1.Controls.Add(account, 0, 2);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 0);
             tableLayoutPanel1.Margin = new Padding(0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 60.4486427F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 39.5513573F));
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 60F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 3.77804017F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 36.24557F));
             tableLayoutPanel1.Size = new Size(1042, 847);
             tableLayoutPanel1.TabIndex = 0;
             // 
@@ -212,14 +216,14 @@
             panel3.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panel3.Location = new Point(3, 3);
             panel3.Name = "panel3";
-            panel3.Size = new Size(1036, 506);
+            panel3.Size = new Size(1036, 502);
             panel3.TabIndex = 23;
             // 
             // button3
             // 
             button3.Anchor = AnchorStyles.None;
             button3.BackColor = Color.White;
-            button3.Location = new Point(1346, 727);
+            button3.Location = new Point(1346, 725);
             button3.Name = "button3";
             button3.Size = new Size(117, 26);
             button3.TabIndex = 22;
@@ -232,7 +236,7 @@
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel2);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(4, 4);
+            billingPanel.Location = new Point(4, 2);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(1024, 493);
@@ -1938,12 +1942,20 @@
             // 
             button2.Anchor = AnchorStyles.None;
             button2.BackColor = Color.White;
-            button2.Location = new Point(1246, 727);
+            button2.Location = new Point(1246, 725);
             button2.Name = "button2";
             button2.Size = new Size(81, 26);
             button2.TabIndex = 21;
             button2.Text = "🖨️ Print";
             button2.UseVisualStyleBackColor = false;
+            // 
+            // account
+            // 
+            account.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            account.Location = new Point(3, 542);
+            account.Name = "account";
+            account.Size = new Size(240, 150);
+            account.TabIndex = 24;
             // 
             // BillingInvoiceForm
             // 
@@ -2000,6 +2012,7 @@
             tableLayoutPanel13.PerformLayout();
             tableLayoutPanel14.ResumeLayout(false);
             tableLayoutPanel14.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)account).EndInit();
             ResumeLayout(false);
         }
 
@@ -2133,5 +2146,6 @@
         private TableLayoutPanel tableLayoutPanel14;
         private Label label93;
         private Button button2;
+        private DataGridView account;
     }
 }

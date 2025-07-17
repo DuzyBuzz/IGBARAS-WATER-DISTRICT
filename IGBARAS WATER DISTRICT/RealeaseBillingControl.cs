@@ -1,25 +1,24 @@
 ﻿using IGBARAS_WATER_DISTRICT.Helpers;
-using Microsoft.VisualBasic.Devices;
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Asn1.Sec;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IGBARAS_WATER_DISTRICT
 {
-    public partial class BillingControl : UserControl
+    public partial class RealeaseBillingControl : UserControl
     {
-
-        public BillingControl()
+        public RealeaseBillingControl()
         {
             InitializeComponent();
-
-
         }
         /// <summary>
         /// this is the event handler for the print save button click event.
@@ -230,6 +229,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+            ClearWaterChargeLabels();
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
             SetDateNow();
@@ -465,27 +465,27 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     case "ten":
                         tenQuantityLabel.Text = qty.ToString();
-                        tenUnitPriceLabel.Text = b.Price.ToString("0.00");
+                        tenUnitPriceLabel.Text = b.Price.ToString("N2");
                         tenAmountLabel.Text = amount.ToString("N2");
                         break;
                     case "twenty":
                         twentyQuantityLabel.Text = qty.ToString();
-                        twentyUnitPriceLabel.Text = b.Price.ToString("0.00");
+                        twentyUnitPriceLabel.Text = b.Price.ToString("N2");
                         twentyAmountLabel.Text = amount.ToString("N2");
                         break;
                     case "thirty":
                         thirtyQuantityLabel.Text = qty.ToString();
-                        thirtyUnitPriceLabel.Text = b.Price.ToString("0.00");
+                        thirtyUnitPriceLabel.Text = b.Price.ToString("N2");
                         thirtyAmountLabel.Text = amount.ToString("N2");
                         break;
                     case "forty":
                         fortyQuantityLabel.Text = qty.ToString();
-                        fortyUnitPriceLabel.Text = b.Price.ToString("0.00");
+                        fortyUnitPriceLabel.Text = b.Price.ToString("N2");
                         fortyAmountLabel.Text = amount.ToString("N2");
                         break;
                     case "fortyUp":
                         fortyUpQuantityLabel.Text = qty.ToString();
-                        fortyUpUnitPriceLabel.Text = b.Price.ToString("0.00");
+                        fortyUpUnitPriceLabel.Text = b.Price.ToString("N2");
                         fortyUpAmountLabel.Text = amount.ToString("N2");
                         break;
                 }
@@ -565,9 +565,17 @@ namespace IGBARAS_WATER_DISTRICT
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
 
+            // Clear discount and tax labels
+            discountedLabel.Text = "0%";
+            discountedAmountLabel.Text = "0.00";
+            taxExemptedLabel.Text = "0%";
+            exemptedAmountLabel.Text = "0.00";
+            balanceLabel.Text = "0.00";
+            amountDueLabel.Text = "0.00";
+
             // Also clear totals
             totalQuantityLabel.Text = "";
-            totalAmountLabel.Text = "";
+            totalAmountLabel.Text = "0.00";
         }
 
         private async void syncButton_Click(object sender, EventArgs e)
