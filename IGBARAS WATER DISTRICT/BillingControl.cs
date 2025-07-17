@@ -38,6 +38,9 @@ namespace IGBARAS_WATER_DISTRICT
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
                 billingPrintDocument.Print();
+
+
+
             }
         }
         private Bitmap CapturePanel(Control panel)
@@ -315,7 +318,7 @@ namespace IGBARAS_WATER_DISTRICT
                 fromReadingDateLabel.Text = readingInfo.ReadingDate.ToString("MMMM dd, yyyy");
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
-                balanceLabel.Text = readingInfo.Balance.ToString();
+                balanceLabel.Text = readingInfo.Arrears.ToString();
                 int meterConsumedReading = 0;
 
                 // ➕ Calculate present reading
@@ -555,6 +558,7 @@ namespace IGBARAS_WATER_DISTRICT
                 ClearWaterChargeLabels();
             }
         }
+
 
         private void ClearWaterChargeLabels()
         {

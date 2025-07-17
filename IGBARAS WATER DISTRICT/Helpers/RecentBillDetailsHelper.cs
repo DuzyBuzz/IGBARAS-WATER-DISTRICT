@@ -11,7 +11,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             public int PreviousReading { get; set; }
             public int MeterConsumed { get; set; }
             public DateTime ReadingDate { get; set; }
-            public float Balance { get; set; }
+            public float Arrears { get; set; }
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                                     PreviousReading = reader.GetInt32("presentreading"),
                                     MeterConsumed = reader.GetInt32("meterconsumed"),
                                     ReadingDate = reader.GetDateTime("toreadingdate"),
-                                    Balance = reader.GetFloat("balance"),
+                                    Arrears = reader.GetFloat("balance"),
                                 };
                             }
                         }

@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillingControl));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillingControl));
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -42,45 +42,6 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
-            button3 = new Button();
-            button2 = new Button();
-            accountSearchPanel = new Panel();
-            tableLayoutPanel25 = new TableLayoutPanel();
-            tableLayoutPanel26 = new TableLayoutPanel();
-            syncButton = new Button();
-            label31 = new Label();
-            tableLayoutPanel12 = new TableLayoutPanel();
-            searchButton = new Button();
-            clearButton = new Button();
-            accountDataGridView = new DataGridView();
-            accountno = new DataGridViewTextBoxColumn();
-            fullname = new DataGridViewTextBoxColumn();
-            businessname = new DataGridViewTextBoxColumn();
-            contactno = new DataGridViewTextBoxColumn();
-            address = new DataGridViewTextBoxColumn();
-            meterno = new DataGridViewTextBoxColumn();
-            dateinstalled = new DataGridViewTextBoxColumn();
-            meterconsumedAccount = new DataGridViewTextBoxColumn();
-            seniorcitizen = new DataGridViewCheckBoxColumn();
-            taxexempt = new DataGridViewCheckBoxColumn();
-            panel6 = new Panel();
-            panel2 = new Panel();
-            label71 = new Label();
-            accountnoBillHistory = new Label();
-            billDataGridView = new DataGridView();
-            bill_id = new DataGridViewTextBoxColumn();
-            billcode = new DataGridViewTextBoxColumn();
-            accountnoHis = new DataGridViewTextBoxColumn();
-            datebilled = new DataGridViewTextBoxColumn();
-            duedate = new DataGridViewTextBoxColumn();
-            previousreading = new DataGridViewTextBoxColumn();
-            presentreading = new DataGridViewTextBoxColumn();
-            meterconsumed = new DataGridViewTextBoxColumn();
-            charge = new DataGridViewTextBoxColumn();
-            billcharge = new DataGridViewTextBoxColumn();
-            amountpaid = new DataGridViewTextBoxColumn();
-            balance = new DataGridViewTextBoxColumn();
-            paid = new DataGridViewCheckBoxColumn();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -171,7 +132,10 @@
             label65 = new Label();
             label61 = new Label();
             taxExemptedLabel = new Label();
+            label32 = new Label();
+            label34 = new Label();
             tableLayoutPanel22 = new TableLayoutPanel();
+            textBox1 = new TextBox();
             label85 = new Label();
             tableLayoutPanel23 = new TableLayoutPanel();
             label79 = new Label();
@@ -199,22 +163,51 @@
             tableLayoutPanel11 = new TableLayoutPanel();
             label26 = new Label();
             tableLayoutPanel13 = new TableLayoutPanel();
-            label24 = new Label();
-            label32 = new Label();
-            label34 = new Label();
-            textBox1 = new TextBox();
             label25 = new Label();
+            label24 = new Label();
+            button3 = new Button();
+            button2 = new Button();
+            accountSearchPanel = new Panel();
+            tableLayoutPanel25 = new TableLayoutPanel();
+            tableLayoutPanel26 = new TableLayoutPanel();
+            syncButton = new Button();
+            label31 = new Label();
+            tableLayoutPanel12 = new TableLayoutPanel();
+            searchButton = new Button();
+            clearButton = new Button();
+            accountDataGridView = new DataGridView();
+            accountno = new DataGridViewTextBoxColumn();
+            fullname = new DataGridViewTextBoxColumn();
+            businessname = new DataGridViewTextBoxColumn();
+            contactno = new DataGridViewTextBoxColumn();
+            address = new DataGridViewTextBoxColumn();
+            meterno = new DataGridViewTextBoxColumn();
+            dateinstalled = new DataGridViewTextBoxColumn();
+            meterconsumedAccount = new DataGridViewTextBoxColumn();
+            seniorcitizen = new DataGridViewCheckBoxColumn();
+            taxexempt = new DataGridViewCheckBoxColumn();
+            panel6 = new Panel();
+            panel2 = new Panel();
+            label71 = new Label();
+            accountnoBillHistory = new Label();
+            billDataGridView = new DataGridView();
+            bill_id = new DataGridViewTextBoxColumn();
+            billcode = new DataGridViewTextBoxColumn();
+            accountnoHis = new DataGridViewTextBoxColumn();
+            datebilled = new DataGridViewTextBoxColumn();
+            duedate = new DataGridViewTextBoxColumn();
+            previousreading = new DataGridViewTextBoxColumn();
+            presentreading = new DataGridViewTextBoxColumn();
+            meterconsumed = new DataGridViewTextBoxColumn();
+            charge = new DataGridViewTextBoxColumn();
+            billcharge = new DataGridViewTextBoxColumn();
+            amountpaid = new DataGridViewTextBoxColumn();
+            balance = new DataGridViewTextBoxColumn();
+            paid = new DataGridViewCheckBoxColumn();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel24.SuspendLayout();
             panel3.SuspendLayout();
-            accountSearchPanel.SuspendLayout();
-            tableLayoutPanel25.SuspendLayout();
-            tableLayoutPanel26.SuspendLayout();
-            tableLayoutPanel12.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)accountDataGridView).BeginInit();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             billingPanel.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel15.SuspendLayout();
@@ -239,6 +232,13 @@
             tableLayoutPanel10.SuspendLayout();
             tableLayoutPanel11.SuspendLayout();
             tableLayoutPanel13.SuspendLayout();
+            accountSearchPanel.SuspendLayout();
+            tableLayoutPanel25.SuspendLayout();
+            tableLayoutPanel26.SuspendLayout();
+            tableLayoutPanel12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)accountDataGridView).BeginInit();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             SuspendLayout();
             // 
             // billingPrintDocument
@@ -366,438 +366,13 @@
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
             // 
-            // button3
-            // 
-            button3.Anchor = AnchorStyles.None;
-            button3.BackColor = Color.White;
-            button3.Location = new Point(930, 526);
-            button3.Name = "button3";
-            button3.Size = new Size(117, 26);
-            button3.TabIndex = 22;
-            button3.Text = "📝 New Customer";
-            button3.UseVisualStyleBackColor = false;
-            // 
-            // button2
-            // 
-            button2.Anchor = AnchorStyles.None;
-            button2.BackColor = Color.White;
-            button2.Location = new Point(830, 526);
-            button2.Name = "button2";
-            button2.Size = new Size(81, 26);
-            button2.TabIndex = 21;
-            button2.Text = "🖨️ Print";
-            button2.UseVisualStyleBackColor = false;
-            button2.Click += printSaveButton_Click;
-            // 
-            // accountSearchPanel
-            // 
-            accountSearchPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            accountSearchPanel.BorderStyle = BorderStyle.Fixed3D;
-            accountSearchPanel.Controls.Add(tableLayoutPanel25);
-            accountSearchPanel.Location = new Point(3, 3);
-            accountSearchPanel.Name = "accountSearchPanel";
-            accountSearchPanel.Size = new Size(307, 559);
-            accountSearchPanel.TabIndex = 23;
-            // 
-            // tableLayoutPanel25
-            // 
-            tableLayoutPanel25.ColumnCount = 1;
-            tableLayoutPanel25.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel25.Controls.Add(tableLayoutPanel26, 0, 0);
-            tableLayoutPanel25.Controls.Add(accountDataGridView, 0, 1);
-            tableLayoutPanel25.Dock = DockStyle.Fill;
-            tableLayoutPanel25.Location = new Point(0, 0);
-            tableLayoutPanel25.Margin = new Padding(0);
-            tableLayoutPanel25.Name = "tableLayoutPanel25";
-            tableLayoutPanel25.RowCount = 2;
-            tableLayoutPanel25.RowStyles.Add(new RowStyle(SizeType.Percent, 12.072072F));
-            tableLayoutPanel25.RowStyles.Add(new RowStyle(SizeType.Percent, 87.9279251F));
-            tableLayoutPanel25.Size = new Size(303, 555);
-            tableLayoutPanel25.TabIndex = 24;
-            // 
-            // tableLayoutPanel26
-            // 
-            tableLayoutPanel26.ColumnCount = 2;
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 73.59736F));
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26.40264F));
-            tableLayoutPanel26.Controls.Add(syncButton, 1, 0);
-            tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
-            tableLayoutPanel26.Controls.Add(label31, 0, 0);
-            tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
-            tableLayoutPanel26.Dock = DockStyle.Fill;
-            tableLayoutPanel26.Location = new Point(0, 0);
-            tableLayoutPanel26.Margin = new Padding(0);
-            tableLayoutPanel26.Name = "tableLayoutPanel26";
-            tableLayoutPanel26.RowCount = 2;
-            tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
-            tableLayoutPanel26.Size = new Size(303, 67);
-            tableLayoutPanel26.TabIndex = 24;
-            // 
-            // syncButton
-            // 
-            syncButton.BackColor = Color.White;
-            syncButton.Dock = DockStyle.Fill;
-            syncButton.FlatStyle = FlatStyle.System;
-            syncButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            syncButton.Location = new Point(223, 0);
-            syncButton.Margin = new Padding(0);
-            syncButton.Name = "syncButton";
-            syncButton.Size = new Size(80, 32);
-            syncButton.TabIndex = 27;
-            syncButton.Text = "Sync 🔄";
-            syncButton.UseVisualStyleBackColor = false;
-            syncButton.Click += syncButton_Click;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label31.Location = new Point(3, 0);
-            label31.Name = "label31";
-            label31.Size = new Size(110, 28);
-            label31.TabIndex = 25;
-            label31.Text = "Accounts";
-            // 
-            // tableLayoutPanel12
-            // 
-            tableLayoutPanel12.ColumnCount = 2;
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.Controls.Add(searchButton, 1, 0);
-            tableLayoutPanel12.Controls.Add(clearButton, 0, 0);
-            tableLayoutPanel12.Dock = DockStyle.Fill;
-            tableLayoutPanel12.Location = new Point(223, 32);
-            tableLayoutPanel12.Margin = new Padding(0);
-            tableLayoutPanel12.Name = "tableLayoutPanel12";
-            tableLayoutPanel12.RowCount = 1;
-            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.Size = new Size(80, 35);
-            tableLayoutPanel12.TabIndex = 26;
-            // 
-            // searchButton
-            // 
-            searchButton.Anchor = AnchorStyles.Bottom;
-            searchButton.BackColor = Color.White;
-            searchButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchButton.Location = new Point(43, 6);
-            searchButton.Name = "searchButton";
-            searchButton.Size = new Size(34, 26);
-            searchButton.TabIndex = 23;
-            searchButton.Text = "🔎";
-            searchButton.UseVisualStyleBackColor = false;
-            searchButton.Click += searchButton_Click;
-            // 
-            // clearButton
-            // 
-            clearButton.Anchor = AnchorStyles.Bottom;
-            clearButton.BackColor = Color.White;
-            clearButton.FlatStyle = FlatStyle.Popup;
-            clearButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            clearButton.ForeColor = Color.Crimson;
-            clearButton.Location = new Point(8, 7);
-            clearButton.Name = "clearButton";
-            clearButton.Size = new Size(24, 25);
-            clearButton.TabIndex = 24;
-            clearButton.Text = "❌";
-            clearButton.UseVisualStyleBackColor = false;
-            clearButton.Click += clearButton_Click;
-            // 
-            // accountDataGridView
-            // 
-            accountDataGridView.AllowUserToAddRows = false;
-            accountDataGridView.AllowUserToDeleteRows = false;
-            accountDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            accountDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            accountDataGridView.BackgroundColor = Color.White;
-            accountDataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            accountDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, businessname, contactno, address, meterno, dateinstalled, meterconsumedAccount, seniorcitizen, taxexempt });
-            accountDataGridView.Dock = DockStyle.Fill;
-            accountDataGridView.Location = new Point(3, 70);
-            accountDataGridView.Name = "accountDataGridView";
-            accountDataGridView.ReadOnly = true;
-            accountDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            accountDataGridView.Size = new Size(297, 482);
-            accountDataGridView.TabIndex = 23;
-            accountDataGridView.CellClick += accountDataGridView_CellClick;
-            accountDataGridView.CellContentClick += accountDataGridView_CellContentClick;
-            // 
-            // accountno
-            // 
-            accountno.DataPropertyName = "accountno";
-            accountno.HeaderText = "Account ID";
-            accountno.Name = "accountno";
-            accountno.ReadOnly = true;
-            accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
-            accountno.Width = 72;
-            // 
-            // fullname
-            // 
-            fullname.DataPropertyName = "fullname";
-            fullname.HeaderText = "Full Name";
-            fullname.Name = "fullname";
-            fullname.ReadOnly = true;
-            fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
-            fullname.Width = 67;
-            // 
-            // businessname
-            // 
-            businessname.DataPropertyName = "businessname";
-            businessname.HeaderText = "Business Name";
-            businessname.Name = "businessname";
-            businessname.ReadOnly = true;
-            businessname.SortMode = DataGridViewColumnSortMode.NotSortable;
-            businessname.Width = 93;
-            // 
-            // contactno
-            // 
-            contactno.DataPropertyName = "contactno";
-            contactno.HeaderText = "Contact #";
-            contactno.Name = "contactno";
-            contactno.ReadOnly = true;
-            contactno.SortMode = DataGridViewColumnSortMode.NotSortable;
-            contactno.Width = 65;
-            // 
-            // address
-            // 
-            address.DataPropertyName = "address";
-            address.HeaderText = "Address";
-            address.Name = "address";
-            address.ReadOnly = true;
-            address.SortMode = DataGridViewColumnSortMode.NotSortable;
-            address.Width = 55;
-            // 
-            // meterno
-            // 
-            meterno.DataPropertyName = "meterno";
-            meterno.HeaderText = "Meter #";
-            meterno.Name = "meterno";
-            meterno.ReadOnly = true;
-            meterno.Width = 73;
-            // 
-            // dateinstalled
-            // 
-            dateinstalled.DataPropertyName = "dateinstalled";
-            dateinstalled.HeaderText = "Date Installed";
-            dateinstalled.Name = "dateinstalled";
-            dateinstalled.ReadOnly = true;
-            dateinstalled.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dateinstalled.Width = 84;
-            // 
-            // meterconsumedAccount
-            // 
-            meterconsumedAccount.DataPropertyName = "presentreading";
-            meterconsumedAccount.HeaderText = "Cu. M. Consumed";
-            meterconsumedAccount.Name = "meterconsumedAccount";
-            meterconsumedAccount.ReadOnly = true;
-            meterconsumedAccount.Visible = false;
-            meterconsumedAccount.Width = 128;
-            // 
-            // seniorcitizen
-            // 
-            seniorcitizen.DataPropertyName = "seniorcitizen";
-            seniorcitizen.HeaderText = "Discounted";
-            seniorcitizen.Name = "seniorcitizen";
-            seniorcitizen.ReadOnly = true;
-            seniorcitizen.TrueValue = "";
-            seniorcitizen.Width = 73;
-            // 
-            // taxexempt
-            // 
-            taxexempt.DataPropertyName = "taxexempt";
-            taxexempt.HeaderText = "Tax Exempt";
-            taxexempt.Name = "taxexempt";
-            taxexempt.ReadOnly = true;
-            taxexempt.TrueValue = "";
-            taxexempt.Width = 73;
-            // 
-            // panel6
-            // 
-            panel6.Dock = DockStyle.Right;
-            panel6.Location = new Point(1377, 0);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(10, 565);
-            panel6.TabIndex = 23;
-            // 
-            // panel2
-            // 
-            panel2.AutoScroll = true;
-            panel2.Controls.Add(label71);
-            panel2.Controls.Add(accountnoBillHistory);
-            panel2.Controls.Add(billDataGridView);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(4, 576);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1387, 368);
-            panel2.TabIndex = 1;
-            // 
-            // label71
-            // 
-            label71.AutoSize = true;
-            label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label71.Location = new Point(26, 10);
-            label71.Name = "label71";
-            label71.Size = new Size(250, 32);
-            label71.TabIndex = 25;
-            label71.Text = "Account Bill History";
-            // 
-            // accountnoBillHistory
-            // 
-            accountnoBillHistory.AutoSize = true;
-            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(26, 52);
-            accountnoBillHistory.Name = "accountnoBillHistory";
-            accountnoBillHistory.Size = new Size(194, 24);
-            accountnoBillHistory.TabIndex = 22;
-            accountnoBillHistory.Text = "Account Bill History";
-            // 
-            // billDataGridView
-            // 
-            billDataGridView.AllowUserToAddRows = false;
-            billDataGridView.AllowUserToDeleteRows = false;
-            billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            billDataGridView.BackgroundColor = Color.White;
-            billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            billDataGridView.Columns.AddRange(new DataGridViewColumn[] { bill_id, billcode, accountnoHis, datebilled, duedate, previousreading, presentreading, meterconsumed, charge, billcharge, amountpaid, balance, paid });
-            billDataGridView.Location = new Point(26, 83);
-            billDataGridView.Name = "billDataGridView";
-            billDataGridView.ReadOnly = true;
-            billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            billDataGridView.Size = new Size(1328, 271);
-            billDataGridView.TabIndex = 24;
-            // 
-            // bill_id
-            // 
-            bill_id.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            bill_id.DataPropertyName = "bill_id";
-            bill_id.HeaderText = "bill_id";
-            bill_id.Name = "bill_id";
-            bill_id.ReadOnly = true;
-            bill_id.Width = 63;
-            // 
-            // billcode
-            // 
-            billcode.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            billcode.DataPropertyName = "billcode";
-            billcode.HeaderText = "billcode";
-            billcode.Name = "billcode";
-            billcode.ReadOnly = true;
-            billcode.Width = 74;
-            // 
-            // accountnoHis
-            // 
-            accountnoHis.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            accountnoHis.DataPropertyName = "accountno";
-            accountnoHis.HeaderText = "accountno";
-            accountnoHis.Name = "accountnoHis";
-            accountnoHis.ReadOnly = true;
-            accountnoHis.Width = 89;
-            // 
-            // datebilled
-            // 
-            datebilled.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            datebilled.DataPropertyName = "datebilled";
-            datebilled.HeaderText = "datebilled";
-            datebilled.Name = "datebilled";
-            datebilled.ReadOnly = true;
-            datebilled.Width = 84;
-            // 
-            // duedate
-            // 
-            duedate.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            duedate.DataPropertyName = "duedate";
-            duedate.HeaderText = "duedate";
-            duedate.Name = "duedate";
-            duedate.ReadOnly = true;
-            duedate.Width = 75;
-            // 
-            // previousreading
-            // 
-            previousreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            previousreading.DataPropertyName = "previousreading";
-            previousreading.HeaderText = "previousreading";
-            previousreading.Name = "previousreading";
-            previousreading.ReadOnly = true;
-            previousreading.Width = 117;
-            // 
-            // presentreading
-            // 
-            presentreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            presentreading.DataPropertyName = "presentreading";
-            presentreading.HeaderText = "presentreading";
-            presentreading.Name = "presentreading";
-            presentreading.ReadOnly = true;
-            presentreading.Width = 111;
-            // 
-            // meterconsumed
-            // 
-            meterconsumed.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            meterconsumed.DataPropertyName = "meterconsumed";
-            meterconsumed.HeaderText = "meterconsumed";
-            meterconsumed.Name = "meterconsumed";
-            meterconsumed.ReadOnly = true;
-            meterconsumed.Width = 119;
-            // 
-            // charge
-            // 
-            charge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            charge.DataPropertyName = "charge";
-            charge.HeaderText = "charge";
-            charge.Name = "charge";
-            charge.ReadOnly = true;
-            charge.Width = 68;
-            // 
-            // billcharge
-            // 
-            billcharge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            billcharge.DataPropertyName = "billcharge";
-            billcharge.HeaderText = "billcharge";
-            billcharge.Name = "billcharge";
-            billcharge.ReadOnly = true;
-            billcharge.Width = 84;
-            // 
-            // amountpaid
-            // 
-            amountpaid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            amountpaid.DataPropertyName = "amountpaid";
-            amountpaid.HeaderText = "amountpaid";
-            amountpaid.Name = "amountpaid";
-            amountpaid.ReadOnly = true;
-            amountpaid.Width = 97;
-            // 
-            // balance
-            // 
-            balance.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            balance.DataPropertyName = "balance";
-            balance.HeaderText = "balance";
-            balance.Name = "balance";
-            balance.ReadOnly = true;
-            balance.Width = 73;
-            // 
-            // paid
-            // 
-            paid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            paid.DataPropertyName = "paid";
-            paid.HeaderText = "paid";
-            paid.Name = "paid";
-            paid.ReadOnly = true;
-            paid.Resizable = DataGridViewTriState.True;
-            paid.SortMode = DataGridViewColumnSortMode.Automatic;
-            paid.Width = 55;
-            // 
             // billingPanel
             // 
             billingPanel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel1);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(147, 57);
+            billingPanel.Location = new Point(132, 18);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(760, 440);
@@ -2013,6 +1588,29 @@
             taxExemptedLabel.TabIndex = 23;
             taxExemptedLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Dock = DockStyle.Fill;
+            label32.Location = new Point(263, 91);
+            label32.Name = "label32";
+            label32.Size = new Size(71, 17);
+            label32.TabIndex = 24;
+            label32.Text = "00,000.00";
+            label32.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label34
+            // 
+            label34.AutoSize = true;
+            label34.Dock = DockStyle.Fill;
+            label34.Font = new Font("Calibri", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label34.Location = new Point(263, 109);
+            label34.Name = "label34";
+            label34.Size = new Size(71, 17);
+            label34.TabIndex = 25;
+            label34.Text = "00,000.00";
+            label34.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // tableLayoutPanel22
             // 
             tableLayoutPanel22.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
@@ -2029,6 +1627,18 @@
             tableLayoutPanel22.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel22.Size = new Size(338, 22);
             tableLayoutPanel22.TabIndex = 1;
+            // 
+            // textBox1
+            // 
+            textBox1.BorderStyle = BorderStyle.None;
+            textBox1.Dock = DockStyle.Fill;
+            textBox1.Font = new Font("Calibri", 11.25F);
+            textBox1.Location = new Point(261, 1);
+            textBox1.Margin = new Padding(0);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(76, 19);
+            textBox1.TabIndex = 18;
+            textBox1.TextAlign = HorizontalAlignment.Center;
             // 
             // label85
             // 
@@ -2418,6 +2028,18 @@
             tableLayoutPanel13.Size = new Size(179, 36);
             tableLayoutPanel13.TabIndex = 7;
             // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Dock = DockStyle.Fill;
+            label25.Font = new Font("Calibri", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label25.Location = new Point(57, 1);
+            label25.Name = "label25";
+            label25.Size = new Size(118, 34);
+            label25.TabIndex = 5;
+            label25.Text = "000000000";
+            label25.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // label24
             // 
             label24.AutoSize = true;
@@ -2430,52 +2052,430 @@
             label24.Text = "ID No.";
             label24.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // label32
+            // button3
             // 
-            label32.AutoSize = true;
-            label32.Dock = DockStyle.Fill;
-            label32.Location = new Point(263, 91);
-            label32.Name = "label32";
-            label32.Size = new Size(71, 17);
-            label32.TabIndex = 24;
-            label32.Text = "00,000.00";
-            label32.TextAlign = ContentAlignment.MiddleCenter;
+            button3.Anchor = AnchorStyles.None;
+            button3.BackColor = Color.White;
+            button3.Location = new Point(930, 526);
+            button3.Name = "button3";
+            button3.Size = new Size(117, 26);
+            button3.TabIndex = 22;
+            button3.Text = "📝 New Customer";
+            button3.UseVisualStyleBackColor = false;
             // 
-            // label34
+            // button2
             // 
-            label34.AutoSize = true;
-            label34.Dock = DockStyle.Fill;
-            label34.Font = new Font("Calibri", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label34.Location = new Point(263, 109);
-            label34.Name = "label34";
-            label34.Size = new Size(71, 17);
-            label34.TabIndex = 25;
-            label34.Text = "00,000.00";
-            label34.TextAlign = ContentAlignment.MiddleCenter;
+            button2.Anchor = AnchorStyles.None;
+            button2.BackColor = Color.White;
+            button2.Location = new Point(830, 526);
+            button2.Name = "button2";
+            button2.Size = new Size(81, 26);
+            button2.TabIndex = 21;
+            button2.Text = "🖨️ Print";
+            button2.UseVisualStyleBackColor = false;
+            button2.Click += printSaveButton_Click;
             // 
-            // textBox1
+            // accountSearchPanel
             // 
-            textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Dock = DockStyle.Fill;
-            textBox1.Font = new Font("Calibri", 11.25F);
-            textBox1.Location = new Point(261, 1);
-            textBox1.Margin = new Padding(0);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(76, 19);
-            textBox1.TabIndex = 18;
-            textBox1.TextAlign = HorizontalAlignment.Center;
+            accountSearchPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            accountSearchPanel.BorderStyle = BorderStyle.Fixed3D;
+            accountSearchPanel.Controls.Add(tableLayoutPanel25);
+            accountSearchPanel.Location = new Point(3, 3);
+            accountSearchPanel.Name = "accountSearchPanel";
+            accountSearchPanel.Size = new Size(307, 559);
+            accountSearchPanel.TabIndex = 23;
             // 
-            // label25
+            // tableLayoutPanel25
             // 
-            label25.AutoSize = true;
-            label25.Dock = DockStyle.Fill;
-            label25.Font = new Font("Calibri", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label25.Location = new Point(57, 1);
-            label25.Name = "label25";
-            label25.Size = new Size(118, 34);
-            label25.TabIndex = 5;
-            label25.Text = "000000000";
-            label25.TextAlign = ContentAlignment.MiddleCenter;
+            tableLayoutPanel25.ColumnCount = 1;
+            tableLayoutPanel25.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel25.Controls.Add(tableLayoutPanel26, 0, 0);
+            tableLayoutPanel25.Controls.Add(accountDataGridView, 0, 1);
+            tableLayoutPanel25.Dock = DockStyle.Fill;
+            tableLayoutPanel25.Location = new Point(0, 0);
+            tableLayoutPanel25.Margin = new Padding(0);
+            tableLayoutPanel25.Name = "tableLayoutPanel25";
+            tableLayoutPanel25.RowCount = 2;
+            tableLayoutPanel25.RowStyles.Add(new RowStyle(SizeType.Percent, 12.072072F));
+            tableLayoutPanel25.RowStyles.Add(new RowStyle(SizeType.Percent, 87.9279251F));
+            tableLayoutPanel25.Size = new Size(303, 555);
+            tableLayoutPanel25.TabIndex = 24;
+            // 
+            // tableLayoutPanel26
+            // 
+            tableLayoutPanel26.ColumnCount = 2;
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 73.59736F));
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26.40264F));
+            tableLayoutPanel26.Controls.Add(syncButton, 1, 0);
+            tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
+            tableLayoutPanel26.Controls.Add(label31, 0, 0);
+            tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
+            tableLayoutPanel26.Dock = DockStyle.Fill;
+            tableLayoutPanel26.Location = new Point(0, 0);
+            tableLayoutPanel26.Margin = new Padding(0);
+            tableLayoutPanel26.Name = "tableLayoutPanel26";
+            tableLayoutPanel26.RowCount = 2;
+            tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
+            tableLayoutPanel26.Size = new Size(303, 67);
+            tableLayoutPanel26.TabIndex = 24;
+            // 
+            // syncButton
+            // 
+            syncButton.BackColor = Color.White;
+            syncButton.Dock = DockStyle.Fill;
+            syncButton.FlatStyle = FlatStyle.System;
+            syncButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            syncButton.Location = new Point(223, 0);
+            syncButton.Margin = new Padding(0);
+            syncButton.Name = "syncButton";
+            syncButton.Size = new Size(80, 32);
+            syncButton.TabIndex = 27;
+            syncButton.Text = "Sync 🔄";
+            syncButton.UseVisualStyleBackColor = false;
+            syncButton.Click += syncButton_Click;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label31.Location = new Point(3, 0);
+            label31.Name = "label31";
+            label31.Size = new Size(110, 28);
+            label31.TabIndex = 25;
+            label31.Text = "Accounts";
+            // 
+            // tableLayoutPanel12
+            // 
+            tableLayoutPanel12.ColumnCount = 2;
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Controls.Add(searchButton, 1, 0);
+            tableLayoutPanel12.Controls.Add(clearButton, 0, 0);
+            tableLayoutPanel12.Dock = DockStyle.Fill;
+            tableLayoutPanel12.Location = new Point(223, 32);
+            tableLayoutPanel12.Margin = new Padding(0);
+            tableLayoutPanel12.Name = "tableLayoutPanel12";
+            tableLayoutPanel12.RowCount = 1;
+            tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.Size = new Size(80, 35);
+            tableLayoutPanel12.TabIndex = 26;
+            // 
+            // searchButton
+            // 
+            searchButton.Anchor = AnchorStyles.Bottom;
+            searchButton.BackColor = Color.White;
+            searchButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            searchButton.Location = new Point(43, 6);
+            searchButton.Name = "searchButton";
+            searchButton.Size = new Size(34, 26);
+            searchButton.TabIndex = 23;
+            searchButton.Text = "🔎";
+            searchButton.UseVisualStyleBackColor = false;
+            searchButton.Click += searchButton_Click;
+            // 
+            // clearButton
+            // 
+            clearButton.Anchor = AnchorStyles.Bottom;
+            clearButton.BackColor = Color.White;
+            clearButton.FlatStyle = FlatStyle.Popup;
+            clearButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            clearButton.ForeColor = Color.Crimson;
+            clearButton.Location = new Point(8, 7);
+            clearButton.Name = "clearButton";
+            clearButton.Size = new Size(24, 25);
+            clearButton.TabIndex = 24;
+            clearButton.Text = "❌";
+            clearButton.UseVisualStyleBackColor = false;
+            clearButton.Click += clearButton_Click;
+            // 
+            // accountDataGridView
+            // 
+            accountDataGridView.AllowUserToAddRows = false;
+            accountDataGridView.AllowUserToDeleteRows = false;
+            accountDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            accountDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            accountDataGridView.BackgroundColor = Color.White;
+            accountDataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            accountDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, businessname, contactno, address, meterno, dateinstalled, meterconsumedAccount, seniorcitizen, taxexempt });
+            accountDataGridView.Dock = DockStyle.Fill;
+            accountDataGridView.Location = new Point(3, 70);
+            accountDataGridView.Name = "accountDataGridView";
+            accountDataGridView.ReadOnly = true;
+            accountDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            accountDataGridView.Size = new Size(297, 482);
+            accountDataGridView.TabIndex = 23;
+            accountDataGridView.CellClick += accountDataGridView_CellClick;
+            accountDataGridView.CellContentClick += accountDataGridView_CellContentClick;
+            // 
+            // accountno
+            // 
+            accountno.DataPropertyName = "accountno";
+            accountno.HeaderText = "Account ID";
+            accountno.Name = "accountno";
+            accountno.ReadOnly = true;
+            accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            accountno.Width = 72;
+            // 
+            // fullname
+            // 
+            fullname.DataPropertyName = "fullname";
+            fullname.HeaderText = "Full Name";
+            fullname.Name = "fullname";
+            fullname.ReadOnly = true;
+            fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            fullname.Width = 67;
+            // 
+            // businessname
+            // 
+            businessname.DataPropertyName = "businessname";
+            businessname.HeaderText = "Business Name";
+            businessname.Name = "businessname";
+            businessname.ReadOnly = true;
+            businessname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            businessname.Width = 93;
+            // 
+            // contactno
+            // 
+            contactno.DataPropertyName = "contactno";
+            contactno.HeaderText = "Contact #";
+            contactno.Name = "contactno";
+            contactno.ReadOnly = true;
+            contactno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            contactno.Width = 65;
+            // 
+            // address
+            // 
+            address.DataPropertyName = "address";
+            address.HeaderText = "Address";
+            address.Name = "address";
+            address.ReadOnly = true;
+            address.SortMode = DataGridViewColumnSortMode.NotSortable;
+            address.Width = 55;
+            // 
+            // meterno
+            // 
+            meterno.DataPropertyName = "meterno";
+            meterno.HeaderText = "Meter #";
+            meterno.Name = "meterno";
+            meterno.ReadOnly = true;
+            meterno.Width = 73;
+            // 
+            // dateinstalled
+            // 
+            dateinstalled.DataPropertyName = "dateinstalled";
+            dateinstalled.HeaderText = "Date Installed";
+            dateinstalled.Name = "dateinstalled";
+            dateinstalled.ReadOnly = true;
+            dateinstalled.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dateinstalled.Width = 84;
+            // 
+            // meterconsumedAccount
+            // 
+            meterconsumedAccount.DataPropertyName = "presentreading";
+            meterconsumedAccount.HeaderText = "Cu. M. Consumed";
+            meterconsumedAccount.Name = "meterconsumedAccount";
+            meterconsumedAccount.ReadOnly = true;
+            meterconsumedAccount.Visible = false;
+            meterconsumedAccount.Width = 128;
+            // 
+            // seniorcitizen
+            // 
+            seniorcitizen.DataPropertyName = "seniorcitizen";
+            seniorcitizen.HeaderText = "Discounted";
+            seniorcitizen.Name = "seniorcitizen";
+            seniorcitizen.ReadOnly = true;
+            seniorcitizen.TrueValue = "";
+            seniorcitizen.Width = 73;
+            // 
+            // taxexempt
+            // 
+            taxexempt.DataPropertyName = "taxexempt";
+            taxexempt.HeaderText = "Tax Exempt";
+            taxexempt.Name = "taxexempt";
+            taxexempt.ReadOnly = true;
+            taxexempt.TrueValue = "";
+            taxexempt.Width = 73;
+            // 
+            // panel6
+            // 
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(1377, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(10, 565);
+            panel6.TabIndex = 23;
+            // 
+            // panel2
+            // 
+            panel2.AutoScroll = true;
+            panel2.Controls.Add(label71);
+            panel2.Controls.Add(accountnoBillHistory);
+            panel2.Controls.Add(billDataGridView);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(4, 576);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1387, 368);
+            panel2.TabIndex = 1;
+            // 
+            // label71
+            // 
+            label71.AutoSize = true;
+            label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label71.Location = new Point(26, 10);
+            label71.Name = "label71";
+            label71.Size = new Size(250, 32);
+            label71.TabIndex = 25;
+            label71.Text = "Account Bill History";
+            // 
+            // accountnoBillHistory
+            // 
+            accountnoBillHistory.AutoSize = true;
+            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            accountnoBillHistory.Location = new Point(26, 52);
+            accountnoBillHistory.Name = "accountnoBillHistory";
+            accountnoBillHistory.Size = new Size(194, 24);
+            accountnoBillHistory.TabIndex = 22;
+            accountnoBillHistory.Text = "Account Bill History";
+            // 
+            // billDataGridView
+            // 
+            billDataGridView.AllowUserToAddRows = false;
+            billDataGridView.AllowUserToDeleteRows = false;
+            billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            billDataGridView.BackgroundColor = Color.White;
+            billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billDataGridView.Columns.AddRange(new DataGridViewColumn[] { bill_id, billcode, accountnoHis, datebilled, duedate, previousreading, presentreading, meterconsumed, charge, billcharge, amountpaid, balance, paid });
+            billDataGridView.Location = new Point(26, 83);
+            billDataGridView.Name = "billDataGridView";
+            billDataGridView.ReadOnly = true;
+            billDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            billDataGridView.Size = new Size(1328, 271);
+            billDataGridView.TabIndex = 24;
+            // 
+            // bill_id
+            // 
+            bill_id.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            bill_id.DataPropertyName = "bill_id";
+            bill_id.HeaderText = "bill_id";
+            bill_id.Name = "bill_id";
+            bill_id.ReadOnly = true;
+            bill_id.Width = 63;
+            // 
+            // billcode
+            // 
+            billcode.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            billcode.DataPropertyName = "billcode";
+            billcode.HeaderText = "billcode";
+            billcode.Name = "billcode";
+            billcode.ReadOnly = true;
+            billcode.Width = 74;
+            // 
+            // accountnoHis
+            // 
+            accountnoHis.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            accountnoHis.DataPropertyName = "accountno";
+            accountnoHis.HeaderText = "accountno";
+            accountnoHis.Name = "accountnoHis";
+            accountnoHis.ReadOnly = true;
+            accountnoHis.Width = 89;
+            // 
+            // datebilled
+            // 
+            datebilled.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            datebilled.DataPropertyName = "datebilled";
+            datebilled.HeaderText = "datebilled";
+            datebilled.Name = "datebilled";
+            datebilled.ReadOnly = true;
+            datebilled.Width = 84;
+            // 
+            // duedate
+            // 
+            duedate.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            duedate.DataPropertyName = "duedate";
+            duedate.HeaderText = "duedate";
+            duedate.Name = "duedate";
+            duedate.ReadOnly = true;
+            duedate.Width = 75;
+            // 
+            // previousreading
+            // 
+            previousreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            previousreading.DataPropertyName = "previousreading";
+            previousreading.HeaderText = "previousreading";
+            previousreading.Name = "previousreading";
+            previousreading.ReadOnly = true;
+            previousreading.Width = 117;
+            // 
+            // presentreading
+            // 
+            presentreading.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            presentreading.DataPropertyName = "presentreading";
+            presentreading.HeaderText = "presentreading";
+            presentreading.Name = "presentreading";
+            presentreading.ReadOnly = true;
+            presentreading.Width = 111;
+            // 
+            // meterconsumed
+            // 
+            meterconsumed.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            meterconsumed.DataPropertyName = "meterconsumed";
+            meterconsumed.HeaderText = "meterconsumed";
+            meterconsumed.Name = "meterconsumed";
+            meterconsumed.ReadOnly = true;
+            meterconsumed.Width = 119;
+            // 
+            // charge
+            // 
+            charge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            charge.DataPropertyName = "charge";
+            charge.HeaderText = "charge";
+            charge.Name = "charge";
+            charge.ReadOnly = true;
+            charge.Width = 68;
+            // 
+            // billcharge
+            // 
+            billcharge.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            billcharge.DataPropertyName = "billcharge";
+            billcharge.HeaderText = "billcharge";
+            billcharge.Name = "billcharge";
+            billcharge.ReadOnly = true;
+            billcharge.Width = 84;
+            // 
+            // amountpaid
+            // 
+            amountpaid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            amountpaid.DataPropertyName = "amountpaid";
+            amountpaid.HeaderText = "amountpaid";
+            amountpaid.Name = "amountpaid";
+            amountpaid.ReadOnly = true;
+            amountpaid.Width = 97;
+            // 
+            // balance
+            // 
+            balance.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            balance.DataPropertyName = "balance";
+            balance.HeaderText = "balance";
+            balance.Name = "balance";
+            balance.ReadOnly = true;
+            balance.Width = 73;
+            // 
+            // paid
+            // 
+            paid.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            paid.DataPropertyName = "paid";
+            paid.HeaderText = "paid";
+            paid.Name = "paid";
+            paid.ReadOnly = true;
+            paid.Resizable = DataGridViewTriState.True;
+            paid.SortMode = DataGridViewColumnSortMode.Automatic;
+            paid.Width = 55;
             // 
             // BillingControl
             // 
@@ -2494,15 +2494,6 @@
             panel1.ResumeLayout(false);
             tableLayoutPanel24.ResumeLayout(false);
             panel3.ResumeLayout(false);
-            accountSearchPanel.ResumeLayout(false);
-            tableLayoutPanel25.ResumeLayout(false);
-            tableLayoutPanel26.ResumeLayout(false);
-            tableLayoutPanel26.PerformLayout();
-            tableLayoutPanel12.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)accountDataGridView).EndInit();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             billingPanel.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -2546,6 +2537,15 @@
             tableLayoutPanel11.PerformLayout();
             tableLayoutPanel13.ResumeLayout(false);
             tableLayoutPanel13.PerformLayout();
+            accountSearchPanel.ResumeLayout(false);
+            tableLayoutPanel25.ResumeLayout(false);
+            tableLayoutPanel26.ResumeLayout(false);
+            tableLayoutPanel26.PerformLayout();
+            tableLayoutPanel12.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)accountDataGridView).EndInit();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
