@@ -5,17 +5,20 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal class RecentBillDetailsHelper
     {
-        // Internal class to return reading info
+        // Data class to return billing details
         public class BillReadingInfo
         {
             public int PreviousReading { get; set; }
             public int MeterConsumed { get; set; }
-            public DateTime ReadingDate { get; set; }
-            public float Arrears { get; set; }
+            public DateTime FromReadingDate { get; set; }
+            public DateTime ToReadingDate { get; set; }
+            public DateTime DueDate { get; set; }
+            public decimal Arrears { get; set; }
+            public decimal Penalty { get; set; }
         }
 
         /// <summary>
-        /// Retrieves present reading, to reading date from tb_bill for a specific bill_id.
+        /// Retrieves present reading, to reading date, and billing info from tb_bill for a specific bill_id.
         /// </summary>
         /// <param name="billId">The bill_id to look up.</param>
         /// <returns>A BillReadingInfo object if found; otherwise, null.</returns>
@@ -24,7 +27,14 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             BillReadingInfo readingInfo = null;
 
             string query = @"
-                SELECT presentreading, toreadingdate, meterconsumed, balance
+                SELECT 
+                    presentreading, 
+                    meterconsumed, 
+                    fromreadingdate, 
+                    toreadingdate, 
+                    duedate, 
+                    balance, 
+                    penaltyamount
                 FROM tb_bill 
                 WHERE bill_id = @bill_id 
                 LIMIT 1";
@@ -45,10 +55,13 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                             {
                                 readingInfo = new BillReadingInfo
                                 {
-                                    PreviousReading = reader.GetInt32("presentreading"),
-                                    MeterConsumed = reader.GetInt32("meterconsumed"),
-                                    ReadingDate = reader.GetDateTime("toreadingdate"),
-                                    Arrears = reader.GetFloat("balance"),
+                                    PreviousReading = reader["presentreading"] != DBNull.Value ? Convert.ToInt32(reader["presentreading"]) : 0,
+                                    MeterConsumed = reader["meterconsumed"] != DBNull.Value ? Convert.ToInt32(reader["meterconsumed"]) : 0,
+                                    FromReadingDate = reader["fromreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["fromreadingdate"]) : DateTime.MinValue,
+                                    ToReadingDate = reader["toreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["toreadingdate"]) : DateTime.MinValue,
+                                    DueDate = reader["duedate"] != DBNull.Value ? Convert.ToDateTime(reader["duedate"]) : DateTime.MinValue,
+                                    Arrears = reader["balance"] != DBNull.Value ? Convert.ToDecimal(reader["balance"]) : 0m,
+                                    Penalty = reader["penaltyamount"] != DBNull.Value ? Convert.ToDecimal(reader["penaltyamount"]) : 0m,
                                 };
                             }
                         }

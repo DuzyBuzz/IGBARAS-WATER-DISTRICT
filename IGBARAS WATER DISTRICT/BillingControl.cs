@@ -127,11 +127,6 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void SetDateNow()
         {
-            // Set the current date and time to the label
-            dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-            dateIssuedLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-            dueDateLbael.Text = DateTime.Now.AddDays(14).ToString("MMMM dd, yyyy");
-            toReadingDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
         }
         private void ClearButtonDisable()
         {
@@ -264,8 +259,7 @@ namespace IGBARAS_WATER_DISTRICT
             string accountNo = selectedRow.Cells["accountno"].Value?.ToString();
             string fullname = selectedRow.Cells["fullname"].Value?.ToString();
             string address = selectedRow.Cells["address"].Value?.ToString();
-
-
+            int dueexempt = int.Parse(selectedRow.Cells["dueexempt"].Value?.ToString() ?? "0");
 
             // Get values from DataGridView
             string discounted = selectedRow.Cells["seniorcitizen"].Value?.ToString();
@@ -295,7 +289,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
- 
+
 
 
             // 🟦 Update UI fields
@@ -314,7 +308,10 @@ namespace IGBARAS_WATER_DISTRICT
             var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
             if (readingInfo != null)
             {
-                fromReadingDateLabel.Text = readingInfo.ReadingDate.ToString("MMMM dd, yyyy");
+                // the to reading date is the same as the date billed this is all exacty the same date
+                fromReadingDateLabel.Text = readingInfo.FromReadingDate.ToString("MMMM dd, yyyy");
+                toReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
+                dueDateLabel.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
                 arrearsLabel.Text = readingInfo.Arrears.ToString();
@@ -324,12 +321,17 @@ namespace IGBARAS_WATER_DISTRICT
                 int previousReading = 0;
                 int.TryParse(readingInfo.PreviousReading.ToString(), out previousReading);
                 int.TryParse(readingInfo.MeterConsumed.ToString(), out meterConsumedReading);
+                int previousPenalty = 0;
+                int.TryParse(readingInfo.Penalty.ToString(), out previousPenalty);
+                preniousPenaltyTextBox.Text = previousPenalty.ToString();
 
                 int presentReading = previousReading + meterConsumedReading;
                 presentReadingTextBox.Text = presentReading.ToString();
 
                 Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
-                Debug.WriteLine($"Reading Date: {readingInfo.ReadingDate.ToShortDateString()}");
+                Debug.WriteLine($"Reading Date: {readingInfo.ToReadingDate.ToShortDateString()}");
+                GetPenalty(accountNo, dueexempt);
+
             }
             else
             {
@@ -348,6 +350,136 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     invoiceLabel.Text = parts[1];
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// JUST LIKE THE FUNCTION IN MYSQL THIS IS MY GET PENALTY
+        /// </summary>
+        /// <param name="accountno"></param>
+        /// <param name="dueexempt"></param>
+        private void GetPenalty(string accountno, int dueexempt)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    conn.Open();
+
+                    // 🔹 1. Parse bill charge
+                    if (!decimal.TryParse(chargeLabel.Text.Trim(), out decimal billCharge))
+                    {
+                        MessageBox.Show("Invalid bill charge value.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // 🔹 2. Parse due date
+                    if (!DateTime.TryParseExact(dueDateLabel.Text.Trim(), "MMMM d, yyyy",
+                                                System.Globalization.CultureInfo.InvariantCulture,
+                                                System.Globalization.DateTimeStyles.None,
+                                                out DateTime dueDate))
+                    {
+                        MessageBox.Show("Invalid due date format. Use format like 'June 3, 2002'", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // 🔹 3. Arrears check
+                    decimal.TryParse(arrearsLabel.Text.Trim(), out decimal arrearsAmount);
+                    int arrears = arrearsAmount > 0 ? 1 : 0;
+
+                    // 🔹 4. Previous penalty
+                    decimal.TryParse(preniousPenaltyTextBox.Text.Trim(), out decimal previousPenalty);
+
+                    // 🔹 5. Assume unpaid
+                    int srcPaid = 0;
+
+                    // 🔹 6. Early return if dueexempt or already paid
+                    if (dueexempt == 1 || srcPaid == 1)
+                    {
+                        penaltyLabel.Text = "0%";
+                        penaltyAmountLabel.Text = "0.00";
+                        totalChargeBillLabel.Text = billCharge.ToString("N2");
+                        return;
+                    }
+
+                    // 🔹 7. Get billsettings
+                    string settingsQuery = "SELECT * FROM tb_billsettings WHERE districtno = (SELECT districtno FROM tb_concessionaire WHERE accountno = @accountno LIMIT 1) LIMIT 1";
+
+                    MySqlCommand settingsCmd = new MySqlCommand(settingsQuery, conn);
+                    settingsCmd.Parameters.AddWithValue("@accountno", accountno);
+
+                    using (MySqlDataReader reader = settingsCmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // 🔹 Read penalty settings
+                            int gracePeriod = Convert.ToInt32(reader["graceperiod"]);
+                            int firstDays = Convert.ToInt32(reader["firstnumdays"]);
+                            int secondDays = Convert.ToInt32(reader["secondnumdays"]);
+                            int thirdDays = Convert.ToInt32(reader["thirdnumdays"]);
+
+                            int penalty10 = Convert.ToInt32(reader["penalty10"]);
+                            int penalty15 = Convert.ToInt32(reader["penalty15"]);
+                            int penalty20 = Convert.ToInt32(reader["penalty20"]);
+
+                            int penalty10yn = Convert.ToInt32(reader["penalty10yn"]);
+                            int penalty15yn = Convert.ToInt32(reader["penalty15yn"]);
+                            int penalty20yn = Convert.ToInt32(reader["penalty20yn"]);
+
+                            int defaultPenalty = Convert.ToInt32(reader["defaultpenalty"]);
+
+                            // 🔹 Calculate date difference
+                            DateTime now = DateTime.Now.Date;
+                            DateTime effectiveDueDate = dueDate.AddDays(gracePeriod);
+                            int overdueDays = (now - effectiveDueDate).Days;
+
+                            decimal penaltyPercent = 0;
+
+                            if (overdueDays <= 0)
+                            {
+                                penaltyPercent = 0;
+                            }
+                            else if (overdueDays <= firstDays && penalty10yn == 1)
+                            {
+                                penaltyPercent = penalty10;
+                            }
+                            else if (overdueDays <= secondDays && penalty15yn == 1)
+                            {
+                                penaltyPercent = penalty15;
+                            }
+                            else if (overdueDays >= thirdDays && penalty20yn == 1)
+                            {
+                                penaltyPercent = penalty20;
+                            }
+                            else
+                            {
+                                penaltyPercent = defaultPenalty;
+                            }
+
+                            // 🔹 Calculate penalty amount
+                            decimal penaltyAmount = (penaltyPercent / 100m) * billCharge;
+                            penaltyAmount = Math.Round(penaltyAmount, 2);
+
+                            // 🔹 Update UI
+                            penaltyLabel.Text = $"{Math.Round(penaltyPercent)}%";
+                            penaltyAmountLabel.Text = penaltyAmount.ToString("N2");
+                            totalChargeBillLabel.Text = (billCharge + penaltyAmount).ToString("N2");
+
+                            // 🔹 Debug
+                            Debug.WriteLine($"[Penalty] Arrears: {arrears} | Due Date: {dueDate.ToShortDateString()} | Overdue Days: {overdueDays}");
+                            Debug.WriteLine($"[Penalty] Amount: {penaltyAmount:N2} | Percent: {penaltyPercent}%");
+                        }
+                        else
+                        {
+                            MessageBox.Show("No billing settings found for this account.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error calculating penalty:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -568,17 +700,18 @@ namespace IGBARAS_WATER_DISTRICT
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
             presentReadingTextBox.Text = "";
-
+            penaltyAmountLabel.Text = "";
+            penaltyLabel.Text = "";
             // Clear discount and tax labels
-            discountedLabel.Text = "0%";
-            discountedAmountLabel.Text = "0.00";
-            taxExemptedLabel.Text = "0%";
-            exemptedAmountLabel.Text = "0.00";
-            arrearsLabel.Text = "0.00";
-            chargeLabel.Text = "0.00";
+            discountedLabel.Text = "";
+            discountedAmountLabel.Text = "";
+            taxExemptedLabel.Text = "";
+            exemptedAmountLabel.Text = "";
+            arrearsLabel.Text = "";
+            chargeLabel.Text = "";
             // Also clear totals
             totalQuantityLabel.Text = "";
-            totalAmountLabel.Text = "0.00";
+            totalAmountLabel.Text = "";
         }
 
         private async void syncButton_Click(object sender, EventArgs e)
@@ -591,6 +724,11 @@ namespace IGBARAS_WATER_DISTRICT
         }
 
         private void accountDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void accountDataGridView_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
         {
 
         }

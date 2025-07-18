@@ -259,7 +259,6 @@ namespace IGBARAS_WATER_DISTRICT
             // Set the current date and time to the label
             dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
             dateIssuedLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-            dueDateLabel.Text = DateTime.Now.AddDays(14).ToString("MMMM dd, yyyy");
             toReadingDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
         }
         private void ClearButtonDisable()
@@ -474,7 +473,10 @@ namespace IGBARAS_WATER_DISTRICT
             var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
             if (readingInfo != null)
             {
-                fromReadingDateLabel.Text = readingInfo.ReadingDate.ToString("MMMM dd, yyyy");
+                // to reading date of the recent bill is the from reading date of the next bill
+                fromReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
+
+                // this previous reading is the present reading of the last bill
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 arrearsLabel.Text = readingInfo.Arrears.ToString();
 
@@ -485,7 +487,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
                 Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
-                Debug.WriteLine($"Reading Date: {readingInfo.ReadingDate.ToShortDateString()}");
+                Debug.WriteLine($"Reading Date: {readingInfo.FromReadingDate.ToShortDateString()}");
             }
             else
             {
