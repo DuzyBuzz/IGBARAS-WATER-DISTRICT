@@ -15,6 +15,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             public DateTime DueDate { get; set; }
             public decimal Arrears { get; set; }
             public decimal Penalty { get; set; }
+            public decimal AmountPaid { get; set; }
         }
 
         /// <summary>
@@ -34,7 +35,8 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                     toreadingdate, 
                     duedate, 
                     balance, 
-                    penaltyamount
+                    penaltyamount,
+                    amountpaid
                 FROM tb_bill 
                 WHERE bill_id = @bill_id 
                 LIMIT 1";
@@ -62,6 +64,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                                     DueDate = reader["duedate"] != DBNull.Value ? Convert.ToDateTime(reader["duedate"]) : DateTime.MinValue,
                                     Arrears = reader["balance"] != DBNull.Value ? Convert.ToDecimal(reader["balance"]) : 0m,
                                     Penalty = reader["penaltyamount"] != DBNull.Value ? Convert.ToDecimal(reader["penaltyamount"]) : 0m,
+                                    AmountPaid = reader["amountpaid"] != DBNull.Value ? Convert.ToDecimal(reader["amountpaid"]) : 0m
                                 };
                             }
                         }

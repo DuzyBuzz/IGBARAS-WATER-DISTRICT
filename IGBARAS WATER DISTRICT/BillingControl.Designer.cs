@@ -135,8 +135,8 @@
             penaltyAmountLabel = new Label();
             chargeLabel = new Label();
             label27 = new Label();
-            penaltyLabel = new Label();
             preniousPenaltyTextBox = new TextBox();
+            penaltyLabel = new Label();
             tableLayoutPanel23 = new TableLayoutPanel();
             label79 = new Label();
             label83 = new Label();
@@ -163,7 +163,7 @@
             label26 = new Label();
             tableLayoutPanel22 = new TableLayoutPanel();
             label25 = new Label();
-            amountTextBox = new TextBox();
+            amountPaidTextBox = new TextBox();
             label36 = new Label();
             tableLayoutPanel13 = new TableLayoutPanel();
             userIdLabel = new Label();
@@ -173,17 +173,6 @@
             accountSearchPanel = new Panel();
             tableLayoutPanel25 = new TableLayoutPanel();
             accountDataGridView = new DataGridView();
-            tableLayoutPanel26 = new TableLayoutPanel();
-            syncButton = new Button();
-            label31 = new Label();
-            tableLayoutPanel12 = new TableLayoutPanel();
-            searchButton = new Button();
-            clearButton = new Button();
-            panel6 = new Panel();
-            panel2 = new Panel();
-            label71 = new Label();
-            accountnoBillHistory = new Label();
-            billDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
             districtno = new DataGridViewTextBoxColumn();
             fullname = new DataGridViewTextBoxColumn();
@@ -202,6 +191,18 @@
             balancex = new DataGridViewTextBoxColumn();
             seniorcitizen = new DataGridViewCheckBoxColumn();
             taxexempt = new DataGridViewCheckBoxColumn();
+            tableLayoutPanel26 = new TableLayoutPanel();
+            syncButton = new Button();
+            label31 = new Label();
+            tableLayoutPanel12 = new TableLayoutPanel();
+            searchButton = new Button();
+            clearButton = new Button();
+            panel6 = new Panel();
+            panel2 = new Panel();
+            billIdTextBox = new TextBox();
+            label71 = new Label();
+            accountnoBillHistory = new Label();
+            billDataGridView = new DataGridView();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel24.SuspendLayout();
@@ -418,7 +419,7 @@
             tableLayoutPanel15.Controls.Add(dateIssuedLabel, 3, 1);
             tableLayoutPanel15.Controls.Add(label74, 3, 2);
             tableLayoutPanel15.Dock = DockStyle.Fill;
-            tableLayoutPanel15.Font = new Font("Calibri Light", 6.75F);
+            tableLayoutPanel15.Font = new Font("Calibri", 6F);
             tableLayoutPanel15.Location = new Point(1, 460);
             tableLayoutPanel15.Margin = new Padding(0);
             tableLayoutPanel15.Name = "tableLayoutPanel15";
@@ -433,7 +434,7 @@
             // 
             label54.AutoSize = true;
             label54.Dock = DockStyle.Fill;
-            label54.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label54.Font = new Font("Calibri", 6F);
             label54.Location = new Point(0, 0);
             label54.Margin = new Padding(0, 0, 0, 1);
             label54.Name = "label54";
@@ -446,7 +447,7 @@
             // 
             label62.AutoSize = true;
             label62.Dock = DockStyle.Fill;
-            label62.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label62.Font = new Font("Calibri", 6F);
             label62.Location = new Point(0, 9);
             label62.Margin = new Padding(0, 0, 0, 1);
             label62.Name = "label62";
@@ -459,7 +460,7 @@
             // 
             label63.AutoSize = true;
             label63.Dock = DockStyle.Fill;
-            label63.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label63.Font = new Font("Calibri", 6F);
             label63.Location = new Point(185, 0);
             label63.Margin = new Padding(0, 0, 0, 1);
             label63.Name = "label63";
@@ -472,7 +473,7 @@
             // 
             label64.AutoSize = true;
             label64.Dock = DockStyle.Fill;
-            label64.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label64.Font = new Font("Calibri", 6F);
             label64.Location = new Point(185, 9);
             label64.Margin = new Padding(0, 0, 0, 1);
             label64.Name = "label64";
@@ -485,7 +486,7 @@
             // 
             label67.AutoSize = true;
             label67.Dock = DockStyle.Fill;
-            label67.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label67.Font = new Font("Calibri", 6F);
             label67.Location = new Point(185, 18);
             label67.Margin = new Padding(0, 0, 0, 1);
             label67.Name = "label67";
@@ -498,7 +499,7 @@
             // 
             label70.AutoSize = true;
             label70.Dock = DockStyle.Fill;
-            label70.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label70.Font = new Font("Calibri", 6F);
             label70.Location = new Point(301, 0);
             label70.Margin = new Padding(0, 0, 0, 1);
             label70.Name = "label70";
@@ -511,7 +512,7 @@
             // 
             dateIssuedLabel.AutoSize = true;
             dateIssuedLabel.Dock = DockStyle.Fill;
-            dateIssuedLabel.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            dateIssuedLabel.Font = new Font("Calibri", 6F);
             dateIssuedLabel.Location = new Point(301, 9);
             dateIssuedLabel.Margin = new Padding(0, 0, 0, 1);
             dateIssuedLabel.Name = "dateIssuedLabel";
@@ -524,7 +525,7 @@
             // 
             label74.AutoSize = true;
             label74.Dock = DockStyle.Fill;
-            label74.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label74.Font = new Font("Calibri", 6F);
             label74.Location = new Point(301, 18);
             label74.Margin = new Padding(0, 0, 0, 1);
             label74.Name = "label74";
@@ -1425,8 +1426,8 @@
             tableLayoutPanel21.Controls.Add(penaltyAmountLabel, 3, 6);
             tableLayoutPanel21.Controls.Add(chargeLabel, 3, 5);
             tableLayoutPanel21.Controls.Add(label27, 0, 4);
-            tableLayoutPanel21.Controls.Add(penaltyLabel, 1, 6);
             tableLayoutPanel21.Controls.Add(preniousPenaltyTextBox, 2, 6);
+            tableLayoutPanel21.Controls.Add(penaltyLabel, 1, 6);
             tableLayoutPanel21.Dock = DockStyle.Fill;
             tableLayoutPanel21.Location = new Point(0, 0);
             tableLayoutPanel21.Margin = new Padding(0);
@@ -1614,15 +1615,6 @@
             label27.Text = "SCF Installment";
             label27.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // penaltyLabel
-            // 
-            penaltyLabel.AutoSize = true;
-            penaltyLabel.Location = new Point(146, 121);
-            penaltyLabel.Name = "penaltyLabel";
-            penaltyLabel.Size = new Size(0, 14);
-            penaltyLabel.TabIndex = 27;
-            penaltyLabel.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // preniousPenaltyTextBox
             // 
             preniousPenaltyTextBox.BorderStyle = BorderStyle.None;
@@ -1631,6 +1623,17 @@
             preniousPenaltyTextBox.Name = "preniousPenaltyTextBox";
             preniousPenaltyTextBox.Size = new Size(79, 15);
             preniousPenaltyTextBox.TabIndex = 28;
+            preniousPenaltyTextBox.Visible = false;
+            // 
+            // penaltyLabel
+            // 
+            penaltyLabel.AutoSize = true;
+            penaltyLabel.Dock = DockStyle.Fill;
+            penaltyLabel.Location = new Point(146, 121);
+            penaltyLabel.Name = "penaltyLabel";
+            penaltyLabel.Size = new Size(47, 19);
+            penaltyLabel.TabIndex = 29;
+            penaltyLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel23
             // 
@@ -1659,7 +1662,7 @@
             // 
             label79.AutoSize = true;
             label79.Dock = DockStyle.Fill;
-            label79.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label79.Font = new Font("Calibri", 6F);
             label79.Location = new Point(125, 0);
             label79.Margin = new Padding(0, 0, 0, 1);
             label79.Name = "label79";
@@ -1672,7 +1675,7 @@
             // 
             label83.AutoSize = true;
             label83.Dock = DockStyle.Fill;
-            label83.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label83.Font = new Font("Calibri", 6F);
             label83.Location = new Point(125, 9);
             label83.Margin = new Padding(0, 0, 0, 1);
             label83.Name = "label83";
@@ -1685,7 +1688,7 @@
             // 
             label89.AutoSize = true;
             label89.Dock = DockStyle.Fill;
-            label89.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label89.Font = new Font("Calibri", 6F);
             label89.Location = new Point(125, 18);
             label89.Margin = new Padding(0, 0, 0, 1);
             label89.Name = "label89";
@@ -1698,7 +1701,7 @@
             // 
             label76.AutoSize = true;
             label76.Dock = DockStyle.Fill;
-            label76.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label76.Font = new Font("Calibri", 6F);
             label76.Location = new Point(0, 0);
             label76.Margin = new Padding(0, 0, 0, 1);
             label76.Name = "label76";
@@ -1711,7 +1714,7 @@
             // 
             label75.AutoSize = true;
             label75.Dock = DockStyle.Fill;
-            label75.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label75.Font = new Font("Calibri", 6F);
             label75.Location = new Point(0, 18);
             label75.Margin = new Padding(0, 0, 0, 1);
             label75.Name = "label75";
@@ -1724,7 +1727,7 @@
             // 
             label78.AutoSize = true;
             label78.Dock = DockStyle.Fill;
-            label78.Font = new Font("Calibri", 5.25F, FontStyle.Bold);
+            label78.Font = new Font("Calibri", 6F);
             label78.Location = new Point(0, 9);
             label78.Margin = new Padding(0, 0, 0, 1);
             label78.Name = "label78";
@@ -1987,7 +1990,7 @@
             tableLayoutPanel22.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52.1912346F));
             tableLayoutPanel22.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 47.8087654F));
             tableLayoutPanel22.Controls.Add(label25, 0, 0);
-            tableLayoutPanel22.Controls.Add(amountTextBox, 1, 1);
+            tableLayoutPanel22.Controls.Add(amountPaidTextBox, 1, 1);
             tableLayoutPanel22.Controls.Add(label36, 0, 1);
             tableLayoutPanel22.Dock = DockStyle.Fill;
             tableLayoutPanel22.Location = new Point(1, 22);
@@ -2011,16 +2014,16 @@
             label25.Text = "   Receive the amount of:";
             label25.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // amountTextBox
+            // amountPaidTextBox
             // 
-            amountTextBox.Dock = DockStyle.Fill;
-            amountTextBox.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            amountTextBox.Location = new Point(131, 17);
-            amountTextBox.Margin = new Padding(0);
-            amountTextBox.Name = "amountTextBox";
-            amountTextBox.Size = new Size(120, 23);
-            amountTextBox.TabIndex = 8;
-            amountTextBox.TextChanged += amountPaidTextBox_TextChanged;
+            amountPaidTextBox.Dock = DockStyle.Fill;
+            amountPaidTextBox.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            amountPaidTextBox.Location = new Point(131, 17);
+            amountPaidTextBox.Margin = new Padding(0);
+            amountPaidTextBox.Name = "amountPaidTextBox";
+            amountPaidTextBox.Size = new Size(120, 23);
+            amountPaidTextBox.TabIndex = 8;
+            amountPaidTextBox.TextChanged += amountPaidTextBox_TextChanged;
             // 
             // label36
             // 
@@ -2146,6 +2149,174 @@
             accountDataGridView.CellClick += accountDataGridView_CellClick;
             accountDataGridView.CellContentClick += accountDataGridView_CellContentClick_1;
             // 
+            // accountno
+            // 
+            accountno.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            accountno.DataPropertyName = "accountno";
+            accountno.HeaderText = "Account ID";
+            accountno.Name = "accountno";
+            accountno.ReadOnly = true;
+            accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // districtno
+            // 
+            districtno.DataPropertyName = "districtno";
+            districtno.HeaderText = "districtno";
+            districtno.Name = "districtno";
+            districtno.ReadOnly = true;
+            districtno.Visible = false;
+            districtno.Width = 82;
+            // 
+            // fullname
+            // 
+            fullname.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            fullname.DataPropertyName = "fullname";
+            fullname.HeaderText = "Full Name";
+            fullname.Name = "fullname";
+            fullname.ReadOnly = true;
+            fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // concessionairecode
+            // 
+            concessionairecode.DataPropertyName = "concessionairecode";
+            concessionairecode.HeaderText = "Business Name";
+            concessionairecode.Name = "concessionairecode";
+            concessionairecode.ReadOnly = true;
+            concessionairecode.SortMode = DataGridViewColumnSortMode.NotSortable;
+            concessionairecode.Visible = false;
+            concessionairecode.Width = 93;
+            // 
+            // zonecode
+            // 
+            zonecode.DataPropertyName = "zonecode";
+            zonecode.HeaderText = "zonecode";
+            zonecode.Name = "zonecode";
+            zonecode.ReadOnly = true;
+            zonecode.SortMode = DataGridViewColumnSortMode.NotSortable;
+            zonecode.Visible = false;
+            zonecode.Width = 64;
+            // 
+            // servicecode
+            // 
+            servicecode.DataPropertyName = "servicecode";
+            servicecode.HeaderText = "servicecode";
+            servicecode.Name = "servicecode";
+            servicecode.ReadOnly = true;
+            servicecode.SortMode = DataGridViewColumnSortMode.NotSortable;
+            servicecode.Visible = false;
+            servicecode.Width = 75;
+            // 
+            // servicetype
+            // 
+            servicetype.DataPropertyName = "servicetype";
+            servicetype.HeaderText = "servicetype";
+            servicetype.Name = "servicetype";
+            servicetype.ReadOnly = true;
+            servicetype.Visible = false;
+            servicetype.Width = 91;
+            // 
+            // meterno
+            // 
+            meterno.DataPropertyName = "meterno";
+            meterno.HeaderText = "meterno";
+            meterno.Name = "meterno";
+            meterno.ReadOnly = true;
+            meterno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            meterno.Visible = false;
+            meterno.Width = 58;
+            // 
+            // dueexempt
+            // 
+            dueexempt.DataPropertyName = "dueexempt";
+            dueexempt.HeaderText = "dueexempt";
+            dueexempt.Name = "dueexempt";
+            dueexempt.ReadOnly = true;
+            dueexempt.Visible = false;
+            dueexempt.Width = 92;
+            // 
+            // withholdingtax
+            // 
+            withholdingtax.DataPropertyName = "withholdingtax";
+            withholdingtax.HeaderText = "withholdingtax";
+            withholdingtax.Name = "withholdingtax";
+            withholdingtax.ReadOnly = true;
+            withholdingtax.Visible = false;
+            withholdingtax.Width = 112;
+            // 
+            // wtpercent
+            // 
+            wtpercent.DataPropertyName = "wtpercent";
+            wtpercent.HeaderText = "wtpercent";
+            wtpercent.Name = "wtpercent";
+            wtpercent.ReadOnly = true;
+            wtpercent.Visible = false;
+            wtpercent.Width = 85;
+            // 
+            // scpercent
+            // 
+            scpercent.DataPropertyName = "scpercent";
+            scpercent.HeaderText = "scpercent";
+            scpercent.Name = "scpercent";
+            scpercent.ReadOnly = true;
+            scpercent.Visible = false;
+            scpercent.Width = 83;
+            // 
+            // address
+            // 
+            address.DataPropertyName = "address";
+            address.HeaderText = "address";
+            address.Name = "address";
+            address.ReadOnly = true;
+            address.Visible = false;
+            address.Width = 72;
+            // 
+            // routeno
+            // 
+            routeno.DataPropertyName = "routeno";
+            routeno.HeaderText = "routeno";
+            routeno.Name = "routeno";
+            routeno.ReadOnly = true;
+            routeno.Visible = false;
+            routeno.Width = 74;
+            // 
+            // billcodex
+            // 
+            billcodex.DataPropertyName = "billcode";
+            billcodex.HeaderText = "billcode";
+            billcodex.Name = "billcodex";
+            billcodex.ReadOnly = true;
+            billcodex.Visible = false;
+            billcodex.Width = 74;
+            // 
+            // balancex
+            // 
+            balancex.DataPropertyName = "balance";
+            balancex.HeaderText = "balance";
+            balancex.Name = "balancex";
+            balancex.ReadOnly = true;
+            balancex.Visible = false;
+            balancex.Width = 73;
+            // 
+            // seniorcitizen
+            // 
+            seniorcitizen.DataPropertyName = "seniorcitizen";
+            seniorcitizen.HeaderText = "Discounted";
+            seniorcitizen.Name = "seniorcitizen";
+            seniorcitizen.ReadOnly = true;
+            seniorcitizen.TrueValue = "";
+            seniorcitizen.Visible = false;
+            seniorcitizen.Width = 73;
+            // 
+            // taxexempt
+            // 
+            taxexempt.DataPropertyName = "taxexempt";
+            taxexempt.HeaderText = "Tax Exempt";
+            taxexempt.Name = "taxexempt";
+            taxexempt.ReadOnly = true;
+            taxexempt.TrueValue = "";
+            taxexempt.Visible = false;
+            taxexempt.Width = 73;
+            // 
             // tableLayoutPanel26
             // 
             tableLayoutPanel26.ColumnCount = 2;
@@ -2245,6 +2416,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(billIdTextBox);
             panel2.Controls.Add(label71);
             panel2.Controls.Add(accountnoBillHistory);
             panel2.Controls.Add(billDataGridView);
@@ -2253,6 +2425,15 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
+            // 
+            // billIdTextBox
+            // 
+            billIdTextBox.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            billIdTextBox.Location = new Point(38, 83);
+            billIdTextBox.Margin = new Padding(0);
+            billIdTextBox.Name = "billIdTextBox";
+            billIdTextBox.Size = new Size(120, 23);
+            billIdTextBox.TabIndex = 26;
             // 
             // label71
             // 
@@ -2290,173 +2471,6 @@
             billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
             billDataGridView.Size = new Size(1328, 271);
             billDataGridView.TabIndex = 24;
-            // 
-            // accountno
-            // 
-            accountno.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            accountno.DataPropertyName = "accountno";
-            accountno.HeaderText = "Account ID";
-            accountno.Name = "accountno";
-            accountno.ReadOnly = true;
-            accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
-            // 
-            // districtno
-            // 
-            districtno.DataPropertyName = "districtno";
-            districtno.HeaderText = "districtno";
-            districtno.Name = "districtno";
-            districtno.ReadOnly = true;
-            districtno.Visible = false;
-            districtno.Width = 82;
-            // 
-            // fullname
-            // 
-            fullname.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            fullname.DataPropertyName = "fullname";
-            fullname.HeaderText = "Full Name";
-            fullname.Name = "fullname";
-            fullname.ReadOnly = true;
-            fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
-            // 
-            // concessionairecode
-            // 
-            concessionairecode.DataPropertyName = "concessionairecode";
-            concessionairecode.HeaderText = "Business Name";
-            concessionairecode.Name = "concessionairecode";
-            concessionairecode.ReadOnly = true;
-            concessionairecode.SortMode = DataGridViewColumnSortMode.NotSortable;
-            concessionairecode.Visible = false;
-            concessionairecode.Width = 93;
-            // 
-            // zonecode
-            // 
-            zonecode.DataPropertyName = "zonecode";
-            zonecode.HeaderText = "zonecode";
-            zonecode.Name = "zonecode";
-            zonecode.ReadOnly = true;
-            zonecode.SortMode = DataGridViewColumnSortMode.NotSortable;
-            zonecode.Visible = false;
-            zonecode.Width = 64;
-            // 
-            // servicecode
-            // 
-            servicecode.DataPropertyName = "servicecode";
-            servicecode.HeaderText = "servicecode";
-            servicecode.Name = "servicecode";
-            servicecode.ReadOnly = true;
-            servicecode.SortMode = DataGridViewColumnSortMode.NotSortable;
-            servicecode.Visible = false;
-            servicecode.Width = 75;
-            // 
-            // servicetype
-            // 
-            servicetype.DataPropertyName = "servicetype";
-            servicetype.HeaderText = "servicetype";
-            servicetype.Name = "servicetype";
-            servicetype.ReadOnly = true;
-            servicetype.Visible = false;
-            servicetype.Width = 91;
-            // 
-            // meterno
-            // 
-            meterno.DataPropertyName = "meterno";
-            meterno.HeaderText = "meterno";
-            meterno.Name = "meterno";
-            meterno.ReadOnly = true;
-            meterno.SortMode = DataGridViewColumnSortMode.NotSortable;
-            meterno.Visible = false;
-            meterno.Width = 58;
-            // 
-            // dueexempt
-            // 
-            dueexempt.DataPropertyName = "dueexempt";
-            dueexempt.HeaderText = "dueexempt";
-            dueexempt.Name = "dueexempt";
-            dueexempt.ReadOnly = true;
-            dueexempt.Width = 92;
-            // 
-            // withholdingtax
-            // 
-            withholdingtax.DataPropertyName = "withholdingtax";
-            withholdingtax.HeaderText = "withholdingtax";
-            withholdingtax.Name = "withholdingtax";
-            withholdingtax.ReadOnly = true;
-            withholdingtax.Visible = false;
-            withholdingtax.Width = 112;
-            // 
-            // wtpercent
-            // 
-            wtpercent.DataPropertyName = "wtpercent";
-            wtpercent.HeaderText = "wtpercent";
-            wtpercent.Name = "wtpercent";
-            wtpercent.ReadOnly = true;
-            wtpercent.Visible = false;
-            wtpercent.Width = 85;
-            // 
-            // scpercent
-            // 
-            scpercent.DataPropertyName = "scpercent";
-            scpercent.HeaderText = "scpercent";
-            scpercent.Name = "scpercent";
-            scpercent.ReadOnly = true;
-            scpercent.Visible = false;
-            scpercent.Width = 83;
-            // 
-            // address
-            // 
-            address.DataPropertyName = "address";
-            address.HeaderText = "address";
-            address.Name = "address";
-            address.ReadOnly = true;
-            address.Visible = false;
-            address.Width = 72;
-            // 
-            // routeno
-            // 
-            routeno.DataPropertyName = "routeno";
-            routeno.HeaderText = "routeno";
-            routeno.Name = "routeno";
-            routeno.ReadOnly = true;
-            routeno.Visible = false;
-            routeno.Width = 74;
-            // 
-            // billcodex
-            // 
-            billcodex.DataPropertyName = "billcode";
-            billcodex.HeaderText = "billcode";
-            billcodex.Name = "billcodex";
-            billcodex.ReadOnly = true;
-            billcodex.Visible = false;
-            billcodex.Width = 74;
-            // 
-            // balancex
-            // 
-            balancex.DataPropertyName = "balance";
-            balancex.HeaderText = "balance";
-            balancex.Name = "balancex";
-            balancex.ReadOnly = true;
-            balancex.Visible = false;
-            balancex.Width = 73;
-            // 
-            // seniorcitizen
-            // 
-            seniorcitizen.DataPropertyName = "seniorcitizen";
-            seniorcitizen.HeaderText = "Discounted";
-            seniorcitizen.Name = "seniorcitizen";
-            seniorcitizen.ReadOnly = true;
-            seniorcitizen.TrueValue = "";
-            seniorcitizen.Visible = false;
-            seniorcitizen.Width = 73;
-            // 
-            // taxexempt
-            // 
-            taxexempt.DataPropertyName = "taxexempt";
-            taxexempt.HeaderText = "Tax Exempt";
-            taxexempt.Name = "taxexempt";
-            taxexempt.ReadOnly = true;
-            taxexempt.TrueValue = "";
-            taxexempt.Visible = false;
-            taxexempt.Width = 73;
             // 
             // BillingControl
             // 
@@ -2682,10 +2696,10 @@
         private Label label26;
         private TableLayoutPanel tableLayoutPanel22;
         private Label label25;
-        private TextBox amountTextBox;
+        private TextBox amountPaidTextBox;
         private Label label36;
-        private Label penaltyLabel;
         private TextBox preniousPenaltyTextBox;
+        private Label penaltyLabel;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn districtno;
         private DataGridViewTextBoxColumn fullname;
@@ -2704,5 +2718,6 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
+        private TextBox billIdTextBox;
     }
 }

@@ -369,11 +369,11 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
-            AutoCompleteHelper.FillTextBoxWithColumns("concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
         }
 
 
@@ -473,7 +473,7 @@ namespace IGBARAS_WATER_DISTRICT
             var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
             if (readingInfo != null)
             {
-                // to reading date of the recent bill is the from reading date of the next bill
+                // to reading date of the recent bill is the from reading date of the next bill which is today
                 fromReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
 
                 // this previous reading is the present reading of the last bill
@@ -858,7 +858,7 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
             }
         }
 

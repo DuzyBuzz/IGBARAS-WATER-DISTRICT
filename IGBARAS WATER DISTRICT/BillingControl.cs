@@ -28,6 +28,7 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
+
             // Set print document to portrait
             billingPrintDocument.DefaultPageSettings.Landscape = false;
 
@@ -37,9 +38,17 @@ namespace IGBARAS_WATER_DISTRICT
             // Show print dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
-                billingPrintDocument.Print();
+                if (CheckIfBillIsPaid())
+                {
+                    MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return; // Exit or disable further actions
 
-
+                }
+                else
+                {
+                    billingPrintDocument.Print();
+                    UpdateBillingRecord();
+                }
 
             }
         }
@@ -122,6 +131,49 @@ namespace IGBARAS_WATER_DISTRICT
         /// </summary>
 
 
+        /// <summary>
+        /// Checks if the specified bill ID has already been marked as paid in the tb_bill table.
+        /// </summary>
+        /// <param name="billId">The bill ID to check.</param>
+        /// <returns>True if paid (paid = 1), otherwise false.</returns>
+        private bool CheckIfBillIsPaid()
+        {
+            bool isPaid = false;
+
+            try
+            {
+                // Change this to your actual connection string if needed
+                using (MySqlConnection con = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    con.Open();
+
+                    // Prepare SQL command to get the "paid" column from tb_bill for the given bill_id
+                    string query = "SELECT paid FROM tb_bill WHERE bill_id = @billId";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@billId", billIdTextBox);
+
+                        // Execute scalar returns a single value (in this case, the "paid" status)
+                        object result = cmd.ExecuteScalar();
+
+                        // Check if result is not null and cast to int
+                        if (result != null && Convert.ToInt32(result) == 1)
+                        {
+                            isPaid = true;
+                        }
+                    }
+
+                    con.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error checking bill payment status: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return isPaid;
+        }
 
 
 
@@ -236,11 +288,11 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
-            AutoCompleteHelper.FillTextBoxWithColumns("concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
         }
 
 
@@ -303,7 +355,7 @@ namespace IGBARAS_WATER_DISTRICT
             Debug.WriteLine(!string.IsNullOrEmpty(latestBillID)
                 ? $"✅ Latest bill_id: {latestBillID}"
                 : $"⚠️ No bill found for account number: {accountNo}");
-
+            billIdTextBox.Text = latestBillID;
             // 🟦 Load reading info if available
             var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
             if (readingInfo != null)
@@ -315,6 +367,7 @@ namespace IGBARAS_WATER_DISTRICT
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
                 arrearsLabel.Text = readingInfo.Arrears.ToString();
+                amountPaidTextBox.Text = readingInfo.AmountPaid.ToString();
                 int meterConsumedReading = 0;
 
                 // ➕ Calculate present reading
@@ -353,6 +406,60 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
+        private void UpdateBillingAndConcessionaire(int billId, decimal amountPaid, decimal newBalance, string billStatus, string accountNo, string billCode)
+{
+    try
+    {
+        using (MySqlConnection conn = new MySqlConnection("your_connection_string_here"))
+        {
+            conn.Open();
+
+            using (MySqlTransaction transaction = conn.BeginTransaction())
+            {
+                // 1️⃣ Update tb_bill
+                string updateBillQuery = @"
+                    UPDATE tb_bill 
+                    SET amountpaid = @amountpaid,
+                        balance = @balance,
+                        billstatus = @billstatus,
+                        paymentdate = @paymentdate
+                    WHERE bill_id = @bill_id";
+
+                using (MySqlCommand cmd = new MySqlCommand(updateBillQuery, conn, transaction))
+                {
+                    cmd.Parameters.AddWithValue("@amountpaid", amountPaid);
+                    cmd.Parameters.AddWithValue("@balance", newBalance);
+                    cmd.Parameters.AddWithValue("@billstatus", billStatus);
+                    cmd.Parameters.AddWithValue("@paymentdate", DateTime.Now.ToString("yyyy-MM-dd"));
+                    cmd.Parameters.AddWithValue("@bill_id", billId);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // 2️⃣ Update tb_concessionaire balance and latest billcode
+                string updateConcessionaireQuery = @"
+                    UPDATE tb_concessionaire
+                    SET balance = @newbalance,
+                        billcode = @billcode
+                    WHERE accountno = @accountno";
+
+                using (MySqlCommand cmd = new MySqlCommand(updateConcessionaireQuery, conn, transaction))
+                {
+                    cmd.Parameters.AddWithValue("@newbalance", newBalance);
+                    cmd.Parameters.AddWithValue("@billcode", billCode);
+                    cmd.Parameters.AddWithValue("@accountno", accountNo);
+                    cmd.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+                MessageBox.Show("Billing and concessionaire updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show("Error while updating bill: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}
 
         /// <summary>
         /// JUST LIKE THE FUNCTION IN MYSQL THIS IS MY GET PENALTY
@@ -490,13 +597,23 @@ namespace IGBARAS_WATER_DISTRICT
             // Call helper to load billing summary rows where accountno = accountNo
             DataTable billData = ExclusiveDGVHelper.LoadRowsByExactAccount("tb_bill", "accountno", accountNo);
 
-            if (billData != null)
+            if (CheckIfBillIsPaid())
             {
-                billDataGridView.DataSource = billData;
-                billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                billDataGridView.Sort(billDataGridView.Columns["bill_id"], ListSortDirection.Descending);
+                MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return; // Exit or disable further actions
 
             }
+            else
+            {
+                if (billData != null)
+                {
+                    billDataGridView.DataSource = billData;
+                    billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    billDataGridView.Sort(billDataGridView.Columns["bill_id"], ListSortDirection.Descending);
+
+                }
+            }
+
         }
 
         private void searchButton_Click(object sender, EventArgs e)
@@ -509,6 +626,99 @@ namespace IGBARAS_WATER_DISTRICT
                 dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
             }
         }
+
+        private void UpdateBillingRecord()
+        {
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    con.Open();
+
+                    string query = @"UPDATE tb_bill SET
+                charge = @charge,
+                taxpercent = @taxpercent,
+                taxamount = @taxamount,
+                scpercent = @scpercent,
+                senioramount = @senioramount,
+                totalbillcharge = @totalbillcharge,
+                billcharge = @billcharge,
+                balance = @balance,
+                paid = @paid,
+                amountpaid = @amountpaid,
+                penaltyamount = @penaltyamount,
+                arrearsamount = @arrearsamount,
+                datebilled = @datebilled,
+                partiallypaid = @partiallypaid,
+                adjustdebit = @adjustdebit,
+                adjustcredit = @adjustcredit,
+                uploaded = @uploaded
+                WHERE bill_id = @bill_id";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, con))
+                    {
+                        // Parse and calculate financial fields
+                        double charge = double.TryParse(chargeLabel.Text, out double c) ? c : 0;
+                        int taxPercent = int.TryParse(taxExemptedLabel.Text, out int tp) ? tp : 0;
+                        double taxAmount = (charge * taxPercent) / 100;
+
+                        int scPercent = int.TryParse(discountedLabel.Text, out int scp) ? scp : 0;
+                        double seniorAmount = (charge * scPercent) / 100;
+
+                        double totalBillCharge = double.TryParse(totalChargeBillLabel.Text, out double tbc) ? tbc : 0;
+                        double amountPaid = double.TryParse(amountPaidTextBox.Text, out double ap) ? ap : 0;
+
+                        double penaltyAmount = double.TryParse(penaltyAmountLabel.Text, out double pa) ? pa : 0;
+                        double arrearsAmount = double.TryParse(arrearsLabel.Text, out double ar) ? ar : 0;
+
+                        // 🧮 Calculate balance
+                        double balance = totalBillCharge - amountPaid;
+                        if (balance < 0) balance = 0; // Never negative
+
+                        // ✅ Set payment status
+                        int paid = (balance == 0 && amountPaid > 0) ? 1 : 0; // Fully paid if no balance and payment was made
+                        int partiallyPaid = (amountPaid > 0 && balance > 0) ? 1 : 0; // Partially paid
+
+                        // Add parameters to the command
+                        cmd.Parameters.AddWithValue("@charge", charge);
+                        cmd.Parameters.AddWithValue("@taxpercent", taxPercent);
+                        cmd.Parameters.AddWithValue("@taxamount", taxAmount);
+                        cmd.Parameters.AddWithValue("@scpercent", scPercent);
+                        cmd.Parameters.AddWithValue("@senioramount", seniorAmount);
+                        cmd.Parameters.AddWithValue("@totalbillcharge", totalBillCharge);
+                        cmd.Parameters.AddWithValue("@billcharge", totalBillCharge); // for simplicity same as total for now
+                        cmd.Parameters.AddWithValue("@balance", balance);
+                        cmd.Parameters.AddWithValue("@paid", paid);
+                        cmd.Parameters.AddWithValue("@amountpaid", amountPaid);
+                        cmd.Parameters.AddWithValue("@penaltyamount", penaltyAmount);
+                        cmd.Parameters.AddWithValue("@arrearsamount", arrearsAmount);
+                        cmd.Parameters.AddWithValue("@datebilled", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@partiallypaid", partiallyPaid);
+                        cmd.Parameters.AddWithValue("@adjustdebit", 0.00); // default value
+                        cmd.Parameters.AddWithValue("@adjustcredit", 0.00); // default value
+                        cmd.Parameters.AddWithValue("@uploaded", 0); // default value
+                        cmd.Parameters.AddWithValue("@bill_id", billIdTextBox.Text);
+
+                        // Execute update
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("✅ Billing record updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("⚠️ No record was updated. Please check Bill ID.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Error updating billing record:\n" + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
 
 
@@ -719,7 +929,7 @@ namespace IGBARAS_WATER_DISTRICT
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "concessionaire_detail", loadingForm);
+                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
             }
         }
 
