@@ -28,30 +28,41 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
+            // ✅ Step 1: Check if the bill is already paid
+            if (CheckIfBillIsPaid())
+            {
+                UpdateBillingRecord();
+                MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return; // ⛔ Stop further actions
+            }
 
-            // Set print document to portrait
-            billingPrintDocument.DefaultPageSettings.Landscape = false;
+            // ✅ Step 2: Set to landscape mode
+            billingPrintDocument.DefaultPageSettings.Landscape = true;
 
-            // Set all margins to 3 (unit: hundredths of an inch)
-            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+            // ✅ Step 3: Use Legal paper size (8.5 x 14 inches)
+            foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
+            {
+                if (ps.Kind == PaperKind.Legal)
+                {
+                    billingPrintDocument.DefaultPageSettings.PaperSize = ps;
+                    break;
+                }
+            }
 
-            // Show print dialog
+            // ✅ Step 4: Set margins (0.3 inches on all sides)
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30);
+
+            // ✅ Step 5: Show the print dialog
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
-                if (CheckIfBillIsPaid())
-                {
-                    MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return; // Exit or disable further actions
+                // ✅ Step 6: Update billing info in database
 
-                }
-                else
-                {
-                    billingPrintDocument.Print();
-                    UpdateBillingRecord();
-                }
-
+                // ✅ Step 7: Proceed to print
+                billingPrintDocument.Print();
             }
         }
+
+
         private Bitmap CapturePanel(Control panel)
         {
             // Create a bitmap with the size of the panel
@@ -61,71 +72,42 @@ namespace IGBARAS_WATER_DISTRICT
         }
         private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
         {
-            // Names for each copy
-            string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
+            // Set label if needed
+            copyTypeLabel.Text = "Concessionaire's Copy";
 
-            int copiesPerPage = copyNames.Length;
-            int availableHeight = e.MarginBounds.Height;
-            int availableWidth = e.MarginBounds.Width;
+            // Capture the billing panel as image
+            Bitmap panelImage = CapturePanel(billingPanel);
 
-            // Set spacing between copies (in pixels)
-            int spacing = 10;
-            int totalSpacing = spacing * (copiesPerPage - 1);
-            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
+            // Use the printable area
+            Rectangle marginBounds = e.MarginBounds;
 
-            int targetWidth = availableWidth;
-            int targetHeight = copyHeight;
+            // Calculate scaling factor to fit within bounds
+            float scale = Math.Min(
+                (float)marginBounds.Width / panelImage.Width,
+                (float)marginBounds.Height / panelImage.Height);
 
-            for (int i = 0; i < copiesPerPage; i++)
-            {
-                // Set the label for the copy type
-                copyTypeLabel.Text = copyNames[i];
+            int scaledWidth = (int)(panelImage.Width * scale);
+            int scaledHeight = (int)(panelImage.Height * scale);
 
-                // Capture the panel as bitmap
-                Bitmap panelImage = CapturePanel(billingPanel);
+            // Compute center position within margin bounds
+            int x = marginBounds.Left + (marginBounds.Width - scaledWidth) / 2;
+            int y = marginBounds.Top + (marginBounds.Height - scaledHeight) / 2;
 
-                // Calculate scale to fit width and height
-                float scale = Math.Min(
-                    (float)targetWidth / panelImage.Width,
-                    (float)targetHeight / panelImage.Height);
+            // Use high-quality rendering
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 
-                int printWidth = (int)(panelImage.Width * scale);
-                int printHeight = (int)(panelImage.Height * scale);
+            // Draw the scaled image at the center
+            e.Graphics.DrawImage(panelImage, new Rectangle(x, y, scaledWidth, scaledHeight));
 
-                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
-                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
+            panelImage.Dispose();
 
-                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-
-                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
-
-                panelImage.Dispose();
-
-                // Draw cut indication line after every copy
-                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
-                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
-                {
-                    // Measure the width of "✄"
-                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
-                    // Measure the width of one "┈"
-                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
-                    // Calculate total dashes to fill the width minus scissors
-                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
-                    int leftDashes = totalDashes / 2;
-                    int rightDashes = totalDashes - leftDashes;
-                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
-
-                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    {
-                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
-                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
-                    }
-                }
-            }
+            e.HasMorePages = false;
         }
+
+
         /// <summary>
         /// end of the print save button click event.
         /// </summary>
@@ -142,38 +124,78 @@ namespace IGBARAS_WATER_DISTRICT
 
             try
             {
-                // Change this to your actual connection string if needed
                 using (MySqlConnection con = new MySqlConnection(DbConfig.ConnectionString))
                 {
                     con.Open();
+                    Debug.WriteLine("✅ Database connection opened.");
 
-                    // Prepare SQL command to get the "paid" column from tb_bill for the given bill_id
-                    string query = "SELECT paid FROM tb_bill WHERE bill_id = @billId";
+                    string query = "SELECT paid, datebilled FROM tb_bill WHERE bill_id = @billId";
+                    Debug.WriteLine($"🟡 Executing query: {query}");
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@billId", billIdTextBox);
+                        string billId = billIdTextBox.Text.Trim();
+                        cmd.Parameters.AddWithValue("@billId", billId);
+                        Debug.WriteLine($"🔍 Using bill ID: {billId}");
 
-                        // Execute scalar returns a single value (in this case, the "paid" status)
-                        object result = cmd.ExecuteScalar();
-
-                        // Check if result is not null and cast to int
-                        if (result != null && Convert.ToInt32(result) == 1)
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            isPaid = true;
+                            if (reader.Read())
+                            {
+                                int paidValue = 0;
+                                DateTime dateBilled = DateTime.MinValue;
+
+                                // ✅ Handle nullable 'paid'
+                                if (!reader.IsDBNull(reader.GetOrdinal("paid")))
+                                {
+                                    paidValue = reader.GetInt32("paid");
+                                }
+
+                                // ✅ Handle nullable 'datebilled'
+                                if (!reader.IsDBNull(reader.GetOrdinal("datebilled")))
+                                {
+                                    dateBilled = reader.GetDateTime("datebilled");
+                                }
+
+                                Debug.WriteLine($"📄 Retrieved: paid = {paidValue}, dateBilled = {(dateBilled == DateTime.MinValue ? "NULL" : dateBilled.ToString("yyyy-MM-dd"))}");
+
+                                int currentYear = DateTime.Now.Year;
+                                int currentMonth = DateTime.Now.Month;
+                                Debug.WriteLine($"📅 Current Date: {DateTime.Now:yyyy-MM-dd}");
+
+                                // ✅ Check paid == 1 and date within current month/year
+                                if (paidValue == 1 &&
+                                    dateBilled.Year == currentYear &&
+                                    dateBilled.Month == currentMonth)
+                                {
+                                    isPaid = true;
+                                    Debug.WriteLine("✅ Bill is PAID this month.");
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("❌ Bill is NOT paid this month.");
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine("⚠️ No bill found with the given bill ID.");
+                            }
                         }
                     }
 
                     con.Close();
+                    Debug.WriteLine("🔚 Database connection closed.");
                 }
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("❗ Exception: " + ex.Message);
                 MessageBox.Show("Error checking bill payment status: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return isPaid;
         }
+
 
 
 
@@ -280,6 +302,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+            ClearWaterChargeLabels();
             userIdLabel.Text = $"{UserCredentials.UserId}";
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
@@ -301,6 +324,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            ClearWaterChargeLabels();
 
             if (e.RowIndex < 0) return; // Ignore header or invalid rows
 
@@ -360,6 +384,7 @@ namespace IGBARAS_WATER_DISTRICT
             var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
             if (readingInfo != null)
             {
+
                 // the to reading date is the same as the date billed this is all exacty the same date
                 fromReadingDateLabel.Text = readingInfo.FromReadingDate.ToString("MMMM dd, yyyy");
                 toReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
@@ -592,6 +617,9 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
+
+
+
         private void LoadAccountBillHistory(string accountNo)
         {
             // Call helper to load billing summary rows where accountno = accountNo
@@ -748,6 +776,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void amountPaidTextBox_TextChanged(object sender, EventArgs e)
         {
+            ClearWaterChargeLabels();
             TextBox textBox = (TextBox)sender;
 
             if (string.IsNullOrWhiteSpace(textBox.Text))
@@ -882,23 +911,22 @@ namespace IGBARAS_WATER_DISTRICT
             chargeLabel.Text = amountDue.ToString("N2");
         }
 
-
-
         private void meterConsumedReadingTextBox_TextChanged(object sender, EventArgs e)
         {
-            ClearWaterChargeLabels();
-            // Try to parse the entered value as an integer
-            if (int.TryParse(meterConsumedReadingTextBox.Text.Trim(), out int consumption))
+            string input = meterConsumedReadingTextBox.Text.Trim();
+
+
+            // 🔵 Try parsing as integer
+            if (int.TryParse(input, out int consumption))
             {
-                // If parsing is successful, calculate water charges
                 CalculateWaterCharges(consumption);
             }
             else
             {
-                // If the input is not a valid number, clear labels to avoid wrong values
-                ClearWaterChargeLabels();
+                ClearWaterChargeLabels(); // invalid input
             }
         }
+
 
 
         private void ClearWaterChargeLabels()
@@ -912,16 +940,26 @@ namespace IGBARAS_WATER_DISTRICT
             presentReadingTextBox.Text = "";
             penaltyAmountLabel.Text = "";
             penaltyLabel.Text = "";
+            meterConsumedReadingTextBox.Text= "";
             // Clear discount and tax labels
             discountedLabel.Text = "";
             discountedAmountLabel.Text = "";
             taxExemptedLabel.Text = "";
             exemptedAmountLabel.Text = "";
             arrearsLabel.Text = "";
-            chargeLabel.Text = "";
+            chargeLabel.Text = "0.00";
             // Also clear totals
             totalQuantityLabel.Text = "";
             totalAmountLabel.Text = "";
+            string amount = amountPaidTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(amount) || amount == "0")
+            {
+                billPaidButton.Enabled = false;
+            }
+            else
+            {
+                billPaidButton.Enabled = true;
+            }
         }
 
         private async void syncButton_Click(object sender, EventArgs e)

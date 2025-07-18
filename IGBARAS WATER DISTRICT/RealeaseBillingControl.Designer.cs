@@ -33,6 +33,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealeaseBillingControl));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -44,8 +45,6 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
-            printOnlyButton = new Button();
-            label32 = new Label();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -166,7 +165,8 @@
             tableLayoutPanel13 = new TableLayoutPanel();
             label25 = new Label();
             label24 = new Label();
-            button2 = new Button();
+            printSaveButton = new Button();
+            accountnoBillHistory = new Label();
             accountSearchPanel = new Panel();
             tableLayoutPanel25 = new TableLayoutPanel();
             tableLayoutPanel26 = new TableLayoutPanel();
@@ -177,8 +177,9 @@
             clearButton = new Button();
             accountDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
-            districtno = new DataGridViewTextBoxColumn();
             fullname = new DataGridViewTextBoxColumn();
+            presentreaddate = new DataGridViewTextBoxColumn();
+            districtno = new DataGridViewTextBoxColumn();
             concessionairecode = new DataGridViewTextBoxColumn();
             zonecode = new DataGridViewTextBoxColumn();
             servicecode = new DataGridViewTextBoxColumn();
@@ -196,8 +197,9 @@
             taxexempt = new DataGridViewCheckBoxColumn();
             panel6 = new Panel();
             panel2 = new Panel();
+            printBillDataGridView = new DataGridView();
+            label34 = new Label();
             label71 = new Label();
-            accountnoBillHistory = new Label();
             billDataGridView = new DataGridView();
             billdataTextBox = new TextBox();
             tableLayoutPanel14.SuspendLayout();
@@ -234,6 +236,7 @@
             tableLayoutPanel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)accountDataGridView).BeginInit();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)printBillDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -352,39 +355,15 @@
             // 
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
-            panel3.Controls.Add(printOnlyButton);
-            panel3.Controls.Add(label32);
             panel3.Controls.Add(billingPanel);
-            panel3.Controls.Add(button2);
+            panel3.Controls.Add(printSaveButton);
+            panel3.Controls.Add(accountnoBillHistory);
             panel3.Dock = DockStyle.Fill;
             panel3.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             panel3.Location = new Point(316, 3);
             panel3.Name = "panel3";
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
-            // 
-            // printOnlyButton
-            // 
-            printOnlyButton.Anchor = AnchorStyles.None;
-            printOnlyButton.BackColor = Color.White;
-            printOnlyButton.Location = new Point(668, 521);
-            printOnlyButton.Name = "printOnlyButton";
-            printOnlyButton.Size = new Size(118, 31);
-            printOnlyButton.TabIndex = 27;
-            printOnlyButton.Text = "🖨️ Print Bill";
-            printOnlyButton.UseVisualStyleBackColor = false;
-            printOnlyButton.Click += printOnlyButton_Click;
-            // 
-            // label32
-            // 
-            label32.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            label32.AutoSize = true;
-            label32.Font = new Font("Arial", 36F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label32.Location = new Point(17, 497);
-            label32.Name = "label32";
-            label32.Size = new Size(472, 55);
-            label32.TabIndex = 26;
-            label32.Text = "Schedule of Reading";
             // 
             // billingPanel
             // 
@@ -2033,17 +2012,28 @@
             label24.Text = "Note: 10% Penalty for late payments.";
             label24.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // button2
+            // printSaveButton
             // 
-            button2.Anchor = AnchorStyles.None;
-            button2.BackColor = Color.White;
-            button2.Location = new Point(818, 521);
-            button2.Name = "button2";
-            button2.Size = new Size(118, 31);
-            button2.TabIndex = 21;
-            button2.Text = "🖨️ Save & Print Bill";
-            button2.UseVisualStyleBackColor = false;
-            button2.Click += printSaveButton_Click;
+            printSaveButton.Anchor = AnchorStyles.None;
+            printSaveButton.BackColor = Color.White;
+            printSaveButton.Location = new Point(816, 512);
+            printSaveButton.Name = "printSaveButton";
+            printSaveButton.Size = new Size(120, 40);
+            printSaveButton.TabIndex = 21;
+            printSaveButton.Text = "🖨️ Save & Print Bill";
+            printSaveButton.UseVisualStyleBackColor = false;
+            printSaveButton.Click += printSaveButton_Click;
+            // 
+            // accountnoBillHistory
+            // 
+            accountnoBillHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            accountnoBillHistory.AutoSize = true;
+            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            accountnoBillHistory.Location = new Point(12, 525);
+            accountnoBillHistory.Name = "accountnoBillHistory";
+            accountnoBillHistory.Size = new Size(119, 24);
+            accountnoBillHistory.TabIndex = 22;
+            accountnoBillHistory.Text = "Account ID:";
             // 
             // accountSearchPanel
             // 
@@ -2170,7 +2160,7 @@
             accountDataGridView.BackgroundColor = Color.White;
             accountDataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             accountDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, districtno, fullname, concessionairecode, zonecode, servicecode, servicetype, meterno, dueexempt, withholdingtax, wtpercent, scpercent, address, routeno, billcodex, balancex, seniorcitizen, taxexempt });
+            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, presentreaddate, districtno, concessionairecode, zonecode, servicecode, servicetype, meterno, dueexempt, withholdingtax, wtpercent, scpercent, address, routeno, billcodex, balancex, seniorcitizen, taxexempt });
             accountDataGridView.Dock = DockStyle.Fill;
             accountDataGridView.Location = new Point(3, 70);
             accountDataGridView.Name = "accountDataGridView";
@@ -2192,15 +2182,6 @@
             accountno.ReadOnly = true;
             accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
-            // districtno
-            // 
-            districtno.DataPropertyName = "districtno";
-            districtno.HeaderText = "districtno";
-            districtno.Name = "districtno";
-            districtno.ReadOnly = true;
-            districtno.Visible = false;
-            districtno.Width = 82;
-            // 
             // fullname
             // 
             fullname.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -2209,6 +2190,23 @@
             fullname.Name = "fullname";
             fullname.ReadOnly = true;
             fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // presentreaddate
+            // 
+            presentreaddate.DataPropertyName = "presentreaddate";
+            presentreaddate.HeaderText = "Date Billed";
+            presentreaddate.Name = "presentreaddate";
+            presentreaddate.ReadOnly = true;
+            presentreaddate.Width = 88;
+            // 
+            // districtno
+            // 
+            districtno.DataPropertyName = "districtno";
+            districtno.HeaderText = "districtno";
+            districtno.Name = "districtno";
+            districtno.ReadOnly = true;
+            districtno.Visible = false;
+            districtno.Width = 82;
             // 
             // concessionairecode
             // 
@@ -2362,8 +2360,9 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(printBillDataGridView);
+            panel2.Controls.Add(label34);
             panel2.Controls.Add(label71);
-            panel2.Controls.Add(accountnoBillHistory);
             panel2.Controls.Add(billDataGridView);
             panel2.Controls.Add(billdataTextBox);
             panel2.Dock = DockStyle.Fill;
@@ -2371,6 +2370,34 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
+            // 
+            // printBillDataGridView
+            // 
+            printBillDataGridView.AllowUserToAddRows = false;
+            printBillDataGridView.AllowUserToDeleteRows = false;
+            printBillDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            printBillDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            printBillDataGridView.BackgroundColor = Color.White;
+            printBillDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            printBillDataGridView.Location = new Point(883, 49);
+            printBillDataGridView.Name = "printBillDataGridView";
+            printBillDataGridView.ReadOnly = true;
+            printBillDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            printBillDataGridView.Size = new Size(491, 305);
+            printBillDataGridView.TabIndex = 29;
+            // 
+            // label34
+            // 
+            label34.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label34.AutoSize = true;
+            label34.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label34.Location = new Point(883, 10);
+            label34.Name = "label34";
+            label34.Size = new Size(157, 32);
+            label34.TabIndex = 28;
+            label34.Text = "Printed Bills";
             // 
             // label71
             // 
@@ -2382,16 +2409,6 @@
             label71.TabIndex = 25;
             label71.Text = "Account Bill History";
             // 
-            // accountnoBillHistory
-            // 
-            accountnoBillHistory.AutoSize = true;
-            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(26, 52);
-            accountnoBillHistory.Name = "accountnoBillHistory";
-            accountnoBillHistory.Size = new Size(194, 24);
-            accountnoBillHistory.TabIndex = 22;
-            accountnoBillHistory.Text = "Account Bill History";
-            // 
             // billDataGridView
             // 
             billDataGridView.AllowUserToAddRows = false;
@@ -2400,18 +2417,18 @@
             billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             billDataGridView.BackgroundColor = Color.White;
             billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            billDataGridView.Location = new Point(26, 83);
+            billDataGridView.Location = new Point(26, 50);
             billDataGridView.Name = "billDataGridView";
             billDataGridView.ReadOnly = true;
             billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            billDataGridView.Size = new Size(1328, 271);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            billDataGridView.Size = new Size(830, 304);
             billDataGridView.TabIndex = 24;
             // 
             // billdataTextBox
             // 
-            billdataTextBox.Location = new Point(689, 156);
+            billdataTextBox.Location = new Point(582, 156);
             billdataTextBox.Multiline = true;
             billdataTextBox.Name = "billdataTextBox";
             billdataTextBox.Size = new Size(225, 173);
@@ -2487,6 +2504,7 @@
             ((System.ComponentModel.ISupportInitialize)accountDataGridView).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)printBillDataGridView).EndInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -2502,7 +2520,7 @@
         private TableLayoutPanel tableLayoutPanel14;
         private Panel panel1;
         private Panel panel2;
-        private Button button2;
+        private Button printSaveButton;
         private Panel panel3;
         private Panel accountSearchPanel;
         private DataGridView accountDataGridView;
@@ -2638,10 +2656,11 @@
         private TableLayoutPanel tableLayoutPanel13;
         private Label label25;
         private Label label24;
-        private Label label32;
+        private TextBox billdataTextBox;
         private DataGridViewTextBoxColumn accountno;
-        private DataGridViewTextBoxColumn districtno;
         private DataGridViewTextBoxColumn fullname;
+        private DataGridViewTextBoxColumn presentreaddate;
+        private DataGridViewTextBoxColumn districtno;
         private DataGridViewTextBoxColumn concessionairecode;
         private DataGridViewTextBoxColumn zonecode;
         private DataGridViewTextBoxColumn servicecode;
@@ -2657,7 +2676,7 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
-        private TextBox billdataTextBox;
-        private Button printOnlyButton;
+        private Label label34;
+        private DataGridView printBillDataGridView;
     }
 }

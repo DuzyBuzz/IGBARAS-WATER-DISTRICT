@@ -30,7 +30,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             string query = @"
                 SELECT 
                     presentreading, 
-                    meterconsumed, 
+                    presentmeterconsumed, 
                     fromreadingdate, 
                     toreadingdate, 
                     duedate, 
@@ -58,7 +58,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                                 readingInfo = new BillReadingInfo
                                 {
                                     PreviousReading = reader["presentreading"] != DBNull.Value ? Convert.ToInt32(reader["presentreading"]) : 0,
-                                    MeterConsumed = reader["meterconsumed"] != DBNull.Value ? Convert.ToInt32(reader["meterconsumed"]) : 0,
+                                    MeterConsumed = reader["presentmeterconsumed"] != DBNull.Value ? Convert.ToInt32(reader["presentmeterconsumed"]) : 0,
                                     FromReadingDate = reader["fromreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["fromreadingdate"]) : DateTime.MinValue,
                                     ToReadingDate = reader["toreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["toreadingdate"]) : DateTime.MinValue,
                                     DueDate = reader["duedate"] != DBNull.Value ? Convert.ToDateTime(reader["duedate"]) : DateTime.MinValue,

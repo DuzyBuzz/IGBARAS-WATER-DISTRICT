@@ -33,39 +33,44 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-            // Set page orientation
-            billingPrintDocument.DefaultPageSettings.Landscape = false;
+            // 🔒 1. Validate selected billing data first
+            if (selectedBillingData == null || selectedBillingData.Length < 17)
+            {
+                MessageBox.Show("No selected billing data. Please select an account first.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-            //  Set small margins (optional: adjust for borderless or compact layout)
-            billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+            // 🔒 2. Validate billing date BEFORE configuring print or saving
+            if (!CheckBillingDate())
+            {
+                MessageBox.Show("Invalid billing date. Cannot proceed with saving or printing.", "Invalid Date", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-            // Set paper size to Legal (8.5 x 14 inches = 850 x 1400 hundredths of an inch)
-            PaperSize legalSize = new PaperSize("Legal", 850, 1400);
-            billingPrintDocument.DefaultPageSettings.PaperSize = legalSize;
+            // 📄 3. Configure print document settings
+            billingPrintDocument.DefaultPageSettings.Landscape = true;
 
-            // Show Print Dialog
+            foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
+            {
+                if (ps.Kind == PaperKind.Legal)
+                {
+                    billingPrintDocument.DefaultPageSettings.PaperSize = ps;
+                    break;
+                }
+            }
+
+            billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30); // 0.3 inch margins
+
+            // 🖨️ 4. Show print dialog AFTER configuring settings
             if (billingPrintDialog.ShowDialog() == DialogResult.OK)
             {
-                // Proceed with printing
+                // 💾 5. Save billing record
+                InsertToBillingTable(selectedBillingData);
+
+                MessageBox.Show("Billing record saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // 🖨️ 6. Proceed to print
                 billingPrintDocument.Print();
-
-                // Validate if billing data is selected
-                if (selectedBillingData == null || selectedBillingData.Length < 17)
-                {
-                    MessageBox.Show("No selected billing data. Please select an account first.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                // Validate and Save Billing
-                if (CheckBillingDate())
-                {
-                    InsertToBillingTable(selectedBillingData);
-                    MessageBox.Show("Billing record saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Invalid billing date. Data was not saved.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
             }
         }
 
@@ -78,90 +83,41 @@ namespace IGBARAS_WATER_DISTRICT
             panel.DrawToBitmap(bmp, new Rectangle(0, 0, panel.Width, panel.Height));
             return bmp;
         }
-        private void PrepareAndPrintDocument()
-        {
-            // Set up print document
-            billingPrintDocument.DefaultPageSettings.Landscape = false;
-
-            // Set paper size to Legal (8.5 x 14 inches)
-            PaperSize legalSize = new PaperSize("Legal", 850, 1400); // width and height in hundredths of an inch
-            billingPrintDocument.DefaultPageSettings.PaperSize = legalSize;
-
-            // Optional: Set margins
-            billingPrintDocument.DefaultPageSettings.Margins = new Margins(50, 50, 50, 50); // 0.5 inch margin
-
-            // Trigger the printing
-            PrintPreviewDialog preview = new PrintPreviewDialog();
-            preview.Document = billingPrintDocument;
-            preview.ShowDialog(); // or use billingPrintDocument.Print(); for direct print
-        }
-
         private void billingPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
         {
-            // Names for each copy
-            string[] copyNames = { "Concessionaire's Copy", "Records Copy", "File Copy" };
+            // Set label if needed
+            copyTypeLabel.Text = "Concessionaire's Copy";
 
-            int copiesPerPage = copyNames.Length;
-            int availableHeight = e.MarginBounds.Height;
-            int availableWidth = e.MarginBounds.Width;
+            // Capture the billing panel as image
+            Bitmap panelImage = CapturePanel(billingPanel);
 
-            // Set spacing between copies (in pixels)
-            int spacing = 10;
-            int totalSpacing = spacing * (copiesPerPage - 1);
-            int copyHeight = (availableHeight - totalSpacing) / copiesPerPage;
+            // Use the printable area
+            Rectangle marginBounds = e.MarginBounds;
 
-            int targetWidth = availableWidth;
-            int targetHeight = copyHeight;
+            // Calculate scaling factor to fit within bounds
+            float scale = Math.Min(
+                (float)marginBounds.Width / panelImage.Width,
+                (float)marginBounds.Height / panelImage.Height);
 
-            for (int i = 0; i < copiesPerPage; i++)
-            {
-                // Set the label for the copy type
-                copyTypeLabel.Text = copyNames[i];
+            int scaledWidth = (int)(panelImage.Width * scale);
+            int scaledHeight = (int)(panelImage.Height * scale);
 
-                // Capture the panel as bitmap
-                Bitmap panelImage = CapturePanel(billingPanel);
+            // Compute center position within margin bounds
+            int x = marginBounds.Left + (marginBounds.Width - scaledWidth) / 2;
+            int y = marginBounds.Top + (marginBounds.Height - scaledHeight) / 2;
 
-                // Calculate scale to fit width and height
-                float scale = Math.Min(
-                    (float)targetWidth / panelImage.Width,
-                    (float)targetHeight / panelImage.Height);
+            // Use high-quality rendering
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 
-                int printWidth = (int)(panelImage.Width * scale);
-                int printHeight = (int)(panelImage.Height * scale);
+            // Draw the scaled image at the center
+            e.Graphics.DrawImage(panelImage, new Rectangle(x, y, scaledWidth, scaledHeight));
 
-                int x = e.MarginBounds.Left + (targetWidth - printWidth) / 2;
-                int y = e.MarginBounds.Top + i * (copyHeight + spacing) + (copyHeight - printHeight) / 2;
+            panelImage.Dispose();
 
-                e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                e.Graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-
-                e.Graphics.DrawImage(panelImage, new Rectangle(x, y, printWidth, printHeight));
-
-                panelImage.Dispose();
-
-                // Draw cut indication line after every copy
-                int lineY = e.MarginBounds.Top + (i + 1) * copyHeight + i * spacing + spacing / 2;
-                using (Font cutFont = new Font("Arial", 6, FontStyle.Bold))
-                {
-                    // Measure the width of "✄"
-                    float scissorsWidth = e.Graphics.MeasureString("✄", cutFont).Width;
-                    // Measure the width of one "┈"
-                    float dashWidth = e.Graphics.MeasureString("┈", cutFont).Width;
-                    // Calculate total dashes to fill the width minus scissors
-                    int totalDashes = (int)Math.Floor((e.MarginBounds.Width - scissorsWidth) / dashWidth);
-                    int leftDashes = totalDashes / 2;
-                    int rightDashes = totalDashes - leftDashes;
-                    string cutText = new string('┈', leftDashes) + "✄┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈✄" + new string('┈', rightDashes);
-
-                    using (StringFormat sf = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    {
-                        RectangleF textRect = new RectangleF(e.MarginBounds.Left, lineY - 8, e.MarginBounds.Width, 16);
-                        e.Graphics.DrawString(cutText, cutFont, Brushes.Black, textRect, sf);
-                    }
-                }
-            }
+            e.HasMorePages = false;
         }
         /// <summary>
 
@@ -367,9 +323,12 @@ namespace IGBARAS_WATER_DISTRICT
             SetDateNow();
 
             // 🟡 Load data from DB to billingDataGridView
-            using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
+            using (var loadingForm = new LoadingForm())
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
+                var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
+                var task2 = DGVHelper.LoadDataToGridAsync(printBillDataGridView, "tb_bill_print", loadingForm);
+
+                await Task.WhenAll(task1, task2);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
@@ -427,7 +386,8 @@ namespace IGBARAS_WATER_DISTRICT
             taxExempted,
             discounted,
             billCode,
-            districtno
+            districtno,
+            balance
             };
 
 
@@ -509,7 +469,6 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
         }
-
         private void InsertToBillingTable(string[] data)
         {
             try
@@ -525,7 +484,7 @@ namespace IGBARAS_WATER_DISTRICT
                     taxexempt, seniorcitizen, billcode, districtno, fromreadingdate, toreadingdate, duedate, 
                     previousreading, presentreading, meterconsumed, charge, taxpercent, taxamount, 
                     senioramount, month, year, datebilled, arrearsamount, presentmeterconsumed, 
-                    adjustdebit, adjustcredit, partiallypaid, othermeterconsumed
+                    adjustdebit, adjustcredit, partiallypaid, othermeterconsumed, balance, paid
                 ) 
                 VALUES (
                     @accountno, @fullname, @address, @concessionairecode, @zonecode, @servicecode, @servicetype, 
@@ -533,7 +492,7 @@ namespace IGBARAS_WATER_DISTRICT
                     @taxexempt, @seniorcitizen, @billcode, @districtno, @fromreadingdate, @toreadingdate, @duedate, 
                     @previousreading, @presentreading, @meterconsumed, @charge, @taxpercent, @taxamount, 
                     @senioramount, @month, @year, @datebilled, @arrearsamount, @presentmeterconsumed, 
-                    @adjustdebit, @adjustcredit, @partiallypaid, @othermeterconsumed
+                    @adjustdebit, @adjustcredit, @partiallypaid, @othermeterconsumed, @balance, paid
                 )";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
@@ -567,13 +526,15 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@seniorcitizen", Convert.ToInt32(data[14]));
                         cmd.Parameters.AddWithValue("@billcode", data[4] + "-" + data[15]);
                         cmd.Parameters.AddWithValue("@districtno", Convert.ToInt32(data[16]));
+                        cmd.Parameters.AddWithValue("@balance", 0.00m);
+                        cmd.Parameters.AddWithValue("@paid", 0);
 
                         // Date values
                         cmd.Parameters.AddWithValue("@fromreadingdate", formattedFromDate);
                         cmd.Parameters.AddWithValue("@toreadingdate", formattedToDate);
                         cmd.Parameters.AddWithValue("@duedate", formattedDueDate);
                         cmd.Parameters.AddWithValue("@datebilled", formattedDateBilled);
-
+                        
                         // Reading and billing
                         cmd.Parameters.AddWithValue("@previousreading", Convert.ToInt32(previousReadingTextBox.Text.Trim()));
                         cmd.Parameters.AddWithValue("@presentreading", Convert.ToInt32(presentReadingTextBox.Text.Trim()));
@@ -606,6 +567,9 @@ namespace IGBARAS_WATER_DISTRICT
                 MessageBox.Show($"Error inserting billing record:\n{ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+
 
 
 
@@ -811,7 +775,17 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void meterConsumedReadingTextBox_TextChanged(object sender, EventArgs e)
         {
-            ClearWaterChargeLabels();
+            string input = meterConsumedReadingTextBox.Text.Trim();
+
+            // 🟡 Check if empty or zero
+            if (string.IsNullOrEmpty(input) || input == "0")
+            {
+                printSaveButton.Enabled = false;
+            }
+            else
+            {
+                printSaveButton.Enabled = true;
+            }
             // Try to parse the entered value as an integer
             if (int.TryParse(meterConsumedReadingTextBox.Text.Trim(), out int consumption))
             {
@@ -839,19 +813,21 @@ namespace IGBARAS_WATER_DISTRICT
             thirtyQuantityLabel.Text = thirtyUnitPriceLabel.Text = thirtyAmountLabel.Text = "";
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
-            presentReadingTextBox.Text = "";
-
+            presentReadingTextBox.Text = "0";
+            meterConsumedReadingTextBox.Text = "0";
             // Clear discount and tax labels
-            discountedLabel.Text = "0%";
-            discountedAmountLabel.Text = "0.00";
-            taxExemptedLabel.Text = "0%";
+            discountedLabel.Text = "0";
+            discountedAmountLabel.Text = "0";
+            taxExemptedLabel.Text = "0";
             exemptedAmountLabel.Text = "0.00";
             arrearsLabel.Text = "0.00";
             chargeLabel.Text = "0.00";
+           
             // Also clear totals
-            totalQuantityLabel.Text = "";
+            totalQuantityLabel.Text = "0";
             totalAmountLabel.Text = "0.00";
         }
+
 
         private async void syncButton_Click(object sender, EventArgs e)
         {

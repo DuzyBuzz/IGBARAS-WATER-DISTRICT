@@ -3,7 +3,7 @@
     public static class DbConfig
     {
         public static string ConnectionString { get; } =
-            "server=localhost;port=8000;user=root;password=password;database=db_igbaras;charset=latin1;"
+            "server=localhost;port=8000;user=root;password=password;database=db_igbaras;charset=latin1;Allow Zero DateTime=true;"
 
 ;
     }
