@@ -1916,6 +1916,7 @@
             presentReadingTextBox.Size = new Size(82, 19);
             presentReadingTextBox.TabIndex = 17;
             presentReadingTextBox.TextAlign = HorizontalAlignment.Center;
+            presentReadingTextBox.TextChanged += presentReadingTextBox_TextChanged;
             // 
             // previousReadingTextBox
             // 
@@ -2507,7 +2508,6 @@
             billIdTextBox.Name = "billIdTextBox";
             billIdTextBox.Size = new Size(120, 23);
             billIdTextBox.TabIndex = 26;
-            billIdTextBox.Visible = false;
             // 
             // label71
             // 

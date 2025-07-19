@@ -178,6 +178,7 @@
             clearButton = new Button();
             accountDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
+            taxpercent = new DataGridViewTextBoxColumn();
             fullname = new DataGridViewTextBoxColumn();
             presentreaddate = new DataGridViewTextBoxColumn();
             districtno = new DataGridViewTextBoxColumn();
@@ -1168,7 +1169,7 @@
             totalAmountLabel.Name = "totalAmountLabel";
             totalAmountLabel.Size = new Size(67, 23);
             totalAmountLabel.TabIndex = 3;
-            totalAmountLabel.Text = "00,000.00";
+            totalAmountLabel.Text = "0.00";
             totalAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label37
@@ -1201,6 +1202,7 @@
             tenQuantityLabel.Name = "tenQuantityLabel";
             tenQuantityLabel.Size = new Size(64, 23);
             tenQuantityLabel.TabIndex = 9;
+            tenQuantityLabel.Text = "0";
             tenQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tenUnitPriceLabel
@@ -1211,6 +1213,7 @@
             tenUnitPriceLabel.Name = "tenUnitPriceLabel";
             tenUnitPriceLabel.Size = new Size(64, 23);
             tenUnitPriceLabel.TabIndex = 10;
+            tenUnitPriceLabel.Text = "0.00";
             tenUnitPriceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tenAmountLabel
@@ -1221,7 +1224,7 @@
             tenAmountLabel.Name = "tenAmountLabel";
             tenAmountLabel.Size = new Size(67, 23);
             tenAmountLabel.TabIndex = 11;
-            tenAmountLabel.Text = "00,000.00";
+            tenAmountLabel.Text = "0.00";
             tenAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label45
@@ -1243,6 +1246,7 @@
             twentyUnitPriceLabel.Name = "twentyUnitPriceLabel";
             twentyUnitPriceLabel.Size = new Size(64, 23);
             twentyUnitPriceLabel.TabIndex = 14;
+            twentyUnitPriceLabel.Text = "0.00";
             twentyUnitPriceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // twentyAmountLabel
@@ -1253,7 +1257,7 @@
             twentyAmountLabel.Name = "twentyAmountLabel";
             twentyAmountLabel.Size = new Size(67, 23);
             twentyAmountLabel.TabIndex = 15;
-            twentyAmountLabel.Text = "00,000.00";
+            twentyAmountLabel.Text = "0.00";
             twentyAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label49
@@ -1275,6 +1279,7 @@
             thirtyUnitPriceLabel.Name = "thirtyUnitPriceLabel";
             thirtyUnitPriceLabel.Size = new Size(64, 23);
             thirtyUnitPriceLabel.TabIndex = 18;
+            thirtyUnitPriceLabel.Text = "0.00";
             thirtyUnitPriceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // thirtyAmountLabel
@@ -1285,7 +1290,7 @@
             thirtyAmountLabel.Name = "thirtyAmountLabel";
             thirtyAmountLabel.Size = new Size(67, 23);
             thirtyAmountLabel.TabIndex = 19;
-            thirtyAmountLabel.Text = "00,000.00";
+            thirtyAmountLabel.Text = "0.00";
             thirtyAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label53
@@ -1307,6 +1312,7 @@
             fortyUnitPriceLabel.Name = "fortyUnitPriceLabel";
             fortyUnitPriceLabel.Size = new Size(64, 23);
             fortyUnitPriceLabel.TabIndex = 22;
+            fortyUnitPriceLabel.Text = "0.00";
             fortyUnitPriceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // fortyAmountLabel
@@ -1317,7 +1323,7 @@
             fortyAmountLabel.Name = "fortyAmountLabel";
             fortyAmountLabel.Size = new Size(67, 23);
             fortyAmountLabel.TabIndex = 23;
-            fortyAmountLabel.Text = "00,000.00";
+            fortyAmountLabel.Text = "0.00";
             fortyAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label57
@@ -1339,6 +1345,7 @@
             fortyUpQuantityLabel.Name = "fortyUpQuantityLabel";
             fortyUpQuantityLabel.Size = new Size(64, 23);
             fortyUpQuantityLabel.TabIndex = 25;
+            fortyUpQuantityLabel.Text = "0";
             fortyUpQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // fortyUpUnitPriceLabel
@@ -1349,6 +1356,7 @@
             fortyUpUnitPriceLabel.Name = "fortyUpUnitPriceLabel";
             fortyUpUnitPriceLabel.Size = new Size(64, 23);
             fortyUpUnitPriceLabel.TabIndex = 26;
+            fortyUpUnitPriceLabel.Text = "0.00";
             fortyUpUnitPriceLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // fortyUpAmountLabel
@@ -1359,7 +1367,7 @@
             fortyUpAmountLabel.Name = "fortyUpAmountLabel";
             fortyUpAmountLabel.Size = new Size(67, 23);
             fortyUpAmountLabel.TabIndex = 27;
-            fortyUpAmountLabel.Text = "00,000.00";
+            fortyUpAmountLabel.Text = "0.00";
             fortyUpAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // totalQuantityLabel
@@ -1370,6 +1378,7 @@
             totalQuantityLabel.Name = "totalQuantityLabel";
             totalQuantityLabel.Size = new Size(64, 23);
             totalQuantityLabel.TabIndex = 6;
+            totalQuantityLabel.Text = "0";
             totalQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label35
@@ -1391,6 +1400,7 @@
             twentyQuantityLabel.Name = "twentyQuantityLabel";
             twentyQuantityLabel.Size = new Size(64, 23);
             twentyQuantityLabel.TabIndex = 28;
+            twentyQuantityLabel.Text = "0";
             twentyQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // thirtyQuantityLabel
@@ -1401,6 +1411,7 @@
             thirtyQuantityLabel.Name = "thirtyQuantityLabel";
             thirtyQuantityLabel.Size = new Size(64, 23);
             thirtyQuantityLabel.TabIndex = 29;
+            thirtyQuantityLabel.Text = "0";
             thirtyQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // fortyQuantityLabel
@@ -1411,6 +1422,7 @@
             fortyQuantityLabel.Name = "fortyQuantityLabel";
             fortyQuantityLabel.Size = new Size(64, 23);
             fortyQuantityLabel.TabIndex = 30;
+            fortyQuantityLabel.Text = "0";
             fortyQuantityLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel20
@@ -1478,7 +1490,7 @@
             chargeLabel.Name = "chargeLabel";
             chargeLabel.Size = new Size(67, 19);
             chargeLabel.TabIndex = 19;
-            chargeLabel.Text = "00,000.00";
+            chargeLabel.Text = "0.00";
             chargeLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // arrearsLabel
@@ -1489,7 +1501,7 @@
             arrearsLabel.Name = "arrearsLabel";
             arrearsLabel.Size = new Size(67, 19);
             arrearsLabel.TabIndex = 15;
-            arrearsLabel.Text = "00,000.00";
+            arrearsLabel.Text = "0.00";
             arrearsLabel.TextAlign = ContentAlignment.MiddleCenter;
             arrearsLabel.Click += arrearsLabel_Click;
             // 
@@ -1501,7 +1513,7 @@
             exemptedAmountLabel.Name = "exemptedAmountLabel";
             exemptedAmountLabel.Size = new Size(67, 19);
             exemptedAmountLabel.TabIndex = 7;
-            exemptedAmountLabel.Text = "00,000.00";
+            exemptedAmountLabel.Text = "0.00";
             exemptedAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // discountedLabel
@@ -1512,6 +1524,7 @@
             discountedLabel.Name = "discountedLabel";
             discountedLabel.Size = new Size(64, 19);
             discountedLabel.TabIndex = 1;
+            discountedLabel.Text = "0%";
             discountedLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // discountedAmountLabel
@@ -1522,7 +1535,7 @@
             discountedAmountLabel.Name = "discountedAmountLabel";
             discountedAmountLabel.Size = new Size(67, 19);
             discountedAmountLabel.TabIndex = 3;
-            discountedAmountLabel.Text = "00,000.00";
+            discountedAmountLabel.Text = "0.00";
             discountedAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label87
@@ -1605,6 +1618,7 @@
             taxExemptedLabel.Name = "taxExemptedLabel";
             taxExemptedLabel.Size = new Size(64, 19);
             taxExemptedLabel.TabIndex = 23;
+            taxExemptedLabel.Text = "2%";
             taxExemptedLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel22
@@ -1879,6 +1893,7 @@
             presentReadingTextBox.Name = "presentReadingTextBox";
             presentReadingTextBox.Size = new Size(82, 19);
             presentReadingTextBox.TabIndex = 17;
+            presentReadingTextBox.Text = "0";
             presentReadingTextBox.TextAlign = HorizontalAlignment.Center;
             presentReadingTextBox.TextChanged += presentReadingTextBox_TextChanged;
             // 
@@ -1890,8 +1905,10 @@
             previousReadingTextBox.Location = new Point(1, 27);
             previousReadingTextBox.Margin = new Padding(0);
             previousReadingTextBox.Name = "previousReadingTextBox";
+            previousReadingTextBox.ReadOnly = true;
             previousReadingTextBox.Size = new Size(82, 19);
             previousReadingTextBox.TabIndex = 16;
+            previousReadingTextBox.Text = "0";
             previousReadingTextBox.TextAlign = HorizontalAlignment.Center;
             // 
             // meterConsumedReadingTextBox
@@ -1905,6 +1922,7 @@
             meterConsumedReadingTextBox.ReadOnly = true;
             meterConsumedReadingTextBox.Size = new Size(83, 19);
             meterConsumedReadingTextBox.TabIndex = 15;
+            meterConsumedReadingTextBox.Text = "0";
             meterConsumedReadingTextBox.TextAlign = HorizontalAlignment.Center;
             meterConsumedReadingTextBox.TextChanged += meterConsumedReadingTextBox_TextChanged;
             // 
@@ -2169,7 +2187,7 @@
             accountDataGridView.BackgroundColor = Color.White;
             accountDataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             accountDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, presentreaddate, districtno, concessionairecode, zonecode, servicecode, servicetype, meterno, dueexempt, withholdingtax, wtpercent, scpercent, address, routeno, billcodex, balancex, seniorcitizen, taxexempt });
+            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, taxpercent, fullname, presentreaddate, districtno, concessionairecode, zonecode, servicecode, servicetype, meterno, dueexempt, withholdingtax, wtpercent, scpercent, address, routeno, billcodex, balancex, seniorcitizen, taxexempt });
             accountDataGridView.Dock = DockStyle.Fill;
             accountDataGridView.Location = new Point(3, 70);
             accountDataGridView.Name = "accountDataGridView";
@@ -2189,6 +2207,15 @@
             accountno.Name = "accountno";
             accountno.ReadOnly = true;
             accountno.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // taxpercent
+            // 
+            taxpercent.DataPropertyName = "taxpercent";
+            taxpercent.HeaderText = "taxpercent";
+            taxpercent.Name = "taxpercent";
+            taxpercent.ReadOnly = true;
+            taxpercent.Visible = false;
+            taxpercent.Width = 88;
             // 
             // fullname
             // 
@@ -2677,7 +2704,9 @@
         private DataGridView printBillDataGridView;
         private PrintPreviewDialog printPreviewDialog;
         private Label extractedBillNumberLabel;
+        private Label billCodeLabel;
         private DataGridViewTextBoxColumn accountno;
+        private DataGridViewTextBoxColumn taxpercent;
         private DataGridViewTextBoxColumn fullname;
         private DataGridViewTextBoxColumn presentreaddate;
         private DataGridViewTextBoxColumn districtno;
@@ -2696,6 +2725,5 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
-        private Label billCodeLabel;
     }
 }

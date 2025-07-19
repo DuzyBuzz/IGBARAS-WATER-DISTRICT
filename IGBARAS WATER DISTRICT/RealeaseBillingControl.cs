@@ -425,12 +425,32 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@taxexempt", Convert.ToInt32(data[13]));
                         cmd.Parameters.AddWithValue("@seniorcitizen", Convert.ToInt32(data[14]));
                         cmd.Parameters.AddWithValue("@districtno", Convert.ToInt32(data[16]));
-                        cmd.Parameters.AddWithValue("@balance", Convert.ToDecimal(data[17]));
+                        cmd.Parameters.AddWithValue("@balance", Convert.ToDecimal(chargeLabel.Text.Trim()));
 
                         // Auto-calculated / UI values
                         cmd.Parameters.AddWithValue("@billcode", billCodeLabel.Text.Trim()); 
                         cmd.Parameters.AddWithValue("@billnumber", Convert.ToInt32(extractedBillNumberLabel.Text.Trim())); // the int part only
-                        cmd.Parameters.AddWithValue("@fromreadingdate", formattedFromDate);
+                                                                                                                           // Check if the label is empty
+                        if (string.IsNullOrWhiteSpace(fromReadingDateLabel.Text))
+                        {
+                            // If empty, assign "0000-00-00" as a string
+                            cmd.Parameters.AddWithValue("@fromreadingdate", DBNull.Value);
+                        }
+                        else
+                        {
+                            // Try to parse the date
+                            if (DateTime.TryParse(fromReadingDateLabel.Text, out DateTime parsedDate))
+                            {
+                                // Format and add
+                                cmd.Parameters.AddWithValue("@fromreadingdate", parsedDate.ToString("yyyy-MM-dd"));
+                            }
+                            else
+                            {
+                                // If parsing fails (invalid format), still fall back to "0000-00-00"
+                                cmd.Parameters.AddWithValue("@fromreadingdate", "0000-00-00");
+                            }
+                        }
+
                         cmd.Parameters.AddWithValue("@toreadingdate", formattedToDate);
                         cmd.Parameters.AddWithValue("@duedate", formattedDueDate);
                         cmd.Parameters.AddWithValue("@duegraceperiod", formattedDueDate);
@@ -445,11 +465,10 @@ namespace IGBARAS_WATER_DISTRICT
                         // Handle discount/tax amounts safely
                         decimal.TryParse(exemptedAmountLabel.Text.Replace("%", "").Trim(), out decimal taxAmount);
                         decimal.TryParse(discountedAmountLabel.Text.Replace("%", "").Trim(), out decimal discountAmount);
-                        decimal.TryParse(arrearsLabel.Text.Trim(), out decimal arrearsAmount);
 
                         cmd.Parameters.AddWithValue("@taxamount", taxAmount);
                         cmd.Parameters.AddWithValue("@senioramount", discountAmount);
-                        cmd.Parameters.AddWithValue("@arrearsamount", arrearsAmount);
+                        cmd.Parameters.AddWithValue("@arrearsamount", Convert.ToDecimal(arrearsLabel.Text.Trim()));
                         cmd.Parameters.AddWithValue("@wtamount", 0.00m); // Set to 0.00 unless specified
 
                         cmd.Parameters.AddWithValue("@month", DateTime.Now.Month);
@@ -515,6 +534,8 @@ namespace IGBARAS_WATER_DISTRICT
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             ClearWaterChargeLabels();
+            fromReadingDateLabel.Text = "";
+            previousReadingTextBox.Text = "0";
             meterConsumedReadingTextBox.Text = "";
             totalQuantityLabel.Text = "";
             DisableButton();
@@ -543,6 +564,7 @@ namespace IGBARAS_WATER_DISTRICT
             string balance = selectedRow.Cells["balancex"].Value?.ToString();
             string districtno = selectedRow.Cells["districtno"].Value?.ToString();
 
+
             selectedBillingData = new string[]
             {
             accountNo,
@@ -562,24 +584,22 @@ namespace IGBARAS_WATER_DISTRICT
             discounted,
             billCode,
             districtno,
-            balance
+            balance,
             };
 
 
             discountedLabel.Text = scPercent + '%';
-
             // Tax Exempt
             if (taxExempted == "0")
             {
                 taxExemptedLabel.Visible = true;
                 taxExemptedLabel.Text = "2%";
+
             }
             else
             {
-                taxExemptedLabel.Visible = false;
+                taxExemptedLabel.Text = "0%";
             }
-
-
 
             // 🟦 Update UI fields
             accountNumberTextBox.Text = accountNo;
@@ -603,7 +623,15 @@ namespace IGBARAS_WATER_DISTRICT
 
                 // this previous reading is the present reading of the last bill
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
-                arrearsLabel.Text = balance;
+                if (decimal.TryParse(balance, out decimal parsedBalance))
+                {
+                    arrearsLabel.Text = parsedBalance.ToString("N2");
+                }
+                else
+                {
+                    arrearsLabel.Text = "0.00"; // fallback if balance is null or invalid
+                }
+
 
 
 
@@ -737,40 +765,6 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-        private void amountPaidTextBox_TextChanged(object sender, EventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            if (string.IsNullOrWhiteSpace(textBox.Text))
-                return;
-
-            // Save cursor position
-            int cursorPosition = textBox.SelectionStart;
-
-            // Remove commas first
-            string rawText = textBox.Text.Replace(",", "");
-
-            // Try parse
-            if (decimal.TryParse(rawText, out decimal value))
-            {
-                // Format using helper
-                string formattedText = NumberFormatterHelper.FormatWithCommas(value);
-
-                // Update only if changed to avoid flicker
-                if (textBox.Text != formattedText)
-                {
-                    textBox.Text = formattedText;
-
-                    // Set cursor at end (you can improve to restore exact position if needed)
-                    textBox.SelectionStart = textBox.Text.Length;
-                }
-            }
-            else
-            {
-                // Invalid input, clear or handle as needed
-                textBox.Text = "";
-            }
-        }
         private void CalculateWaterCharges(int totalConsumption)
         {
             // Define the bracket rates and label prefixes using English words
@@ -846,7 +840,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (decimal.TryParse(discountText, out decimal percent1))
             {
                 scDiscounted = totalAmount * (percent1 / 100);
-                discountedAmountLabel.Text = scDiscounted.ToString("0.00");
+                discountedAmountLabel.Text = scDiscounted.ToString("N2");
             }
             else
             {
@@ -857,7 +851,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (decimal.TryParse(taxAddedText, out decimal percent2))
             {
                 taxAdded = totalAmount * (percent2 / 100);
-                exemptedAmountLabel.Text = taxAdded.ToString("0.00");
+                exemptedAmountLabel.Text = taxAdded.ToString("N2");
             }
             else
             {
@@ -878,7 +872,7 @@ namespace IGBARAS_WATER_DISTRICT
             decimal chargeSubTotal = (totalAmount - scDiscounted + taxAdded + arrears);
 
             // Display formatted value
-            chargeLabel.Text = chargeSubTotal.ToString("0.00");
+            chargeLabel.Text = chargeSubTotal.ToString("N2");
 
         }
 
@@ -898,10 +892,9 @@ namespace IGBARAS_WATER_DISTRICT
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
             presentReadingTextBox.Text = "";
-            discountedAmountLabel.Text = "";
-            exemptedAmountLabel.Text = "";
-            chargeLabel.Text = "";
-
+            discountedAmountLabel.Text = "0";
+            exemptedAmountLabel.Text = "0";
+            chargeLabel.Text = ""; 
         }
         private void ClearBillingLabels()
         {
