@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillingControl));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -42,6 +43,8 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
+            billSettingsListView = new ListView();
+            oberDueDaysLabel = new Label();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -168,6 +171,7 @@
             tableLayoutPanel13 = new TableLayoutPanel();
             userIdLabel = new Label();
             label24 = new Label();
+            accountnoBillHistory = new Label();
             billPaidButton = new Button();
             accountSearchPanel = new Panel();
             tableLayoutPanel25 = new TableLayoutPanel();
@@ -200,9 +204,9 @@
             clearButton = new Button();
             panel6 = new Panel();
             panel2 = new Panel();
+            billSetingsDataGridView = new DataGridView();
             billIdTextBox = new TextBox();
             label71 = new Label();
-            accountnoBillHistory = new Label();
             billDataGridView = new DataGridView();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
@@ -238,6 +242,7 @@
             tableLayoutPanel26.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
             panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)billSetingsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -356,7 +361,10 @@
             // 
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
+            panel3.Controls.Add(billSettingsListView);
+            panel3.Controls.Add(oberDueDaysLabel);
             panel3.Controls.Add(billingPanel);
+            panel3.Controls.Add(accountnoBillHistory);
             panel3.Controls.Add(billPaidButton);
             panel3.Dock = DockStyle.Fill;
             panel3.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -365,13 +373,37 @@
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
             // 
+            // billSettingsListView
+            // 
+            billSettingsListView.Alignment = ListViewAlignment.Left;
+            billSettingsListView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            billSettingsListView.BorderStyle = BorderStyle.None;
+            billSettingsListView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            billSettingsListView.Location = new Point(856, 14);
+            billSettingsListView.Name = "billSettingsListView";
+            billSettingsListView.Size = new Size(184, 532);
+            billSettingsListView.TabIndex = 27;
+            billSettingsListView.UseCompatibleStateImageBehavior = false;
+            billSettingsListView.View = View.Details;
+            // 
+            // oberDueDaysLabel
+            // 
+            oberDueDaysLabel.Anchor = AnchorStyles.Bottom;
+            oberDueDaysLabel.AutoSize = true;
+            oberDueDaysLabel.Font = new Font("Arial", 11.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            oberDueDaysLabel.Location = new Point(475, 529);
+            oberDueDaysLabel.Name = "oberDueDaysLabel";
+            oberDueDaysLabel.Size = new Size(61, 17);
+            oberDueDaysLabel.TabIndex = 26;
+            oberDueDaysLabel.Text = "overdue";
+            // 
             // billingPanel
             // 
             billingPanel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel1);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(127, 6);
+            billingPanel.Location = new Point(26, 12);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(809, 491);
@@ -2085,12 +2117,23 @@
             label24.Text = "ID No.";
             label24.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // accountnoBillHistory
+            // 
+            accountnoBillHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            accountnoBillHistory.AutoSize = true;
+            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            accountnoBillHistory.Location = new Point(14, 524);
+            accountnoBillHistory.Name = "accountnoBillHistory";
+            accountnoBillHistory.Size = new Size(194, 24);
+            accountnoBillHistory.TabIndex = 22;
+            accountnoBillHistory.Text = "Account Bill History";
+            // 
             // billPaidButton
             // 
             billPaidButton.Anchor = AnchorStyles.None;
             billPaidButton.BackColor = Color.White;
             billPaidButton.Font = new Font("Arial", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billPaidButton.Location = new Point(816, 506);
+            billPaidButton.Location = new Point(715, 512);
             billPaidButton.Name = "billPaidButton";
             billPaidButton.Size = new Size(120, 40);
             billPaidButton.TabIndex = 21;
@@ -2144,7 +2187,6 @@
             accountDataGridView.Size = new Size(297, 482);
             accountDataGridView.TabIndex = 25;
             accountDataGridView.CellClick += accountDataGridView_CellClick;
-            accountDataGridView.CellContentClick += accountDataGridView_CellContentClick_1;
             // 
             // accountno
             // 
@@ -2167,10 +2209,10 @@
             // presentreaddates
             // 
             presentreaddates.DataPropertyName = "presentreaddate";
-            presentreaddates.HeaderText = "Date Billed";
+            presentreaddates.HeaderText = "Last Bill Date";
             presentreaddates.Name = "presentreaddates";
             presentreaddates.ReadOnly = true;
-            presentreaddates.Width = 88;
+            presentreaddates.Width = 99;
             // 
             // districtno
             // 
@@ -2430,9 +2472,9 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(billSetingsDataGridView);
             panel2.Controls.Add(billIdTextBox);
             panel2.Controls.Add(label71);
-            panel2.Controls.Add(accountnoBillHistory);
             panel2.Controls.Add(billDataGridView);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(4, 576);
@@ -2440,10 +2482,28 @@
             panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
             // 
+            // billSetingsDataGridView
+            // 
+            billSetingsDataGridView.AllowUserToAddRows = false;
+            billSetingsDataGridView.AllowUserToDeleteRows = false;
+            billSetingsDataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            billSetingsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            billSetingsDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            billSetingsDataGridView.BackgroundColor = Color.White;
+            billSetingsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billSetingsDataGridView.Location = new Point(803, 45);
+            billSetingsDataGridView.Name = "billSetingsDataGridView";
+            billSetingsDataGridView.ReadOnly = true;
+            billSetingsDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            billSetingsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            billSetingsDataGridView.Size = new Size(571, 309);
+            billSetingsDataGridView.TabIndex = 27;
+            // 
             // billIdTextBox
             // 
             billIdTextBox.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            billIdTextBox.Location = new Point(254, 50);
+            billIdTextBox.Location = new Point(279, 19);
             billIdTextBox.Margin = new Padding(0);
             billIdTextBox.Name = "billIdTextBox";
             billIdTextBox.Size = new Size(120, 23);
@@ -2460,16 +2520,6 @@
             label71.TabIndex = 25;
             label71.Text = "Account Bill History";
             // 
-            // accountnoBillHistory
-            // 
-            accountnoBillHistory.AutoSize = true;
-            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(26, 52);
-            accountnoBillHistory.Name = "accountnoBillHistory";
-            accountnoBillHistory.Size = new Size(194, 24);
-            accountnoBillHistory.TabIndex = 22;
-            accountnoBillHistory.Text = "Account Bill History";
-            // 
             // billDataGridView
             // 
             billDataGridView.AllowUserToAddRows = false;
@@ -2478,13 +2528,13 @@
             billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             billDataGridView.BackgroundColor = Color.White;
             billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            billDataGridView.Location = new Point(26, 83);
+            billDataGridView.Location = new Point(26, 45);
             billDataGridView.Name = "billDataGridView";
             billDataGridView.ReadOnly = true;
             billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            billDataGridView.Size = new Size(1328, 271);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            billDataGridView.Size = new Size(742, 309);
             billDataGridView.TabIndex = 24;
             // 
             // BillingControl
@@ -2504,6 +2554,7 @@
             panel1.ResumeLayout(false);
             tableLayoutPanel24.ResumeLayout(false);
             panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             billingPanel.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -2555,6 +2606,7 @@
             tableLayoutPanel12.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)billSetingsDataGridView).EndInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -2735,5 +2787,8 @@
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
         private DataGridViewTextBoxColumn presentreaddate;
+        private Label oberDueDaysLabel;
+        private DataGridView billSetingsDataGridView;
+        private ListView billSettingsListView;
     }
 }

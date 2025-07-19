@@ -41,7 +41,6 @@ namespace IGBARAS_WATER_DISTRICT
             transactionsButton = new Button();
             readingButton = new Button();
             billingButton = new Button();
-            dashboardButton = new Button();
             panel1 = new Panel();
             panel7 = new Panel();
             pictureBox1 = new PictureBox();
@@ -69,7 +68,6 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.Controls.Add(transactionsButton);
             sidebarPanel.Controls.Add(readingButton);
             sidebarPanel.Controls.Add(billingButton);
-            sidebarPanel.Controls.Add(dashboardButton);
             sidebarPanel.Controls.Add(panel1);
             sidebarPanel.Controls.Add(logoutButton);
             sidebarPanel.Dock = DockStyle.Left;
@@ -115,7 +113,7 @@ namespace IGBARAS_WATER_DISTRICT
             transactionsButton.FlatAppearance.BorderSize = 0;
             transactionsButton.FlatStyle = FlatStyle.Flat;
             transactionsButton.Font = new Font("Arial", 12F);
-            transactionsButton.Location = new Point(0, 299);
+            transactionsButton.Location = new Point(0, 254);
             transactionsButton.Name = "transactionsButton";
             transactionsButton.Size = new Size(206, 45);
             transactionsButton.TabIndex = 9;
@@ -129,7 +127,7 @@ namespace IGBARAS_WATER_DISTRICT
             readingButton.FlatAppearance.BorderSize = 0;
             readingButton.FlatStyle = FlatStyle.Flat;
             readingButton.Font = new Font("Arial", 12F);
-            readingButton.Location = new Point(0, 254);
+            readingButton.Location = new Point(0, 209);
             readingButton.Name = "readingButton";
             readingButton.Size = new Size(206, 45);
             readingButton.TabIndex = 7;
@@ -145,27 +143,13 @@ namespace IGBARAS_WATER_DISTRICT
             billingButton.FlatStyle = FlatStyle.Flat;
             billingButton.Font = new Font("Arial", 12F);
             billingButton.ImageAlign = ContentAlignment.MiddleLeft;
-            billingButton.Location = new Point(0, 209);
+            billingButton.Location = new Point(0, 164);
             billingButton.Name = "billingButton";
             billingButton.Size = new Size(206, 45);
             billingButton.TabIndex = 8;
             billingButton.Text = "💸 Billing";
             billingButton.TextAlign = ContentAlignment.MiddleLeft;
             billingButton.Click += billingButton_Click;
-            // 
-            // dashboardButton
-            // 
-            dashboardButton.Dock = DockStyle.Top;
-            dashboardButton.FlatAppearance.BorderSize = 0;
-            dashboardButton.FlatStyle = FlatStyle.Flat;
-            dashboardButton.Font = new Font("Arial", 12F);
-            dashboardButton.Location = new Point(0, 164);
-            dashboardButton.Name = "dashboardButton";
-            dashboardButton.Size = new Size(206, 45);
-            dashboardButton.TabIndex = 10;
-            dashboardButton.Text = "📊 Dashboard";
-            dashboardButton.TextAlign = ContentAlignment.MiddleLeft;
-            dashboardButton.Click += dashboardButton_Click;
             // 
             // panel1
             // 
@@ -307,7 +291,6 @@ namespace IGBARAS_WATER_DISTRICT
         private Button transactionsButton;
         private Button readingButton;
         private Button billingButton;
-        private Button dashboardButton;
         private Panel panel1;
         private Panel panel5;
         private Panel panel4;
@@ -320,5 +303,6 @@ namespace IGBARAS_WATER_DISTRICT
         private Panel panel6;
         private Label usernameLabel;
         public Panel mainPanel;
+        private Button reloadButton;
     }
 }

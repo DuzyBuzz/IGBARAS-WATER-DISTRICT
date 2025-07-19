@@ -69,9 +69,30 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LoadControl("Dashboard");
+            LoadControl("Billing");
             usernameLabel.Text = $"{UserCredentials.Username}";
         }
+        private void reloadButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(currentControlName))
+            {
+                MessageBox.Show("No control currently loaded.", "Reload Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 🧹 Remove the old control from panel
+            if (loadedControls.ContainsKey(currentControlName))
+            {
+                var oldControl = loadedControls[currentControlName];
+                mainPanel.Controls.Remove(oldControl);
+                oldControl.Dispose(); // Optional but good practice
+                loadedControls.Remove(currentControlName);
+            }
+
+            LoadControl("Billing");
+
+        }
+
 
         private void logoutButton_Click(object sender, EventArgs e)
         {

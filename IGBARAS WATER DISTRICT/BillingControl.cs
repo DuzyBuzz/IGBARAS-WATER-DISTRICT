@@ -307,11 +307,14 @@ namespace IGBARAS_WATER_DISTRICT
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
             SetDateNow();
-
+            LoadBillSettingsAsSideways();
             // 🟡 Load data from DB to billingDataGridView
-            using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
+            using (var loadingForm = new LoadingForm())
             {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
+                var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
+                var task2 = DGVHelper.LoadDataToGridAsync(billSetingsDataGridView, "tb_billsettings", loadingForm);
+
+                await Task.WhenAll(task1, task2);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
@@ -320,6 +323,50 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
+        private void LoadBillSettingsAsSideways()
+        {
+            billSettingsListView.Clear(); // clear old data
+
+            // Create 2 columns: Setting | Value
+            billSettingsListView.Columns.Add("Bill Setting", 100, HorizontalAlignment.Left);
+            billSettingsListView.Columns.Add("Value", 70, HorizontalAlignment.Left);
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    conn.Open();
+
+                    // 🔹 Get only 1 row (settings are usually single row)
+                    string query = "SELECT * FROM tb_billsettings LIMIT 1";
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // 🔹 Loop through each column and display as a row
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                string columnName = reader.GetName(i);
+                                string columnValue = reader[i].ToString();
+
+                                ListViewItem item = new ListViewItem(columnName); // left column
+                                item.SubItems.Add(columnValue);                  // right column
+                                billSettingsListView.Items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No settings found.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading settings: " + ex.Message);
+            }
+        }
 
 
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -391,8 +438,8 @@ namespace IGBARAS_WATER_DISTRICT
                 dueDateLabel.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
                 previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
-                arrearsLabel.Text = readingInfo.Arrears.ToString();
                 amountPaidTextBox.Text = readingInfo.AmountPaid.ToString();
+                arrearsLabel.Text = readingInfo.Arrears.ToString();
                 int meterConsumedReading = 0;
 
                 // ➕ Calculate present reading
@@ -430,62 +477,6 @@ namespace IGBARAS_WATER_DISTRICT
                 }
             }
         }
-
-        private void UpdateBillingAndConcessionaire(int billId, decimal amountPaid, decimal newBalance, string billStatus, string accountNo, string billCode)
-{
-    try
-    {
-        using (MySqlConnection conn = new MySqlConnection("your_connection_string_here"))
-        {
-            conn.Open();
-
-            using (MySqlTransaction transaction = conn.BeginTransaction())
-            {
-                // 1️⃣ Update tb_bill
-                string updateBillQuery = @"
-                    UPDATE tb_bill 
-                    SET amountpaid = @amountpaid,
-                        balance = @balance,
-                        billstatus = @billstatus,
-                        paymentdate = @paymentdate
-                    WHERE bill_id = @bill_id";
-
-                using (MySqlCommand cmd = new MySqlCommand(updateBillQuery, conn, transaction))
-                {
-                    cmd.Parameters.AddWithValue("@amountpaid", amountPaid);
-                    cmd.Parameters.AddWithValue("@balance", newBalance);
-                    cmd.Parameters.AddWithValue("@billstatus", billStatus);
-                    cmd.Parameters.AddWithValue("@paymentdate", DateTime.Now.ToString("yyyy-MM-dd"));
-                    cmd.Parameters.AddWithValue("@bill_id", billId);
-                    cmd.ExecuteNonQuery();
-                }
-
-                // 2️⃣ Update tb_concessionaire balance and latest billcode
-                string updateConcessionaireQuery = @"
-                    UPDATE tb_concessionaire
-                    SET balance = @newbalance,
-                        billcode = @billcode
-                    WHERE accountno = @accountno";
-
-                using (MySqlCommand cmd = new MySqlCommand(updateConcessionaireQuery, conn, transaction))
-                {
-                    cmd.Parameters.AddWithValue("@newbalance", newBalance);
-                    cmd.Parameters.AddWithValue("@billcode", billCode);
-                    cmd.Parameters.AddWithValue("@accountno", accountNo);
-                    cmd.ExecuteNonQuery();
-                }
-
-                transaction.Commit();
-                MessageBox.Show("Billing and concessionaire updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show("Error while updating bill: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-    }
-}
-
         /// <summary>
         /// JUST LIKE THE FUNCTION IN MYSQL THIS IS MY GET PENALTY
         /// </summary>
@@ -565,6 +556,7 @@ namespace IGBARAS_WATER_DISTRICT
                             DateTime now = DateTime.Now.Date;
                             DateTime effectiveDueDate = dueDate.AddDays(gracePeriod);
                             int overdueDays = (now - effectiveDueDate).Days;
+                            oberDueDaysLabel.Text = $"{overdueDays} days overdue";
 
                             decimal penaltyPercent = 0;
 
@@ -946,7 +938,6 @@ namespace IGBARAS_WATER_DISTRICT
             discountedAmountLabel.Text = "";
             taxExemptedLabel.Text = "";
             exemptedAmountLabel.Text = "";
-            arrearsLabel.Text = "";
             chargeLabel.Text = "0.00";
             // Also clear totals
             totalQuantityLabel.Text = "";

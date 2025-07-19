@@ -31,9 +31,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealeaseBillingControl));
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -171,7 +171,6 @@
             tableLayoutPanel25 = new TableLayoutPanel();
             tableLayoutPanel26 = new TableLayoutPanel();
             label31 = new Label();
-            syncButton = new Button();
             tableLayoutPanel12 = new TableLayoutPanel();
             searchButton = new Button();
             clearButton = new Button();
@@ -202,6 +201,7 @@
             label71 = new Label();
             billDataGridView = new DataGridView();
             billdataTextBox = new TextBox();
+            printPreviewDialog = new PrintPreviewDialog();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel24.SuspendLayout();
@@ -1469,6 +1469,7 @@
             arrearsLabel.TabIndex = 15;
             arrearsLabel.Text = "00,000.00";
             arrearsLabel.TextAlign = ContentAlignment.MiddleCenter;
+            arrearsLabel.Click += arrearsLabel_Click;
             // 
             // exemptedAmountLabel
             // 
@@ -2029,7 +2030,7 @@
             accountnoBillHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             accountnoBillHistory.AutoSize = true;
             accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(12, 525);
+            accountnoBillHistory.Location = new Point(22, 528);
             accountnoBillHistory.Name = "accountnoBillHistory";
             accountnoBillHistory.Size = new Size(119, 24);
             accountnoBillHistory.TabIndex = 22;
@@ -2068,7 +2069,6 @@
             tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26.40264F));
             tableLayoutPanel26.Controls.Add(label31, 0, 0);
             tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
-            tableLayoutPanel26.Controls.Add(syncButton, 1, 0);
             tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
             tableLayoutPanel26.Dock = DockStyle.Fill;
             tableLayoutPanel26.Location = new Point(0, 0);
@@ -2087,25 +2087,10 @@
             label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
             label31.Location = new Point(3, 0);
             label31.Name = "label31";
-            label31.Size = new Size(110, 32);
+            label31.Size = new Size(176, 32);
             label31.TabIndex = 25;
-            label31.Text = "Accounts";
+            label31.Text = "Concessionaire";
             label31.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // syncButton
-            // 
-            syncButton.BackColor = Color.White;
-            syncButton.Dock = DockStyle.Fill;
-            syncButton.FlatStyle = FlatStyle.System;
-            syncButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            syncButton.Location = new Point(223, 0);
-            syncButton.Margin = new Padding(0);
-            syncButton.Name = "syncButton";
-            syncButton.Size = new Size(80, 32);
-            syncButton.TabIndex = 27;
-            syncButton.Text = "Sync 🔄";
-            syncButton.UseVisualStyleBackColor = false;
-            syncButton.Click += syncButton_Click;
             // 
             // tableLayoutPanel12
             // 
@@ -2166,12 +2151,11 @@
             accountDataGridView.Name = "accountDataGridView";
             accountDataGridView.ReadOnly = true;
             accountDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle4;
             accountDataGridView.Size = new Size(297, 482);
             accountDataGridView.TabIndex = 23;
             accountDataGridView.CellClick += accountDataGridView_CellClick;
-            accountDataGridView.CellContentClick += accountDataGridView_CellContentClick;
             // 
             // accountno
             // 
@@ -2194,10 +2178,10 @@
             // presentreaddate
             // 
             presentreaddate.DataPropertyName = "presentreaddate";
-            presentreaddate.HeaderText = "Date Billed";
+            presentreaddate.HeaderText = "Last Bill Date";
             presentreaddate.Name = "presentreaddate";
             presentreaddate.ReadOnly = true;
-            presentreaddate.Width = 88;
+            presentreaddate.Width = 99;
             // 
             // districtno
             // 
@@ -2383,8 +2367,8 @@
             printBillDataGridView.Name = "printBillDataGridView";
             printBillDataGridView.ReadOnly = true;
             printBillDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle5;
             printBillDataGridView.Size = new Size(491, 305);
             printBillDataGridView.TabIndex = 29;
             // 
@@ -2393,7 +2377,7 @@
             label34.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label34.AutoSize = true;
             label34.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label34.Location = new Point(883, 10);
+            label34.Location = new Point(889, 10);
             label34.Name = "label34";
             label34.Size = new Size(157, 32);
             label34.TabIndex = 28;
@@ -2405,9 +2389,9 @@
             label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label71.Location = new Point(26, 10);
             label71.Name = "label71";
-            label71.Size = new Size(250, 32);
+            label71.Size = new Size(339, 32);
             label71.TabIndex = 25;
-            label71.Text = "Account Bill History";
+            label71.Text = "Concessionaire Bill History";
             // 
             // billDataGridView
             // 
@@ -2421,8 +2405,8 @@
             billDataGridView.Name = "billDataGridView";
             billDataGridView.ReadOnly = true;
             billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle6;
             billDataGridView.Size = new Size(830, 304);
             billDataGridView.TabIndex = 24;
             // 
@@ -2434,6 +2418,16 @@
             billdataTextBox.Size = new Size(225, 173);
             billdataTextBox.TabIndex = 27;
             billdataTextBox.Visible = false;
+            // 
+            // printPreviewDialog
+            // 
+            printPreviewDialog.AutoScrollMargin = new Size(0, 0);
+            printPreviewDialog.AutoScrollMinSize = new Size(0, 0);
+            printPreviewDialog.ClientSize = new Size(400, 300);
+            printPreviewDialog.Enabled = true;
+            printPreviewDialog.Icon = (Icon)resources.GetObject("printPreviewDialog.Icon");
+            printPreviewDialog.Name = "printPreviewDialog1";
+            printPreviewDialog.Visible = false;
             // 
             // RealeaseBillingControl
             // 
@@ -2534,7 +2528,6 @@
         private Button clearButton;
         private Label label31;
         private Label label71;
-        private Button syncButton;
         private TableLayoutPanel tableLayoutPanel12;
         public Panel billingPanel;
         private TableLayoutPanel tableLayoutPanel1;
@@ -2657,6 +2650,8 @@
         private Label label25;
         private Label label24;
         private TextBox billdataTextBox;
+        private Label label34;
+        private DataGridView printBillDataGridView;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn fullname;
         private DataGridViewTextBoxColumn presentreaddate;
@@ -2676,7 +2671,6 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
-        private Label label34;
-        private DataGridView printBillDataGridView;
+        private PrintPreviewDialog printPreviewDialog;
     }
 }
