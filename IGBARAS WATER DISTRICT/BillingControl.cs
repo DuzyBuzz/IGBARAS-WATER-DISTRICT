@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.Devices;
 using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -28,39 +29,44 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-            // ✅ Step 1: Check if the bill is already paid
+            // 🔒 Check if bill is already paid
             if (CheckIfBillIsPaid())
             {
+                MessageBox.Show("❌ This bill has already been paid. Saving or printing is not allowed.", "Bill Already Paid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                // 💾 Save billing record to database
                 UpdateBillingRecord();
-                MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return; // ⛔ Stop further actions
-            }
 
-            // ✅ Step 2: Set to landscape mode
-            billingPrintDocument.DefaultPageSettings.Landscape = true;
+                MessageBox.Show("✅ Billing record saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // ✅ Step 3: Use Legal paper size (8.5 x 14 inches)
-            foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
-            {
-                if (ps.Kind == PaperKind.Legal)
+                // 🖨️ Set printer settings to landscape and legal paper
+                billingPrintDocument.DefaultPageSettings.Landscape = true;
+
+                foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
                 {
-                    billingPrintDocument.DefaultPageSettings.PaperSize = ps;
-                    break;
+                    if (ps.Kind == PaperKind.Legal)
+                    {
+                        billingPrintDocument.DefaultPageSettings.PaperSize = ps;
+                        break;
+                    }
                 }
-            }
 
-            // ✅ Step 4: Set margins (0.3 inches on all sides)
-            billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30);
+                // Optional: Set margins (in hundredths of an inch, 30 = 0.3")
+                billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30);
 
-            // ✅ Step 5: Show the print dialog
-            if (billingPrintDialog.ShowDialog() == DialogResult.OK)
-            {
-                // ✅ Step 6: Update billing info in database
-
-                // ✅ Step 7: Proceed to print
+                // 🖨️ Print the billing document
                 billingPrintDocument.Print();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ An error occurred while saving or printing: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
 
 
         private Bitmap CapturePanel(Control panel)
@@ -260,45 +266,6 @@ namespace IGBARAS_WATER_DISTRICT
         ///     adds a months offset to the starting number based on the month of the billMonth parameter. jan = 0, feb = 400, mar = 800, etc.
         ///     
         /// </summary>
-        public string GenerateNextBillCode(string zoneCode, DateTime billMonth)
-        {
-            //the zoneCode is expected to be in the format "001", "002", etc.
-            int zoneNo = GetZoneNoFromDB(zoneCode);
-            int baseStart = ((zoneNo - 1) * 200) + 1;
-            int monthOffset = (billMonth.Month - 1) * 400;
-            int startingNumber = baseStart + monthOffset;
-
-            // Extract zone prefix (e.g. "001", "002", etc.)
-            string prefix = zoneCode;
-
-
-            // Query latest billcode for that zone and month
-            string query = @"
-        SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED))
-        FROM tb_bill
-        WHERE LEFT(billcode, 3) = @prefix
-          AND MONTH(datebilled) = @month
-          AND YEAR(datebilled) = @year";
-
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-            {
-                conn.Open();
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@prefix", prefix);
-                    cmd.Parameters.AddWithValue("@month", billMonth.Month);
-                    cmd.Parameters.AddWithValue("@year", billMonth.Year);
-
-                    object result = cmd.ExecuteScalar();
-                    int latest = (result != DBNull.Value && result != null)
-                                ? Convert.ToInt32(result)
-                                : startingNumber - 1;
-
-                    int next = latest + 1;
-                    return $"{prefix}-{next.ToString("D7")}";
-                }
-            }
-        }
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
@@ -387,7 +354,9 @@ namespace IGBARAS_WATER_DISTRICT
             // Get values from DataGridView
             string discounted = selectedRow.Cells["seniorcitizen"].Value?.ToString();
             string taxExempted = selectedRow.Cells["taxexempt"].Value?.ToString();
+            string balance = selectedRow.Cells["balancex"].Value?.ToString();
 
+            arrearsLabel.Text = balance.ToString();
             // Senior Citizen
             if (discounted == "1")
             {
@@ -436,15 +405,14 @@ namespace IGBARAS_WATER_DISTRICT
                 fromReadingDateLabel.Text = readingInfo.FromReadingDate.ToString("MMMM dd, yyyy");
                 toReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
                 dueDateLabel.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
-                previousReadingTextBox.Text = readingInfo.PreviousReading.ToString();
+                previousReadingTextBox.Text = readingInfo.PreviousReadingBill.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
-                amountPaidTextBox.Text = readingInfo.AmountPaid.ToString();
                 arrearsLabel.Text = readingInfo.Arrears.ToString();
                 int meterConsumedReading = 0;
 
                 // ➕ Calculate present reading
                 int previousReading = 0;
-                int.TryParse(readingInfo.PreviousReading.ToString(), out previousReading);
+                int.TryParse(readingInfo.PreviousReadingBill.ToString(), out previousReading);
                 int.TryParse(readingInfo.MeterConsumed.ToString(), out meterConsumedReading);
                 int previousPenalty = 0;
                 int.TryParse(readingInfo.Penalty.ToString(), out previousPenalty);
@@ -468,13 +436,6 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 LoadAccountBillHistory(accountNo);
 
-                string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
-                string nextBillCode = GenerateNextBillCode(zonePrefix, DateTime.Now);
-                string[] parts = nextBillCode.Split('-');
-                if (parts.Length == 2)
-                {
-                    invoiceLabel.Text = parts[1];
-                }
             }
         }
         /// <summary>
@@ -755,20 +716,12 @@ namespace IGBARAS_WATER_DISTRICT
         }
         private void accountNumberTextBox_TextChanged(object sender, EventArgs e)
         {
-            string accountNo = accountNumberTextBox.Text.Trim();
-            string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
-            string nextBillCode = GenerateNextBillCode(zonePrefix, DateTime.Now);
-            string[] parts = nextBillCode.Split('-');
-            if (parts.Length == 2)
-            {
-                invoiceLabel.Text = parts[1];
-            }
+
 
         }
 
         private void amountPaidTextBox_TextChanged(object sender, EventArgs e)
         {
-            ClearWaterChargeLabels();
             TextBox textBox = (TextBox)sender;
 
             if (string.IsNullOrWhiteSpace(textBox.Text))
@@ -859,48 +812,55 @@ namespace IGBARAS_WATER_DISTRICT
                 totalQty += qty;
                 totalAmount += amount;
             }
-
             // Show total consumption and base amount
             totalQuantityLabel.Text = totalQty.ToString();
             totalAmountLabel.Text = totalAmount.ToString("N2");
 
-            // -------------------------------
-            // Apply both discounts if any
-            // -------------------------------
-            decimal discountAmount1 = 0;
-            decimal discountAmount2 = 0;
+            decimal scDiscounted = 0;
+            decimal taxAdded = 0;
+            decimal arrears = 0;
 
-            // Discount from discountedLabel (e.g., 7%)
+            // Remove "%" symbol and extra spaces
             string discountText = discountedLabel.Text.Replace("%", "").Trim();
+            string taxAddedText = taxExemptedLabel.Text.Replace("%", "").Trim();
+
+            // Try to parse the discount value
             if (decimal.TryParse(discountText, out decimal percent1))
             {
-                discountAmount1 = totalAmount * (percent1 / 100);
+                scDiscounted = totalAmount * (percent1 / 100);
+                discountedAmountLabel.Text = scDiscounted.ToString("0.00");
             }
-
-            // Discount from taxExemptedLabel (e.g., 5%)
-            string taxExemptText = taxExemptedLabel.Text.Replace("%", "").Trim();
-            if (decimal.TryParse(taxExemptText, out decimal percent2))
+            else
             {
-                discountAmount2 = totalAmount * (percent2 / 100);
+                discountedAmountLabel.Text = "0.00";
             }
 
-            // -------------------------------
-            // Apply balance from balanceLabel
-            // -------------------------------
-            decimal previousBalance = 0;
-            if (decimal.TryParse(arrearsLabel.Text, out decimal balance))
+            // Try to parse the tax/exemption value
+            if (decimal.TryParse(taxAddedText, out decimal percent2))
             {
-                previousBalance = balance;
+                taxAdded = totalAmount * (percent2 / 100);
+                exemptedAmountLabel.Text = taxAdded.ToString("0.00");
+            }
+            else
+            {
+                exemptedAmountLabel.Text = "0.00";
             }
 
-            // -------------------------------
-            // Compute Amount Due
-            // -------------------------------
-            decimal totalDiscount = discountAmount1 + discountAmount2;
-            decimal amountDue = (totalAmount - totalDiscount) + previousBalance;
+            // Parse arrears from label text
+            if (decimal.TryParse(arrearsLabel.Text.Trim(), out decimal parsedArrears))
+            {
+                arrears = parsedArrears;
+            }
+            else
+            {
+                arrears = 0; // default to 0 if parsing fails
+            }
 
-            // Show final payable amount
-            chargeLabel.Text = amountDue.ToString("N2");
+            // Calculate final charge
+            decimal chargeSubTotal = (totalAmount - scDiscounted + taxAdded + arrears);
+
+            // Display formatted value
+            chargeLabel.Text = chargeSubTotal.ToString("0.00");
         }
 
         private void meterConsumedReadingTextBox_TextChanged(object sender, EventArgs e)

@@ -50,6 +50,9 @@ namespace IGBARAS_WATER_DISTRICT
                 InsertToBillingTable(selectedBillingData);
 
 
+
+
+
                 MessageBox.Show("Billing record saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 billingPrintDocument.DefaultPageSettings.Landscape = true;
@@ -154,8 +157,8 @@ namespace IGBARAS_WATER_DISTRICT
             string query = @"
         SELECT COUNT(*) FROM tb_bill 
         WHERE accountno = @accountno 
-          AND MONTH(datebilled) = @month 
-          AND YEAR(datebilled) = @year";
+          AND month = @month 
+          AND year = @year";
 
             try
             {
@@ -310,10 +313,11 @@ namespace IGBARAS_WATER_DISTRICT
         /// <summary>
         /// Returns the next bill number (int) for the given zone and billing month
         /// </summary>
-        private int GetNextBillNumber(string zoneCode, DateTime billingDate)
+
+        private int GetLastBillNumberUsed(string zoneCode, DateTime billingDate)
         {
             string yearMonth = billingDate.ToString("yyyyMM");
-            int nextNumber = 1;
+            int lastNumber = 0;
 
             using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
             {
@@ -328,59 +332,23 @@ namespace IGBARAS_WATER_DISTRICT
                     cmd.Parameters.AddWithValue("@yearMonth", yearMonth);
 
                     object result = cmd.ExecuteScalar();
-                    if (result != DBNull.Value && int.TryParse(result.ToString(), out int lastNumber))
+                    if (result != DBNull.Value && result != null)
                     {
-                        nextNumber = lastNumber + 1;
+                        int.TryParse(result.ToString(), out lastNumber);
                     }
                 }
             }
 
-            return nextNumber;
+            return lastNumber;
         }
+
 
         private string FormatBillCode(string zoneCode, int billNumber)
         {
             return $"{zoneCode}-{billNumber.ToString("D7")}";
         }
 
-        private string GenerateNextBillCode(string zonePrefix, DateTime billingDate)
-        {
-            string formattedBillCode = string.Empty;
-            int nextBillNumber = 1; // Default to 1 if no existing bill
 
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-            {
-                conn.Open();
-
-                // 📌 Format billing month like 202407
-                string billingMonth = billingDate.ToString("yyyyMM");
-
-                // ✅ Find the latest bill number for the same zone and month
-                string query = @"
-            SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED)) 
-            FROM tb_bill 
-            WHERE zonecode = @zonePrefix 
-            AND DATE_FORMAT(datebilled, '%Y%m') = @billingMonth";
-
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@zonePrefix", zonePrefix);
-                    cmd.Parameters.AddWithValue("@billingMonth", billingMonth);
-
-                    object result = cmd.ExecuteScalar();
-
-                    if (result != DBNull.Value && int.TryParse(result.ToString(), out int lastNumber))
-                    {
-                        nextBillNumber = lastNumber + 1;
-                    }
-                }
-            }
-
-            // 📌 Format to "003-0000014"
-            formattedBillCode = $"{zonePrefix}-{nextBillNumber.ToString("D7")}";
-
-            return formattedBillCode;
-        }
 
 
         private void InsertToBillingTable(string[] data)
@@ -392,39 +360,57 @@ namespace IGBARAS_WATER_DISTRICT
                     conn.Open();
 
                     string query = @"
-                INSERT INTO tb_bill (
-                    accountno, name, address, concessionairecode, zonecode, servicecode, servicetype, 
-                    meterno, dueexempt, withholdingtax, wtpercent, scpercent, routeno, 
-                    taxexempt, seniorcitizen, billcode, districtno, fromreadingdate, toreadingdate, duedate, 
-                    previousreading, presentreading, meterconsumed, charge, taxpercent, taxamount, 
-                    senioramount, month, year, datebilled, arrearsamount, presentmeterconsumed, 
-                    adjustdebit, adjustcredit, partiallypaid, othermeterconsumed, balance, paid, duegraceperiod
-                ) 
-                VALUES (
-                    @accountno, @fullname, @address, @concessionairecode, @zonecode, @servicecode, @servicetype, 
-                    @meterno, @dueexempt, @withholdingtax, @wtpercent, @scpercent, @routeno, 
-                    @taxexempt, @seniorcitizen, @billcode, @districtno, @fromreadingdate, @toreadingdate, @duedate, 
-                    @previousreading, @presentreading, @meterconsumed, @charge, @taxpercent, @taxamount, 
-                    @senioramount, @month, @year, @datebilled, @arrearsamount, @presentmeterconsumed, 
-                    @adjustdebit, @adjustcredit, @partiallypaid, @othermeterconsumed, @balance, @paid, @duegraceperiod
-                )";
+            INSERT INTO tb_bill (
+                billcode, billnumber, accountno, routeno, concessionairecode, name, address,
+                districtno, zonecode, servicecode, servicetype, meterno, taxexempt, dueexempt,
+                withholdingtax, wtpercent, wtamount, seniorcitizen, scpercent,
+                fromreadingdate, toreadingdate, previousreading, presentreading, meterconsumed,
+                charge, taxpercent, taxamount, senioramount, month, year,
+                totaladditionalcharge, totalbillcharge, duedate, datebilled,
+                arrearsamount, billcharge, balance, paid, firstbill, penaltyamount,
+                arrears, duegraceperiod, amountpaid, adjustdebit, adjustcredit,
+                partiallypaid, othermeterconsumed, presentmeterconsumed, electriccharge,
+                uploaded, disconnectiondate
+            ) VALUES (
+                @billcode, @billnumber, @accountno, @routeno, @concessionairecode, @name, @address,
+                @districtno, @zonecode, @servicecode, @servicetype, @meterno, @taxexempt, @dueexempt,
+                @withholdingtax, @wtpercent, @wtamount, @seniorcitizen, @scpercent,
+                @fromreadingdate, @toreadingdate, @previousreading, @presentreading, @meterconsumed,
+                @charge, @taxpercent, @taxamount, @senioramount, @month, @year,
+                @totaladditionalcharge, @totalbillcharge, @duedate, @datebilled,
+                @arrearsamount, @billcharge, @balance, @paid, @firstbill, @penaltyamount,
+                @arrears, @duegraceperiod, @amountpaid, @adjustdebit, @adjustcredit,
+                @partiallypaid, @othermeterconsumed, @presentmeterconsumed, @electriccharge,
+                @uploaded, @disconnectiondate
+            )";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        // Clean percent signs (e.g., "5%") before converting
+                        // Clean and parse percentage strings from labels
                         string taxPercentStr = taxExemptedLabel.Text.Trim().Replace("%", "");
                         string discountPercentStr = discountedAmountLabel.Text.Trim().Replace("%", "");
 
-                        // Format dates to yyyy-MM-dd
-                        // Parse the date strings from the labels and format them as yyyy-MM-dd
-                        string formattedFromDate = DateTime.Parse(fromReadingDateLabel.Text).ToString("yyyy-MM-dd");
-                        string formattedToDate = DateTime.Parse(toReadingDateLabel.Text).ToString("yyyy-MM-dd");
-                        string formattedDueDate = DateTime.Parse(dueDateLabel.Text).ToString("yyyy-MM-dd");
+                        if (!int.TryParse(taxPercentStr, out int taxPercent))
+                        {
+                            MessageBox.Show("Invalid tax percent format.", "Input Error");
+                            return;
+                        }
+
+                        // Format date labels safely
+                        string formattedFromDate = DateTime.TryParse(fromReadingDateLabel.Text, out var fromDate)
+                            ? fromDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
+
+                        string formattedToDate = DateTime.TryParse(toReadingDateLabel.Text, out var toDate)
+                            ? toDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
+
+                        string formattedDueDate = DateTime.TryParse(dueDateLabel.Text, out var dueDate)
+                            ? dueDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
+
                         string formattedDateBilled = DateTime.Now.ToString("yyyy-MM-dd");
 
-                        // Add parameters from string[] data
+                        // Required parameters from string[] data
                         cmd.Parameters.AddWithValue("@accountno", data[0]);
-                        cmd.Parameters.AddWithValue("@fullname", data[1]);
+                        cmd.Parameters.AddWithValue("@name", data[1]);
                         cmd.Parameters.AddWithValue("@address", data[2]);
                         cmd.Parameters.AddWithValue("@concessionairecode", data[3]);
                         cmd.Parameters.AddWithValue("@zonecode", data[4]);
@@ -438,40 +424,56 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@routeno", Convert.ToInt32(data[12]));
                         cmd.Parameters.AddWithValue("@taxexempt", Convert.ToInt32(data[13]));
                         cmd.Parameters.AddWithValue("@seniorcitizen", Convert.ToInt32(data[14]));
-                        cmd.Parameters.AddWithValue("@billcode", data[4] + "-" + data[15]);
                         cmd.Parameters.AddWithValue("@districtno", Convert.ToInt32(data[16]));
-                        cmd.Parameters.AddWithValue("@balance", 0.00m);
-                        cmd.Parameters.AddWithValue("@paid", 0);
+                        cmd.Parameters.AddWithValue("@balance", Convert.ToDecimal(data[17]));
 
-                        // Date values
+                        // Auto-calculated / UI values
+                        cmd.Parameters.AddWithValue("@billcode", billCodeLabel.Text.Trim()); 
+                        cmd.Parameters.AddWithValue("@billnumber", Convert.ToInt32(extractedBillNumberLabel.Text.Trim())); // the int part only
                         cmd.Parameters.AddWithValue("@fromreadingdate", formattedFromDate);
                         cmd.Parameters.AddWithValue("@toreadingdate", formattedToDate);
                         cmd.Parameters.AddWithValue("@duedate", formattedDueDate);
                         cmd.Parameters.AddWithValue("@duegraceperiod", formattedDueDate);
                         cmd.Parameters.AddWithValue("@datebilled", formattedDateBilled);
 
-                        // Reading and billing
                         cmd.Parameters.AddWithValue("@previousreading", Convert.ToInt32(previousReadingTextBox.Text.Trim()));
                         cmd.Parameters.AddWithValue("@presentreading", Convert.ToInt32(presentReadingTextBox.Text.Trim()));
-                        cmd.Parameters.AddWithValue("@meterconsumed", Convert.ToDouble(meterConsumedReadingTextBox.Text.Trim()));
-                        cmd.Parameters.AddWithValue("@charge", Convert.ToDouble(chargeLabel.Text.Trim()));
-                        cmd.Parameters.AddWithValue("@taxpercent", Convert.ToInt32(taxPercentStr));
-                        cmd.Parameters.AddWithValue("@taxamount", Convert.ToDouble(exemptedAmountLabel.Text.Trim()));
-                        cmd.Parameters.AddWithValue("@senioramount", Convert.ToDouble(discountedAmountLabel.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@meterconsumed", Convert.ToInt32(meterConsumedReadingTextBox.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@charge", Convert.ToDecimal(chargeLabel.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@taxpercent", taxPercent);
+
+                        // Handle discount/tax amounts safely
+                        decimal.TryParse(exemptedAmountLabel.Text.Replace("%", "").Trim(), out decimal taxAmount);
+                        decimal.TryParse(discountedAmountLabel.Text.Replace("%", "").Trim(), out decimal discountAmount);
+                        decimal.TryParse(arrearsLabel.Text.Trim(), out decimal arrearsAmount);
+
+                        cmd.Parameters.AddWithValue("@taxamount", taxAmount);
+                        cmd.Parameters.AddWithValue("@senioramount", discountAmount);
+                        cmd.Parameters.AddWithValue("@arrearsamount", arrearsAmount);
+                        cmd.Parameters.AddWithValue("@wtamount", 0.00m); // Set to 0.00 unless specified
+
                         cmd.Parameters.AddWithValue("@month", DateTime.Now.Month);
                         cmd.Parameters.AddWithValue("@year", DateTime.Now.Year);
-                        cmd.Parameters.AddWithValue("@arrearsamount", Convert.ToDecimal(arrearsLabel.Text.Trim()));
 
-                        // Columns that have no default value — set them manually
-                        cmd.Parameters.AddWithValue("@presentmeterconsumed", Convert.ToInt64(meterConsumedReadingTextBox.Text.Trim()));
-                        cmd.Parameters.AddWithValue("@partiallypaid", 0);
-                        cmd.Parameters.AddWithValue("@othermeterconsumed", 0);
-
-                        // Adjust columns defaulted to 0.00
+                        // Fixed/default values
+                        cmd.Parameters.AddWithValue("@paid", 0);
+                        cmd.Parameters.AddWithValue("@firstbill", 0);
+                        cmd.Parameters.AddWithValue("@penaltyamount", 0.00m);
+                        cmd.Parameters.AddWithValue("@arrears", 0);
+                        cmd.Parameters.AddWithValue("@amountpaid", 0.00m);
                         cmd.Parameters.AddWithValue("@adjustdebit", 0.00m);
                         cmd.Parameters.AddWithValue("@adjustcredit", 0.00m);
+                        cmd.Parameters.AddWithValue("@totaladditionalcharge", 0.00m);
+                        cmd.Parameters.AddWithValue("@totalbillcharge", Convert.ToDecimal(chargeLabel.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@billcharge", Convert.ToDecimal(chargeLabel.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@partiallypaid", 0);
+                        cmd.Parameters.AddWithValue("@othermeterconsumed", 0);
+                        cmd.Parameters.AddWithValue("@presentmeterconsumed", Convert.ToInt32(meterConsumedReadingTextBox.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@electriccharge", 0.00m);
+                        cmd.Parameters.AddWithValue("@uploaded", 0);
+                        cmd.Parameters.AddWithValue("@disconnectiondate", DBNull.Value); // optional field
 
-                        // Execute insert
+                        // Final insert execution
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("Billing record inserted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -482,6 +484,7 @@ namespace IGBARAS_WATER_DISTRICT
                 MessageBox.Show($"Error inserting billing record:\n{ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
 
@@ -689,17 +692,50 @@ namespace IGBARAS_WATER_DISTRICT
         }
         private void accountNumberTextBox_TextChanged(object sender, EventArgs e)
         {
-            CheckBillingDate();
-            string accountNo = accountNumberTextBox.Text.Trim();
-            string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
-            string nextBillCode = GenerateNextBillCode(zonePrefix, DateTime.Now);
-            string[] parts = nextBillCode.Split('-');
-            if (parts.Length == 2)
-            {
-                invoiceLabel.Text = parts[1];
-            }
+
 
         }
+        private string GenerateNextBillCode(string zonePrefix, DateTime billingDate)
+        {
+            string formattedBillCode = string.Empty;
+            int nextBillNumber = 1; // Default if no existing bill
+
+            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            {
+                conn.Open();
+
+                string billingMonth = billingDate.ToString("yyyyMM");
+
+                string query = @"
+            SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED)) 
+            FROM tb_bill 
+            WHERE zonecode = @zonePrefix 
+            AND DATE_FORMAT(datebilled, '%Y%m') = @billingMonth";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@zonePrefix", zonePrefix);
+                    cmd.Parameters.AddWithValue("@billingMonth", billingMonth);
+
+                    object result = cmd.ExecuteScalar();
+                    if (result != DBNull.Value && int.TryParse(result.ToString(), out int lastNumber))
+                    {
+                        nextBillNumber = lastNumber + 1;
+                    }
+                }
+            }
+
+            // Set the extracted number
+            extractedBillNumberLabel.Text = nextBillNumber.ToString();
+
+            // Format: 003-0000014 (last part is always 7 digits)
+            formattedBillCode = $"{zonePrefix}-{nextBillNumber.ToString("D7")}";
+            invoiceLabel.Text = nextBillNumber.ToString();
+            billCodeLabel.Text = formattedBillCode;
+            return formattedBillCode;
+        }
+
+
 
         private void amountPaidTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -850,35 +886,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void meterConsumedReadingTextBox_TextChanged(object sender, EventArgs e)
         {
-            ClearWaterChargeLabels();
-            string input = meterConsumedReadingTextBox.Text.Trim();
 
-            // 🟡 Check if empty or zero
-            if (string.IsNullOrEmpty(input) || input == "0")
-            {
-                printSaveButton.Enabled = false;
-            }
-            else
-            {
-                printSaveButton.Enabled = true;
-            }
-            // Try to parse the entered value as an integer
-            if (int.TryParse(meterConsumedReadingTextBox.Text.Trim(), out int consumption))
-            {
-                // If parsing is successful, calculate water charges
-                CalculateWaterCharges(consumption);
-                int previousReading = 0;
-                int.TryParse(previousReadingTextBox.Text.Trim(), out previousReading);
-                // Calculate the present reading based on previous reading and consumption
-                int presentReading = previousReading + consumption;
-                presentReadingTextBox.Text = presentReading.ToString();
-
-            }
-            else
-            {
-                // If the input is not a valid number, clear labels to avoid wrong values
-                ClearWaterChargeLabels();
-            }
         }
 
         private void ClearWaterChargeLabels()
@@ -957,6 +965,49 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void chargeLabel_Click(object sender, EventArgs e)
         {
+
+        }
+
+        private void presentReadingTextBox_TextChanged(object sender, EventArgs e)
+        {
+            string input = presentReadingTextBox.Text.Trim();
+
+            // 🟡 Check if empty or zero
+            if (string.IsNullOrEmpty(input) || input == "0")
+            {
+                printSaveButton.Enabled = false;
+            }
+            else
+            {
+                printSaveButton.Enabled = true;
+            }
+            // Try to parse the entered value as an integer
+            // Try to parse the entered present reading
+            if (int.TryParse(presentReadingTextBox.Text.Trim(), out int presentReading))
+            {
+                // Try to parse the previous reading
+                if (int.TryParse(previousReadingTextBox.Text.Trim(), out int previousReading))
+                {
+                    // Calculate the consumption (present - previous)
+                    int meterConsumed = presentReading - previousReading;
+
+                    // Display the calculated consumption
+                    meterConsumedReadingTextBox.Text = meterConsumed.ToString();
+
+                    // Now calculate the water charges based on consumption
+                    CalculateWaterCharges(meterConsumed);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid previous reading input.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                ClearWaterChargeLabels();
+
+            }
+
 
         }
     }

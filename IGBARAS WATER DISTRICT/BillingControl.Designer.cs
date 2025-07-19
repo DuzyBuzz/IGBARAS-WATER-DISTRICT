@@ -2341,7 +2341,6 @@
             balancex.HeaderText = "balance";
             balancex.Name = "balancex";
             balancex.ReadOnly = true;
-            balancex.Visible = false;
             balancex.Width = 73;
             // 
             // seniorcitizen
@@ -2362,7 +2361,7 @@
             taxexempt.ReadOnly = true;
             taxexempt.TrueValue = "";
             taxexempt.Visible = false;
-            taxexempt.Width = 73;
+            taxexempt.Width = 66;
             // 
             // presentreaddate
             // 
@@ -2767,6 +2766,9 @@
         private TextBox preniousPenaltyTextBox;
         private Label penaltyLabel;
         private TextBox billIdTextBox;
+        private Label oberDueDaysLabel;
+        private DataGridView billSetingsDataGridView;
+        private ListView billSettingsListView;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn fullname;
         private DataGridViewTextBoxColumn presentreaddates;
@@ -2787,8 +2789,5 @@
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
         private DataGridViewTextBoxColumn presentreaddate;
-        private Label oberDueDaysLabel;
-        private DataGridView billSetingsDataGridView;
-        private ListView billSettingsListView;
     }
 }

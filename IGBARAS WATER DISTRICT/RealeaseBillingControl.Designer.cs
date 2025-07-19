@@ -31,9 +31,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealeaseBillingControl));
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -45,6 +45,8 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
+            billCodeLabel = new Label();
+            extractedBillNumberLabel = new Label();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -355,6 +357,8 @@
             // 
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
+            panel3.Controls.Add(billCodeLabel);
+            panel3.Controls.Add(extractedBillNumberLabel);
             panel3.Controls.Add(billingPanel);
             panel3.Controls.Add(printSaveButton);
             panel3.Controls.Add(accountnoBillHistory);
@@ -364,6 +368,24 @@
             panel3.Name = "panel3";
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
+            // 
+            // billCodeLabel
+            // 
+            billCodeLabel.AutoSize = true;
+            billCodeLabel.Location = new Point(37, 276);
+            billCodeLabel.Name = "billCodeLabel";
+            billCodeLabel.Size = new Size(48, 15);
+            billCodeLabel.TabIndex = 31;
+            billCodeLabel.Text = "label32";
+            // 
+            // extractedBillNumberLabel
+            // 
+            extractedBillNumberLabel.AutoSize = true;
+            extractedBillNumberLabel.Location = new Point(37, 204);
+            extractedBillNumberLabel.Name = "extractedBillNumberLabel";
+            extractedBillNumberLabel.Size = new Size(48, 15);
+            extractedBillNumberLabel.TabIndex = 30;
+            extractedBillNumberLabel.Text = "label32";
             // 
             // billingPanel
             // 
@@ -1858,6 +1880,7 @@
             presentReadingTextBox.Size = new Size(82, 19);
             presentReadingTextBox.TabIndex = 17;
             presentReadingTextBox.TextAlign = HorizontalAlignment.Center;
+            presentReadingTextBox.TextChanged += presentReadingTextBox_TextChanged;
             // 
             // previousReadingTextBox
             // 
@@ -1879,6 +1902,7 @@
             meterConsumedReadingTextBox.Location = new Point(167, 27);
             meterConsumedReadingTextBox.Margin = new Padding(0);
             meterConsumedReadingTextBox.Name = "meterConsumedReadingTextBox";
+            meterConsumedReadingTextBox.ReadOnly = true;
             meterConsumedReadingTextBox.Size = new Size(83, 19);
             meterConsumedReadingTextBox.TabIndex = 15;
             meterConsumedReadingTextBox.TextAlign = HorizontalAlignment.Center;
@@ -2151,8 +2175,8 @@
             accountDataGridView.Name = "accountDataGridView";
             accountDataGridView.ReadOnly = true;
             accountDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            accountDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             accountDataGridView.Size = new Size(297, 482);
             accountDataGridView.TabIndex = 23;
             accountDataGridView.CellClick += accountDataGridView_CellClick;
@@ -2310,7 +2334,6 @@
             balancex.HeaderText = "balance";
             balancex.Name = "balancex";
             balancex.ReadOnly = true;
-            balancex.Visible = false;
             balancex.Width = 73;
             // 
             // seniorcitizen
@@ -2331,7 +2354,7 @@
             taxexempt.ReadOnly = true;
             taxexempt.TrueValue = "";
             taxexempt.Visible = false;
-            taxexempt.Width = 73;
+            taxexempt.Width = 66;
             // 
             // panel6
             // 
@@ -2367,8 +2390,8 @@
             printBillDataGridView.Name = "printBillDataGridView";
             printBillDataGridView.ReadOnly = true;
             printBillDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
-            printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
             printBillDataGridView.Size = new Size(491, 305);
             printBillDataGridView.TabIndex = 29;
             // 
@@ -2405,8 +2428,8 @@
             billDataGridView.Name = "billDataGridView";
             billDataGridView.ReadOnly = true;
             billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
             billDataGridView.Size = new Size(830, 304);
             billDataGridView.TabIndex = 24;
             // 
@@ -2652,6 +2675,8 @@
         private TextBox billdataTextBox;
         private Label label34;
         private DataGridView printBillDataGridView;
+        private PrintPreviewDialog printPreviewDialog;
+        private Label extractedBillNumberLabel;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn fullname;
         private DataGridViewTextBoxColumn presentreaddate;
@@ -2671,6 +2696,6 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
-        private PrintPreviewDialog printPreviewDialog;
+        private Label billCodeLabel;
     }
 }
