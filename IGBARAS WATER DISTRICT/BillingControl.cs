@@ -458,7 +458,16 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="dueexempt"></param>
         private void GetPenalty()
         {
+            decimal penalty = GetPenaltyHelper.GetPenalty(
+                billCharge: 950.00m,
+                dueGracePeriod: new DateTime(2024, 6, 15),
+                dueExempt: 0,
+                arrears: 1,
+                srcPenalty: 0,
+                srcPaid: 0
+            );
 
+            Console.WriteLine("Penalty calculated: ₱" + penalty);
         }
 
 
@@ -818,6 +827,21 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void presentReadingTextBox_TextChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void getPenaltyButton_Click(object sender, EventArgs e)
+        {
+            decimal penalty = GetPenaltyHelper.GetPenalty(
+                billCharge: 950.00m,
+                dueGracePeriod: new DateTime(2025, 7, 21),
+                dueExempt: 0,
+                arrears: 1,
+                srcPenalty: 0,
+                srcPaid: 0
+            );
+
+            Debug.WriteLine("Penalty calculated: ₱" + penalty);
 
         }
     }
