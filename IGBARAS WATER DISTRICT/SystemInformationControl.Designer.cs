@@ -1,6 +1,6 @@
 ﻿namespace IGBARAS_WATER_DISTRICT
 {
-    partial class CustomerControl
+    partial class SystemInformationControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -33,20 +33,25 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 
 
+
+            components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+
+
             this.label = new Label();
             this.SuspendLayout();
             // 
             // label
             // 
-            this.label.Text = "👥 Customers Module";
+            this.label.Text = "ⓘ System Information";
             this.label.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.label.Dock = DockStyle.Fill;
             this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // CustomersControl
+            // SettingsControl
             // 
             this.Controls.Add(this.label);
-            this.Name = "CustomersControl";
+            this.Name = "SystemInformationControl";
             this.Size = new System.Drawing.Size(800, 600);
             this.ResumeLayout(false);
         }
