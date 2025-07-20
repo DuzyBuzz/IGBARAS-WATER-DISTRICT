@@ -43,8 +43,8 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
+            penaltySummaryRichTextBox = new RichTextBox();
             billSettingsListView = new ListView();
-            oberDueDaysLabel = new Label();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -197,15 +197,24 @@
             taxexempt = new DataGridViewCheckBoxColumn();
             presentreaddate = new DataGridViewTextBoxColumn();
             tableLayoutPanel26 = new TableLayoutPanel();
-            syncButton = new Button();
-            label31 = new Label();
             tableLayoutPanel12 = new TableLayoutPanel();
             searchButton = new Button();
             clearButton = new Button();
+            label31 = new Label();
+            tableLayoutPanel27 = new TableLayoutPanel();
+            label32 = new Label();
+            zoneComboBox = new ComboBox();
             panel6 = new Panel();
             panel2 = new Panel();
+            label40 = new Label();
+            label39 = new Label();
+            label38 = new Label();
+            comboBox1 = new ComboBox();
+            dateTimePicker1 = new DateTimePicker();
+            toDateTimePicker = new DateTimePicker();
+            label34 = new Label();
             getPenaltyButton = new Button();
-            billSetingsDataGridView = new DataGridView();
+            paymentsDataGridView = new DataGridView();
             billIdTextBox = new TextBox();
             label71 = new Label();
             billDataGridView = new DataGridView();
@@ -242,8 +251,9 @@
             ((System.ComponentModel.ISupportInitialize)accountDataGridView).BeginInit();
             tableLayoutPanel26.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
+            tableLayoutPanel27.SuspendLayout();
             panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)billSetingsDataGridView).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)paymentsDataGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -277,8 +287,9 @@
             searchAccountNumberTextBox.Location = new Point(3, 37);
             searchAccountNumberTextBox.Margin = new Padding(3, 5, 3, 3);
             searchAccountNumberTextBox.Name = "searchAccountNumberTextBox";
-            searchAccountNumberTextBox.Size = new Size(217, 25);
+            searchAccountNumberTextBox.Size = new Size(206, 25);
             searchAccountNumberTextBox.TabIndex = 6;
+            searchAccountNumberTextBox.TextChanged += searchAccountNumberTextBox_TextChanged;
             // 
             // loadingLabel
             // 
@@ -362,8 +373,8 @@
             // 
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
+            panel3.Controls.Add(penaltySummaryRichTextBox);
             panel3.Controls.Add(billSettingsListView);
-            panel3.Controls.Add(oberDueDaysLabel);
             panel3.Controls.Add(billingPanel);
             panel3.Controls.Add(accountnoBillHistory);
             panel3.Controls.Add(billPaidButton);
@@ -374,29 +385,28 @@
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
             // 
+            // penaltySummaryRichTextBox
+            // 
+            penaltySummaryRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            penaltySummaryRichTextBox.Font = new Font("Arial", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            penaltySummaryRichTextBox.Location = new Point(873, 5);
+            penaltySummaryRichTextBox.Name = "penaltySummaryRichTextBox";
+            penaltySummaryRichTextBox.Size = new Size(180, 113);
+            penaltySummaryRichTextBox.TabIndex = 28;
+            penaltySummaryRichTextBox.Text = "";
+            // 
             // billSettingsListView
             // 
             billSettingsListView.Alignment = ListViewAlignment.Left;
             billSettingsListView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             billSettingsListView.BorderStyle = BorderStyle.None;
             billSettingsListView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            billSettingsListView.Location = new Point(873, 14);
+            billSettingsListView.Location = new Point(873, 129);
             billSettingsListView.Name = "billSettingsListView";
-            billSettingsListView.Size = new Size(184, 532);
+            billSettingsListView.Size = new Size(184, 417);
             billSettingsListView.TabIndex = 27;
             billSettingsListView.UseCompatibleStateImageBehavior = false;
             billSettingsListView.View = View.Details;
-            // 
-            // oberDueDaysLabel
-            // 
-            oberDueDaysLabel.Anchor = AnchorStyles.Bottom;
-            oberDueDaysLabel.AutoSize = true;
-            oberDueDaysLabel.Font = new Font("Arial", 11.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            oberDueDaysLabel.Location = new Point(484, 520);
-            oberDueDaysLabel.Name = "oberDueDaysLabel";
-            oberDueDaysLabel.Size = new Size(61, 17);
-            oberDueDaysLabel.TabIndex = 26;
-            oberDueDaysLabel.Text = "overdue";
             // 
             // billingPanel
             // 
@@ -1629,6 +1639,7 @@
             penaltyAmountLabel.Name = "penaltyAmountLabel";
             penaltyAmountLabel.Size = new Size(77, 19);
             penaltyAmountLabel.TabIndex = 24;
+            penaltyAmountLabel.Text = "0.00";
             penaltyAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // chargeLabel
@@ -1670,6 +1681,7 @@
             penaltyLabel.Name = "penaltyLabel";
             penaltyLabel.Size = new Size(48, 19);
             penaltyLabel.TabIndex = 29;
+            penaltyLabel.Text = "0";
             penaltyLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel23
@@ -1980,8 +1992,8 @@
             label23.Name = "label23";
             label23.Size = new Size(84, 24);
             label23.TabIndex = 2;
-            label23.Text = "Cu. M. Consumed";
-            label23.TextAlign = ContentAlignment.MiddleCenter;
+            label23.Text = "Cu. M. \r\nConsumed";
+            label23.TextAlign = ContentAlignment.TopCenter;
             // 
             // label18
             // 
@@ -2377,12 +2389,12 @@
             // tableLayoutPanel26
             // 
             tableLayoutPanel26.ColumnCount = 2;
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 73.59736F));
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26.40264F));
-            tableLayoutPanel26.Controls.Add(syncButton, 1, 0);
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 69.9669952F));
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30.0330029F));
+            tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
             tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
             tableLayoutPanel26.Controls.Add(label31, 0, 0);
-            tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
+            tableLayoutPanel26.Controls.Add(tableLayoutPanel27, 1, 0);
             tableLayoutPanel26.Dock = DockStyle.Fill;
             tableLayoutPanel26.Location = new Point(0, 0);
             tableLayoutPanel26.Margin = new Padding(0);
@@ -2393,56 +2405,33 @@
             tableLayoutPanel26.Size = new Size(303, 67);
             tableLayoutPanel26.TabIndex = 24;
             // 
-            // syncButton
-            // 
-            syncButton.BackColor = Color.White;
-            syncButton.Dock = DockStyle.Fill;
-            syncButton.FlatStyle = FlatStyle.System;
-            syncButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            syncButton.Location = new Point(223, 0);
-            syncButton.Margin = new Padding(0);
-            syncButton.Name = "syncButton";
-            syncButton.Size = new Size(80, 32);
-            syncButton.TabIndex = 27;
-            syncButton.Text = "Sync 🔄";
-            syncButton.UseVisualStyleBackColor = false;
-            syncButton.Click += syncButton_Click;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label31.Location = new Point(3, 0);
-            label31.Name = "label31";
-            label31.Size = new Size(110, 28);
-            label31.TabIndex = 25;
-            label31.Text = "Accounts";
-            // 
             // tableLayoutPanel12
             // 
             tableLayoutPanel12.ColumnCount = 2;
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.54955F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.45045F));
             tableLayoutPanel12.Controls.Add(searchButton, 1, 0);
             tableLayoutPanel12.Controls.Add(clearButton, 0, 0);
             tableLayoutPanel12.Dock = DockStyle.Fill;
-            tableLayoutPanel12.Location = new Point(223, 32);
+            tableLayoutPanel12.Location = new Point(212, 32);
             tableLayoutPanel12.Margin = new Padding(0);
             tableLayoutPanel12.Name = "tableLayoutPanel12";
             tableLayoutPanel12.RowCount = 1;
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.Size = new Size(80, 35);
-            tableLayoutPanel12.TabIndex = 26;
+            tableLayoutPanel12.Size = new Size(91, 35);
+            tableLayoutPanel12.TabIndex = 28;
             // 
             // searchButton
             // 
             searchButton.Anchor = AnchorStyles.Bottom;
             searchButton.BackColor = Color.White;
-            searchButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchButton.Location = new Point(43, 6);
+            searchButton.FlatStyle = FlatStyle.Popup;
+            searchButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            searchButton.ForeColor = SystemColors.ActiveCaptionText;
+            searchButton.Location = new Point(56, 7);
             searchButton.Name = "searchButton";
-            searchButton.Size = new Size(34, 26);
-            searchButton.TabIndex = 23;
+            searchButton.Size = new Size(24, 25);
+            searchButton.TabIndex = 25;
             searchButton.Text = "🔎";
             searchButton.UseVisualStyleBackColor = false;
             searchButton.Click += searchButton_Click;
@@ -2454,13 +2443,61 @@
             clearButton.FlatStyle = FlatStyle.Popup;
             clearButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
             clearButton.ForeColor = Color.Crimson;
-            clearButton.Location = new Point(8, 7);
+            clearButton.Location = new Point(10, 7);
             clearButton.Name = "clearButton";
             clearButton.Size = new Size(24, 25);
             clearButton.TabIndex = 24;
             clearButton.Text = "❌";
             clearButton.UseVisualStyleBackColor = false;
             clearButton.Click += clearButton_Click;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label31.Location = new Point(3, 0);
+            label31.Name = "label31";
+            label31.Size = new Size(110, 28);
+            label31.TabIndex = 25;
+            label31.Text = "Accounts";
+            // 
+            // tableLayoutPanel27
+            // 
+            tableLayoutPanel27.ColumnCount = 2;
+            tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.Controls.Add(label32, 0, 0);
+            tableLayoutPanel27.Controls.Add(zoneComboBox, 1, 0);
+            tableLayoutPanel27.Dock = DockStyle.Fill;
+            tableLayoutPanel27.Location = new Point(212, 0);
+            tableLayoutPanel27.Margin = new Padding(0);
+            tableLayoutPanel27.Name = "tableLayoutPanel27";
+            tableLayoutPanel27.RowCount = 1;
+            tableLayoutPanel27.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.Size = new Size(91, 32);
+            tableLayoutPanel27.TabIndex = 29;
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Dock = DockStyle.Fill;
+            label32.Location = new Point(3, 0);
+            label32.Name = "label32";
+            label32.Size = new Size(39, 32);
+            label32.TabIndex = 29;
+            label32.Text = "Filter Zone";
+            label32.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // zoneComboBox
+            // 
+            zoneComboBox.FormattingEnabled = true;
+            zoneComboBox.Location = new Point(48, 5);
+            zoneComboBox.Margin = new Padding(3, 5, 3, 3);
+            zoneComboBox.Name = "zoneComboBox";
+            zoneComboBox.Size = new Size(40, 23);
+            zoneComboBox.TabIndex = 25;
+            zoneComboBox.Text = "01";
+            zoneComboBox.SelectedIndexChanged += zoneComboBox_SelectedIndexChanged;
             // 
             // panel6
             // 
@@ -2473,8 +2510,15 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(label40);
+            panel2.Controls.Add(label39);
+            panel2.Controls.Add(label38);
+            panel2.Controls.Add(comboBox1);
+            panel2.Controls.Add(dateTimePicker1);
+            panel2.Controls.Add(toDateTimePicker);
+            panel2.Controls.Add(label34);
             panel2.Controls.Add(getPenaltyButton);
-            panel2.Controls.Add(billSetingsDataGridView);
+            panel2.Controls.Add(paymentsDataGridView);
             panel2.Controls.Add(billIdTextBox);
             panel2.Controls.Add(label71);
             panel2.Controls.Add(billDataGridView);
@@ -2484,42 +2528,107 @@
             panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
             // 
+            // label40
+            // 
+            label40.AutoSize = true;
+            label40.Location = new Point(967, 20);
+            label40.Name = "label40";
+            label40.Size = new Size(37, 15);
+            label40.TabIndex = 35;
+            label40.Text = "Zone:";
+            // 
+            // label39
+            // 
+            label39.AutoSize = true;
+            label39.Location = new Point(1060, 22);
+            label39.Name = "label39";
+            label39.Size = new Size(33, 15);
+            label39.TabIndex = 34;
+            label39.Text = "from";
+            // 
+            // label38
+            // 
+            label38.AutoSize = true;
+            label38.Location = new Point(1175, 22);
+            label38.Name = "label38";
+            label38.Size = new Size(18, 15);
+            label38.TabIndex = 33;
+            label38.Text = "to";
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(1007, 16);
+            comboBox1.Margin = new Padding(3, 5, 3, 3);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(40, 23);
+            comboBox1.TabIndex = 32;
+            comboBox1.Text = "01";
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Format = DateTimePickerFormat.Short;
+            dateTimePicker1.Location = new Point(1094, 16);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(80, 23);
+            dateTimePicker1.TabIndex = 31;
+            // 
+            // toDateTimePicker
+            // 
+            toDateTimePicker.Format = DateTimePickerFormat.Short;
+            toDateTimePicker.Location = new Point(1196, 16);
+            toDateTimePicker.Name = "toDateTimePicker";
+            toDateTimePicker.Size = new Size(81, 23);
+            toDateTimePicker.TabIndex = 30;
+            // 
+            // label34
+            // 
+            label34.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            label34.AutoSize = true;
+            label34.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label34.Location = new Point(794, 10);
+            label34.Name = "label34";
+            label34.Size = new Size(134, 32);
+            label34.TabIndex = 29;
+            label34.Text = "Payments";
+            // 
             // getPenaltyButton
             // 
-            getPenaltyButton.Location = new Point(533, 11);
+            getPenaltyButton.Location = new Point(1283, 6);
             getPenaltyButton.Name = "getPenaltyButton";
-            getPenaltyButton.Size = new Size(95, 33);
+            getPenaltyButton.Size = new Size(80, 33);
             getPenaltyButton.TabIndex = 28;
-            getPenaltyButton.Text = "Get Penalty";
+            getPenaltyButton.Text = "Print Table";
             getPenaltyButton.UseVisualStyleBackColor = true;
             getPenaltyButton.Click += getPenaltyButton_Click;
             // 
-            // billSetingsDataGridView
+            // paymentsDataGridView
             // 
-            billSetingsDataGridView.AllowUserToAddRows = false;
-            billSetingsDataGridView.AllowUserToDeleteRows = false;
-            billSetingsDataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            billSetingsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            billSetingsDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            billSetingsDataGridView.BackgroundColor = Color.White;
-            billSetingsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            billSetingsDataGridView.Location = new Point(803, 45);
-            billSetingsDataGridView.Name = "billSetingsDataGridView";
-            billSetingsDataGridView.ReadOnly = true;
-            billSetingsDataGridView.RowHeadersVisible = false;
+            paymentsDataGridView.AllowUserToAddRows = false;
+            paymentsDataGridView.AllowUserToDeleteRows = false;
+            paymentsDataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            paymentsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            paymentsDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            paymentsDataGridView.BackgroundColor = Color.White;
+            paymentsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            paymentsDataGridView.Location = new Point(794, 45);
+            paymentsDataGridView.Name = "paymentsDataGridView";
+            paymentsDataGridView.ReadOnly = true;
+            paymentsDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            billSetingsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            billSetingsDataGridView.Size = new Size(571, 309);
-            billSetingsDataGridView.TabIndex = 27;
+            paymentsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
+            paymentsDataGridView.Size = new Size(571, 309);
+            paymentsDataGridView.TabIndex = 27;
             // 
             // billIdTextBox
             // 
             billIdTextBox.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            billIdTextBox.Location = new Point(279, 19);
+            billIdTextBox.Location = new Point(648, 12);
             billIdTextBox.Margin = new Padding(0);
             billIdTextBox.Name = "billIdTextBox";
             billIdTextBox.Size = new Size(120, 23);
             billIdTextBox.TabIndex = 26;
+            billIdTextBox.Visible = false;
             // 
             // label71
             // 
@@ -2615,9 +2724,11 @@
             tableLayoutPanel26.ResumeLayout(false);
             tableLayoutPanel26.PerformLayout();
             tableLayoutPanel12.ResumeLayout(false);
+            tableLayoutPanel27.ResumeLayout(false);
+            tableLayoutPanel27.PerformLayout();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)billSetingsDataGridView).EndInit();
+            ((System.ComponentModel.ISupportInitialize)paymentsDataGridView).EndInit();
             ((System.ComponentModel.ISupportInitialize)billDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -2644,12 +2755,8 @@
         private DataGridView billDataGridView;
         private TableLayoutPanel tableLayoutPanel25;
         private TableLayoutPanel tableLayoutPanel26;
-        private Button searchButton;
-        private Button clearButton;
         private Label label31;
         private Label label71;
-        private Button syncButton;
-        private TableLayoutPanel tableLayoutPanel12;
         public Panel billingPanel;
         private TableLayoutPanel tableLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel15;
@@ -2778,8 +2885,7 @@
         private TextBox preniousPenaltyTextBox;
         private Label penaltyLabel;
         private TextBox billIdTextBox;
-        private Label oberDueDaysLabel;
-        private DataGridView billSetingsDataGridView;
+        private DataGridView paymentsDataGridView;
         private ListView billSettingsListView;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn fullname;
@@ -2802,5 +2908,19 @@
         private DataGridViewCheckBoxColumn taxexempt;
         private DataGridViewTextBoxColumn presentreaddate;
         private Button getPenaltyButton;
+        private TableLayoutPanel tableLayoutPanel12;
+        private Button clearButton;
+        private ComboBox zoneComboBox;
+        private Label label32;
+        private Label label34;
+        private DateTimePicker toDateTimePicker;
+        private Label label38;
+        private ComboBox comboBox1;
+        private DateTimePicker dateTimePicker1;
+        private Label label40;
+        private Label label39;
+        private TableLayoutPanel tableLayoutPanel27;
+        private Button searchButton;
+        private RichTextBox penaltySummaryRichTextBox;
     }
 }

@@ -40,7 +40,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                     balance, 
                     penaltyamount,
                     amountpaid,
-                    arrearsamount,
+                    arrearsamount
                 FROM tb_bill 
                 WHERE bill_id = @bill_id 
                 LIMIT 1";

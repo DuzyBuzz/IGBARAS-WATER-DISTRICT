@@ -231,6 +231,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+            LoadZoneComboBox();
             ClearWaterChargeLabels();
             userIdLabel.Text = $"{UserCredentials.UserId}";
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
@@ -240,7 +241,7 @@ namespace IGBARAS_WATER_DISTRICT
             using (var loadingForm = new LoadingForm())
             {
                 var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
-                var task2 = DGVHelper.LoadDataToGridAsync(billSetingsDataGridView, "tb_billsettings", loadingForm);
+                var task2 = DGVHelper.LoadDataToGridAsync(paymentsDataGridView, "tb_payment", loadingForm);
 
                 await Task.WhenAll(task1, task2);
             }
@@ -379,6 +380,7 @@ namespace IGBARAS_WATER_DISTRICT
                 // the to reading date is the same as the date billed this is all exacty the same date
                 fromReadingDateLabel.Text = readingInfo.FromReadingDate.ToString("MMMM dd, yyyy");
                 toReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
+                dateBilledLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
                 dueDateLabel.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
                 previousReadingTextBox.Text = readingInfo.PreviousReadingBill.ToString();
                 meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
@@ -456,19 +458,7 @@ namespace IGBARAS_WATER_DISTRICT
         /// </summary>
         /// <param name="accountno"></param>
         /// <param name="dueexempt"></param>
-        private void GetPenalty()
-        {
-            decimal penalty = GetPenaltyHelper.GetPenalty(
-                billCharge: 950.00m,
-                dueGracePeriod: new DateTime(2024, 6, 15),
-                dueExempt: 0,
-                arrears: 1,
-                srcPenalty: 0,
-                srcPaid: 0
-            );
 
-            Console.WriteLine("Penalty calculated: ₱" + penalty);
-        }
 
 
 
@@ -562,6 +552,14 @@ namespace IGBARAS_WATER_DISTRICT
                         int paid = (balance == 0 && amountPaid > 0) ? 1 : 0; // Fully paid if no balance and payment was made
                         int partiallyPaid = (amountPaid > 0 && balance > 0) ? 1 : 0; // Partially paid
 
+                        int arrears = 0;
+
+                        if (paid == 0 || partiallyPaid == 1)
+                            arrears = 1;
+                        else
+                            arrears = 0;
+
+
                         // Add parameters to the command
                         cmd.Parameters.AddWithValue("@charge", charge);
                         cmd.Parameters.AddWithValue("@taxpercent", taxPercent);
@@ -577,8 +575,7 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@arrearsamount", arrearsAmount);
                         cmd.Parameters.AddWithValue("@datebilled", DateTime.Now);
                         cmd.Parameters.AddWithValue("@partiallypaid", partiallyPaid);
-                        cmd.Parameters.AddWithValue("@adjustdebit", 0.00); // default value
-                        cmd.Parameters.AddWithValue("@adjustcredit", 0.00); // default value
+                        cmd.Parameters.AddWithValue("@arrears", arrears);
                         cmd.Parameters.AddWithValue("@uploaded", 0); // default value
                         cmd.Parameters.AddWithValue("@bill_id", billIdTextBox.Text);
 
@@ -764,6 +761,67 @@ namespace IGBARAS_WATER_DISTRICT
 
             // Display formatted value
             chargeLabel.Text = chargeSubTotal.ToString("N2");
+            DateTime? usedDueDate;
+            int usedBillId;
+            string billCodeUsed;
+
+            // add penalty here
+            decimal penalty = GetPenaltyHelper.GetPenalty(
+                    accountNo: accountNumberTextBox.Text.Trim(),
+                    billCharge: Convert.ToDecimal(chargeLabel.Text.Trim()),
+                    dueExempt: 0,
+                    srcPenalty: Convert.ToDecimal(penaltyAmountLabel.Text.Trim()),
+                    srcPaid: 0,
+                    usedDueDate: out usedDueDate,
+                    usedBill_id: out usedBillId,
+                    usedBillCode: out billCodeUsed
+                );
+
+            // ✅ STEP: Calculate how many days the bill is overdue (used in penalty)
+            // ─────────────────────────────────────────────────────────────
+            // The value of `usedDueDate` comes from this SQL query:
+            //
+            //     SELECT duedate, graceperiod
+            //     FROM tb_bill
+            //     JOIN tb_billsettings ON tb_bill.districtno = tb_billsettings.districtno
+            //     WHERE accountno = @accountno
+            //       AND paid = 0
+            //     ORDER BY duedate ASC
+            //     LIMIT 1;
+            //
+            // 🔹 This query gets the oldest unpaid bill for the customer (by `duedate`).
+            // 🔹 It joins the bill with the billing settings to get the district's `graceperiod`.
+            // 🔹 The `dueGracePeriod = duedate + graceperiod` is used by the GETPENALTY() MySQL function.
+            //
+            // 👇 This line calculates the number of days that have passed since the due date.
+            //    If no unpaid bill was found (`usedDueDate == null`), we show "0".
+            // ✅ Display how many days overdue, or a status if not overdue
+            DisplayPenaltySummary(penaltySummaryRichTextBox, billCodeUsed, usedDueDate);
+
+
+
+
+
+            Debug.WriteLine("Customer Penalty: ₱" + penalty.ToString("N2"));
+            penaltyAmountLabel.Text = penalty.ToString("N2");
+            decimal totalBillCharge = penalty + Convert.ToDecimal(chargeLabel.Text.Trim());
+
+            totalChargeBillLabel.Text = totalBillCharge.ToString("N2");
+
+
+            // ✅ Compute penalty percentage
+            decimal penaltyPercentage = 0;
+
+            if (Convert.ToDecimal(chargeLabel.Text.Trim()) > 0)
+            {
+                penaltyPercentage = (penalty / Convert.ToDecimal(chargeLabel.Text.Trim())) * 100;
+            }
+
+            // ✅ Optional: round to nearest whole number
+            penaltyPercentage = Math.Round(penaltyPercentage);
+
+            // ✅ Show in penaltyTextBox (e.g. "10" for 10%)
+            penaltyLabel.Text = penaltyPercentage.ToString("N0") + "%";
 
         }
 
@@ -772,9 +830,83 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
 
+        /// <summary>
+        /// Displays a styled penalty summary in the given RichTextBox.
+        /// </summary>
+        /// <param name="richTextBox">Target RichTextBox control</param>
+        /// <param name="usedBillId">The bill_id used for penalty calculation</param>
+        /// <param name="usedDueDate">The due date used for calculation</param>
+        public void DisplayPenaltySummary(RichTextBox richTextBox, string billCodeUsed, DateTime? usedDueDate)
+            {
+                // Clear previous content
+                richTextBox.Clear();
+
+                // === Formatting Strings ===
+                string billCodeText = "Last Unpaid Bill Code: \n";
+                string billCodeValue = string.IsNullOrWhiteSpace(billCodeUsed) ? "N/A" : billCodeUsed;
+
+                string dueDateText = "Last Unpaid Due Date: \n";
+                string dueDateValue = usedDueDate.HasValue
+                    ? usedDueDate.Value.ToString("MMMM dd, yyyy")
+                    : "N/A";
+
+                string overdueText = "Overdue Status: ";
+                string overdueValue;
+
+                if (usedDueDate.HasValue)
+                {
+                    if (DateTime.Now > usedDueDate.Value)
+                    {
+                        int daysOverdue = (DateTime.Now - usedDueDate.Value).Days;
+                        overdueValue = $"\n{daysOverdue} day(s) overdue";
+                    }
+                    else
+                    {
+                        overdueValue = "\nPayment not yet due";
+                    }
+                }
+                else
+                {
+                    overdueValue = "N/A";
+                }
+
+                // === Bill Code ===
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                richTextBox.AppendText(billCodeText);
+               
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Regular);
+                richTextBox.SelectionColor = Color.Red;
+
+                richTextBox.AppendText(billCodeValue + "\r\n");
+
+                // === Due Date ===
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                richTextBox.AppendText(dueDateText);
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Regular);
+                richTextBox.AppendText(dueDateValue + "\r\n");
+
+                // === Overdue Status ===
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                richTextBox.AppendText(overdueText);
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Regular);
+
+                if (overdueValue.Contains("overdue"))
+                    richTextBox.SelectionColor = Color.Red;
+                else if (overdueValue == "Payment not yet due")
+                    richTextBox.SelectionColor = Color.Green;
+                else
+                    richTextBox.SelectionColor = Color.Black;
+
+                richTextBox.AppendText(overdueValue);
+
+                // Reset formatting
+                richTextBox.SelectionFont = new Font("Segoe UI", 10, FontStyle.Regular);
+                richTextBox.SelectionColor = Color.Black;
+            }
 
 
-        private void ClearWaterChargeLabels()
+
+    private void ClearWaterChargeLabels()
         {
             // Clear all tier labels if input is invalid
             tenQuantityLabel.Text = tenUnitPriceLabel.Text = tenAmountLabel.Text = "";
@@ -783,7 +915,7 @@ namespace IGBARAS_WATER_DISTRICT
             fortyQuantityLabel.Text = fortyUnitPriceLabel.Text = fortyAmountLabel.Text = "";
             fortyUpQuantityLabel.Text = fortyUpUnitPriceLabel.Text = fortyUpAmountLabel.Text = "";
             presentReadingTextBox.Text = "";
-            penaltyAmountLabel.Text = "";
+            penaltyAmountLabel.Text = "0.00";
             penaltyLabel.Text = "";
             meterConsumedReadingTextBox.Text = "";
             // Clear discount and tax labels
@@ -828,20 +960,56 @@ namespace IGBARAS_WATER_DISTRICT
         private void presentReadingTextBox_TextChanged(object sender, EventArgs e)
         {
 
+
         }
 
         private void getPenaltyButton_Click(object sender, EventArgs e)
         {
-            decimal penalty = GetPenaltyHelper.GetPenalty(
-                billCharge: 950.00m,
-                dueGracePeriod: new DateTime(2025, 7, 21),
-                dueExempt: 0,
-                arrears: 1,
-                srcPenalty: 0,
-                srcPaid: 0
-            );
 
-            Debug.WriteLine("Penalty calculated: ₱" + penalty);
+        }
+        private void GetPenalty(decimal subcharge, DateTime duegrace, int dueExempt, int arrears)
+        {
+
+        }
+
+        private void zoneComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Get selected zone code from ComboBox
+            string zoneCode = zoneComboBox.SelectedValue?.ToString();
+
+            if (string.IsNullOrEmpty(zoneCode))
+                return;
+
+            if (accountDataGridView.DataSource is DataTable dt)
+            {
+                // Filter rows where accountno starts with the selected zoneCode (e.g., "04-")
+                dt.DefaultView.RowFilter = $"accountno LIKE '{zoneCode}-%'";
+
+                // Sort rows in ascending order by accountno
+                dt.DefaultView.Sort = "accountno ASC";
+            }
+        }
+        private void LoadZoneComboBox()
+        {
+            int districtNo = 1; // Replace with actual district if needed
+
+            var zoneList = ZoneHelper.GetZoneCodeHelper(districtNo);
+
+            zoneComboBox.DataSource = zoneList;
+            zoneComboBox.DisplayMember = "ZoneCode"; // Shown: "01", "02", "11"
+            zoneComboBox.ValueMember = "ZoneCode";   // Internal value: same as displayed
+
+            if (zoneComboBox.Items.Count > 0)
+                zoneComboBox.SelectedIndex = 0;
+        }
+
+        private void searchButton_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void searchAccountNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

@@ -76,7 +76,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
-
+        // user get bill settings helper to get the due date days ine tb_billsettings table
         private void GetDueDays()
         {
             string dueDateDaysStr = GetBillSettingsHelper.GetValue("duedateduration");
@@ -428,7 +428,7 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@balance", Convert.ToDecimal(chargeLabel.Text.Trim()));
 
                         // Auto-calculated / UI values
-                        cmd.Parameters.AddWithValue("@billcode", billCodeLabel.Text.Trim()); 
+                        cmd.Parameters.AddWithValue("@billcode", billCodeLabel.Text.Trim());
                         cmd.Parameters.AddWithValue("@billnumber", Convert.ToInt32(extractedBillNumberLabel.Text.Trim())); // the int part only
                                                                                                                            // Check if the label is empty
                         if (string.IsNullOrWhiteSpace(fromReadingDateLabel.Text))
@@ -509,6 +509,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+            LoadZoneComboBox();
             ClearWaterChargeLabels();
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
@@ -527,7 +528,19 @@ namespace IGBARAS_WATER_DISTRICT
             AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
         }
 
+        private void LoadZoneComboBox()
+        {
+            int districtNo = 1; // Replace with actual district if needed
 
+            var zoneList = ZoneHelper.GetZoneCodeHelper(districtNo);
+
+            zoneComboBox.DataSource = zoneList;
+            zoneComboBox.DisplayMember = "ZoneCode"; // Shown: "01", "02", "11"
+            zoneComboBox.ValueMember = "ZoneCode";   // Internal value: same as displayed
+
+            if (zoneComboBox.Items.Count > 0)
+                zoneComboBox.SelectedIndex = 0;
+        }
 
 
 
@@ -696,13 +709,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void searchButton_Click(object sender, EventArgs e)
         {
-            string keyword = searchAccountNumberTextBox.Text.Trim().Replace("'", "''"); // prevent errors with single quotes
 
-            if (accountDataGridView.DataSource is DataTable dt)
-            {
-                // Filter on both 'accountno' and 'fullname' columns
-                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
-            }
         }
 
 
@@ -894,7 +901,7 @@ namespace IGBARAS_WATER_DISTRICT
             presentReadingTextBox.Text = "";
             discountedAmountLabel.Text = "0";
             exemptedAmountLabel.Text = "0";
-            chargeLabel.Text = ""; 
+            chargeLabel.Text = "";
         }
         private void ClearBillingLabels()
         {
@@ -965,7 +972,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             string input = presentReadingTextBox.Text.Trim();
 
-            // 🟡 Check if empty or zero
+            // 🟡 Disable button if input is empty or zero
             if (string.IsNullOrEmpty(input) || input == "0")
             {
                 printSaveButton.Enabled = false;
@@ -974,33 +981,79 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 printSaveButton.Enabled = true;
             }
-            // Try to parse the entered value as an integer
-            // Try to parse the entered present reading
+
+            // ✅ Try to parse the present reading
             if (int.TryParse(presentReadingTextBox.Text.Trim(), out int presentReading))
             {
-                // Try to parse the previous reading
+                // ✅ Try to parse the previous reading
                 if (int.TryParse(previousReadingTextBox.Text.Trim(), out int previousReading))
                 {
-                    // Calculate the consumption (present - previous)
-                    int meterConsumed = presentReading - previousReading;
+                    // ✅ Validate that present reading is not less than previous reading
+                    if (presentReading >= previousReading)
+                    {
+                        // ✅ Calculate meter consumed
+                        int meterConsumed = presentReading - previousReading;
 
-                    // Display the calculated consumption
-                    meterConsumedReadingTextBox.Text = meterConsumed.ToString();
+                        // ✅ Display meter consumed
+                        meterConsumedReadingTextBox.Text = meterConsumed.ToString();
 
-                    // Now calculate the water charges based on consumption
-                    CalculateWaterCharges(meterConsumed);
+                        // ✅ Calculate water charges based on consumption
+                        CalculateWaterCharges(meterConsumed);
+                    }
+                    else
+                    {
+                        // ❌ Present reading is less than previous reading
+                        meterConsumedReadingTextBox.Clear();
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Invalid previous reading input.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // ❌ Invalid input in previous reading
+                    meterConsumedReadingTextBox.Clear();
+                    ClearWaterChargeLabels();
                 }
             }
             else
             {
+                // ❌ Invalid input in present reading
+                meterConsumedReadingTextBox.Clear();
                 ClearWaterChargeLabels();
-
             }
 
+
+        }
+
+        private void searchAccountNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
+            string keyword = searchAccountNumberTextBox.Text.Trim().Replace("'", "''"); // prevent errors with single quotes
+
+            if (accountDataGridView.DataSource is DataTable dt)
+            {
+                // Filter on both 'accountno' and 'fullname' columns
+                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
+            }
+        }
+
+        private void zoneComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Get selected zone code from ComboBox
+            string zoneCode = zoneComboBox.SelectedValue?.ToString();
+
+            if (string.IsNullOrEmpty(zoneCode))
+                return;
+
+            if (accountDataGridView.DataSource is DataTable dt)
+            {
+                // Filter rows where accountno starts with the selected zoneCode (e.g., "04-")
+                dt.DefaultView.RowFilter = $"accountno LIKE '{zoneCode}-%'";
+
+                // Sort rows in ascending order by accountno
+                dt.DefaultView.Sort = "accountno ASC";
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
 
         }
     }

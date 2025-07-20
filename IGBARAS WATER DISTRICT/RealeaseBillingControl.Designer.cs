@@ -37,7 +37,6 @@
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
-            searchAccountNumberTextBox = new TextBox();
             loadingLabel = new Label();
             loadingProgressBar = new ProgressBar();
             label15 = new Label();
@@ -172,10 +171,14 @@
             accountSearchPanel = new Panel();
             tableLayoutPanel25 = new TableLayoutPanel();
             tableLayoutPanel26 = new TableLayoutPanel();
-            label31 = new Label();
             tableLayoutPanel12 = new TableLayoutPanel();
             searchButton = new Button();
             clearButton = new Button();
+            searchAccountNumberTextBox = new TextBox();
+            label31 = new Label();
+            tableLayoutPanel27 = new TableLayoutPanel();
+            label32 = new Label();
+            zoneComboBox = new ComboBox();
             accountDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
             taxpercent = new DataGridViewTextBoxColumn();
@@ -199,6 +202,7 @@
             taxexempt = new DataGridViewCheckBoxColumn();
             panel6 = new Panel();
             panel2 = new Panel();
+            panel4 = new Panel();
             printBillDataGridView = new DataGridView();
             label34 = new Label();
             label71 = new Label();
@@ -237,6 +241,7 @@
             tableLayoutPanel25.SuspendLayout();
             tableLayoutPanel26.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
+            tableLayoutPanel27.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)accountDataGridView).BeginInit();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)printBillDataGridView).BeginInit();
@@ -264,17 +269,6 @@
             button1.TabIndex = 5;
             button1.Text = "Print Table";
             button1.UseVisualStyleBackColor = false;
-            // 
-            // searchAccountNumberTextBox
-            // 
-            searchAccountNumberTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-            searchAccountNumberTextBox.Dock = DockStyle.Fill;
-            searchAccountNumberTextBox.Font = new Font("Arial", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchAccountNumberTextBox.Location = new Point(3, 37);
-            searchAccountNumberTextBox.Margin = new Padding(3, 5, 3, 3);
-            searchAccountNumberTextBox.Name = "searchAccountNumberTextBox";
-            searchAccountNumberTextBox.Size = new Size(217, 25);
-            searchAccountNumberTextBox.TabIndex = 6;
             // 
             // loadingLabel
             // 
@@ -373,20 +367,22 @@
             // billCodeLabel
             // 
             billCodeLabel.AutoSize = true;
-            billCodeLabel.Location = new Point(37, 276);
+            billCodeLabel.Location = new Point(76, 13);
             billCodeLabel.Name = "billCodeLabel";
             billCodeLabel.Size = new Size(48, 15);
             billCodeLabel.TabIndex = 31;
             billCodeLabel.Text = "label32";
+            billCodeLabel.Visible = false;
             // 
             // extractedBillNumberLabel
             // 
             extractedBillNumberLabel.AutoSize = true;
-            extractedBillNumberLabel.Location = new Point(37, 204);
+            extractedBillNumberLabel.Location = new Point(76, 35);
             extractedBillNumberLabel.Name = "extractedBillNumberLabel";
             extractedBillNumberLabel.Size = new Size(48, 15);
             extractedBillNumberLabel.TabIndex = 30;
             extractedBillNumberLabel.Text = "label32";
+            extractedBillNumberLabel.Visible = false;
             // 
             // billingPanel
             // 
@@ -1954,13 +1950,14 @@
             // 
             label23.AutoSize = true;
             label23.Dock = DockStyle.Fill;
+            label23.Font = new Font("Calibri", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label23.Location = new Point(167, 1);
             label23.Margin = new Padding(0);
             label23.Name = "label23";
             label23.Size = new Size(83, 25);
             label23.TabIndex = 2;
-            label23.Text = "Cu. M. Consumed";
-            label23.TextAlign = ContentAlignment.MiddleCenter;
+            label23.Text = "Cu. M. \r\nConsumed";
+            label23.TextAlign = ContentAlignment.TopCenter;
             // 
             // label18
             // 
@@ -2107,11 +2104,12 @@
             // tableLayoutPanel26
             // 
             tableLayoutPanel26.ColumnCount = 2;
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 73.59736F));
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 26.40264F));
-            tableLayoutPanel26.Controls.Add(label31, 0, 0);
-            tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 69.9669952F));
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30.0330029F));
             tableLayoutPanel26.Controls.Add(tableLayoutPanel12, 1, 1);
+            tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
+            tableLayoutPanel26.Controls.Add(label31, 0, 0);
+            tableLayoutPanel26.Controls.Add(tableLayoutPanel27, 1, 0);
             tableLayoutPanel26.Dock = DockStyle.Fill;
             tableLayoutPanel26.Location = new Point(0, 0);
             tableLayoutPanel26.Margin = new Padding(0);
@@ -2120,45 +2118,35 @@
             tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel26.RowStyles.Add(new RowStyle(SizeType.Absolute, 35F));
             tableLayoutPanel26.Size = new Size(303, 67);
-            tableLayoutPanel26.TabIndex = 24;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Dock = DockStyle.Left;
-            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label31.Location = new Point(3, 0);
-            label31.Name = "label31";
-            label31.Size = new Size(176, 32);
-            label31.TabIndex = 25;
-            label31.Text = "Concessionaire";
-            label31.TextAlign = ContentAlignment.MiddleLeft;
+            tableLayoutPanel26.TabIndex = 25;
             // 
             // tableLayoutPanel12
             // 
             tableLayoutPanel12.ColumnCount = 2;
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.54955F));
+            tableLayoutPanel12.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.45045F));
             tableLayoutPanel12.Controls.Add(searchButton, 1, 0);
             tableLayoutPanel12.Controls.Add(clearButton, 0, 0);
             tableLayoutPanel12.Dock = DockStyle.Fill;
-            tableLayoutPanel12.Location = new Point(223, 32);
+            tableLayoutPanel12.Location = new Point(212, 32);
             tableLayoutPanel12.Margin = new Padding(0);
             tableLayoutPanel12.Name = "tableLayoutPanel12";
             tableLayoutPanel12.RowCount = 1;
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel12.Size = new Size(80, 35);
-            tableLayoutPanel12.TabIndex = 26;
+            tableLayoutPanel12.Size = new Size(91, 35);
+            tableLayoutPanel12.TabIndex = 28;
             // 
             // searchButton
             // 
             searchButton.Anchor = AnchorStyles.Bottom;
             searchButton.BackColor = Color.White;
-            searchButton.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            searchButton.Location = new Point(43, 6);
+            searchButton.FlatStyle = FlatStyle.Popup;
+            searchButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            searchButton.ForeColor = SystemColors.ActiveCaptionText;
+            searchButton.Location = new Point(56, 7);
             searchButton.Name = "searchButton";
-            searchButton.Size = new Size(34, 26);
-            searchButton.TabIndex = 23;
+            searchButton.Size = new Size(24, 25);
+            searchButton.TabIndex = 25;
             searchButton.Text = "🔎";
             searchButton.UseVisualStyleBackColor = false;
             searchButton.Click += searchButton_Click;
@@ -2170,13 +2158,72 @@
             clearButton.FlatStyle = FlatStyle.Popup;
             clearButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
             clearButton.ForeColor = Color.Crimson;
-            clearButton.Location = new Point(8, 7);
+            clearButton.Location = new Point(10, 7);
             clearButton.Name = "clearButton";
             clearButton.Size = new Size(24, 25);
             clearButton.TabIndex = 24;
             clearButton.Text = "❌";
             clearButton.UseVisualStyleBackColor = false;
             clearButton.Click += clearButton_Click;
+            // 
+            // searchAccountNumberTextBox
+            // 
+            searchAccountNumberTextBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            searchAccountNumberTextBox.Dock = DockStyle.Fill;
+            searchAccountNumberTextBox.Font = new Font("Arial", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            searchAccountNumberTextBox.Location = new Point(3, 37);
+            searchAccountNumberTextBox.Margin = new Padding(3, 5, 3, 3);
+            searchAccountNumberTextBox.Name = "searchAccountNumberTextBox";
+            searchAccountNumberTextBox.Size = new Size(206, 25);
+            searchAccountNumberTextBox.TabIndex = 6;
+            // 
+            // label31
+            // 
+            label31.AutoSize = true;
+            label31.Font = new Font("Arial", 18F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            label31.Location = new Point(3, 0);
+            label31.Name = "label31";
+            label31.Size = new Size(110, 28);
+            label31.TabIndex = 25;
+            label31.Text = "Accounts";
+            // 
+            // tableLayoutPanel27
+            // 
+            tableLayoutPanel27.ColumnCount = 2;
+            tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.Controls.Add(label32, 0, 0);
+            tableLayoutPanel27.Controls.Add(zoneComboBox, 1, 0);
+            tableLayoutPanel27.Dock = DockStyle.Fill;
+            tableLayoutPanel27.Location = new Point(212, 0);
+            tableLayoutPanel27.Margin = new Padding(0);
+            tableLayoutPanel27.Name = "tableLayoutPanel27";
+            tableLayoutPanel27.RowCount = 1;
+            tableLayoutPanel27.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel27.Size = new Size(91, 32);
+            tableLayoutPanel27.TabIndex = 29;
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Dock = DockStyle.Fill;
+            label32.Location = new Point(3, 0);
+            label32.Name = "label32";
+            label32.Size = new Size(39, 32);
+            label32.TabIndex = 29;
+            label32.Text = "Filter Zone";
+            label32.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // zoneComboBox
+            // 
+            zoneComboBox.FormattingEnabled = true;
+            zoneComboBox.Location = new Point(48, 5);
+            zoneComboBox.Margin = new Padding(3, 5, 3, 3);
+            zoneComboBox.Name = "zoneComboBox";
+            zoneComboBox.Size = new Size(40, 23);
+            zoneComboBox.TabIndex = 25;
+            zoneComboBox.Text = "01";
+            zoneComboBox.SelectedIndexChanged += zoneComboBox_SelectedIndexChanged;
             // 
             // accountDataGridView
             // 
@@ -2394,6 +2441,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(panel4);
             panel2.Controls.Add(printBillDataGridView);
             panel2.Controls.Add(label34);
             panel2.Controls.Add(label71);
@@ -2404,6 +2452,14 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(1387, 368);
             panel2.TabIndex = 1;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(1377, 0);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 368);
+            panel4.TabIndex = 30;
             // 
             // printBillDataGridView
             // 
@@ -2419,7 +2475,7 @@
             printBillDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             printBillDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            printBillDataGridView.Size = new Size(491, 305);
+            printBillDataGridView.Size = new Size(488, 305);
             printBillDataGridView.TabIndex = 29;
             // 
             // label34
@@ -2545,6 +2601,8 @@
             tableLayoutPanel26.ResumeLayout(false);
             tableLayoutPanel26.PerformLayout();
             tableLayoutPanel12.ResumeLayout(false);
+            tableLayoutPanel27.ResumeLayout(false);
+            tableLayoutPanel27.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)accountDataGridView).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
@@ -2557,7 +2615,6 @@
         private PrintDialog billingPrintDialog;
         private Label printButton;
         private Button button1;
-        private TextBox searchAccountNumberTextBox;
         private Label label15;
         private ProgressBar loadingProgressBar;
         private Label loadingLabel;
@@ -2573,12 +2630,7 @@
         private Panel panel6;
         private DataGridView billDataGridView;
         private TableLayoutPanel tableLayoutPanel25;
-        private TableLayoutPanel tableLayoutPanel26;
-        private Button searchButton;
-        private Button clearButton;
-        private Label label31;
         private Label label71;
-        private TableLayoutPanel tableLayoutPanel12;
         public Panel billingPanel;
         private TableLayoutPanel tableLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel15;
@@ -2725,5 +2777,15 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
+        private Panel panel4;
+        private TableLayoutPanel tableLayoutPanel26;
+        private TableLayoutPanel tableLayoutPanel12;
+        private Button searchButton;
+        private Button clearButton;
+        private TextBox searchAccountNumberTextBox;
+        private Label label31;
+        private TableLayoutPanel tableLayoutPanel27;
+        private Label label32;
+        private ComboBox zoneComboBox;
     }
 }
