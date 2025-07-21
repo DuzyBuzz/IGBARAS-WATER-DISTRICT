@@ -102,6 +102,53 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                 }
             }
         }
+        public static async Task<DataTable> LoadDataToDataTableAsync(string tableName, Form loadingForm = null)
+        {
+            DataTable resultTable = new DataTable();
+
+            try
+            {
+                if (loadingForm != null)
+                {
+                    loadingForm.Show();
+                    loadingForm.Refresh();
+                }
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                resultTable = await Task.Run(() =>
+                {
+                    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                    {
+                        conn.Open();
+                        string query = $"SELECT * FROM `{tableName}`";
+
+                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt);
+                            return dt;
+                        }
+                    }
+                });
+
+                sw.Stop();
+                Debug.WriteLine($"[SQL Query Time] Loaded {resultTable.Rows.Count} rows in {sw.ElapsedMilliseconds} ms.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Failed to load data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                loadingForm?.Close();
+            }
+
+            return resultTable;
+        }
+
 
     }
 }

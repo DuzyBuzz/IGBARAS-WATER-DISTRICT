@@ -7,34 +7,18 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
     internal class GetPenaltyHelper
     {
         /// <summary>
-        /// Computes the penalty using the GETPENALTY() MySQL function.
-        /// It finds the latest paid bill and uses the first unpaid bill that follows it as the basis for penalty.
+        /// Calls the MySQL function `GETPENALTY` to calculate the penalty based on billing parameters.
         /// </summary>
-        /// <param name="accountNo">Account number to evaluate</param>
-        /// <param name="billCharge">Total amount charged for the bill</param>
-        /// <param name="dueExempt">1 if exempted from due, 0 otherwise</param>
-        /// <param name="srcPenalty">Existing penalty (usually from the database)</param>
-        /// <param name="srcPaid">1 if the current bill is already paid, 0 otherwise</param>
-        /// <param name="usedDueDate">[OUT] The actual due date used for penalty calculation</param>
-        /// <param name="usedBill_id">[OUT] The bill_id of the unpaid bill used for penalty</param>
-        /// <param name="usedBillCode">[OUT] The billcode of the unpaid bill used for penalty</param>
-        /// <returns>Returns the computed penalty as a decimal value</returns>
-        public static decimal GetPenalty(
-            string accountNo,
-            decimal billCharge,
-            int dueExempt,
-            decimal srcPenalty,
-            int srcPaid,
-            out DateTime? usedDueDate,
-            out int usedBill_id,
-            out string usedBillCode)
+        /// <param name="billCharge">Total bill amount</param>
+        /// <param name="dueGracePeriod">Grace period date</param>
+        /// <param name="dueExempt">1 if due is exempted, else 0</param>
+        /// <param name="arrears">1 if bill has arrears, else 0</param>
+        /// <param name="existingPenalty">Existing penalty amount</param>
+        /// <param name="isPaid">1 if bill is already paid, else 0</param>
+        /// <returns>Penalty amount as decimal</returns>
+        public static decimal GetPenalty(decimal billCharge, DateTime dueGracePeriod, int dueExempt, int arrears, decimal existingPenalty, int isPaid)
         {
-            decimal penaltyResult = 0;
-            DateTime dueGracePeriod = DateTime.Today; // fallback if nothing is found
-            int arrears = 0;
-            usedDueDate = null;
-            usedBill_id = 0;
-            usedBillCode = string.Empty;
+            decimal penalty = 0;
 
             try
             {
@@ -42,99 +26,36 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                 {
                     conn.Open();
 
-                    // ✅ STEP 1: Get the latest paid due date for the account
-                    DateTime? latestPaidDueDate = null;
+                    // Build SQL query to call the function
+                    string query = "SELECT GETPENALTY(@billcharge, @duegraceperiod, @dueexempt, @arrears, @src_penalty, @src_paid);";
 
-                    string latestPaidQuery = @"
-                        SELECT duedate
-                        FROM tb_bill
-                        WHERE accountno = @accountno
-                          AND paid = 1
-                        ORDER BY duedate DESC
-                        LIMIT 1;";
-
-                    using (MySqlCommand latestPaidCmd = new MySqlCommand(latestPaidQuery, conn))
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        latestPaidCmd.Parameters.AddWithValue("@accountno", accountNo);
+                        // Add all parameters required by the function
+                        cmd.Parameters.AddWithValue("@billcharge", billCharge);
+                        cmd.Parameters.AddWithValue("@duegraceperiod", dueGracePeriod);
+                        cmd.Parameters.AddWithValue("@dueexempt", dueExempt);
+                        cmd.Parameters.AddWithValue("@arrears", arrears);
+                        cmd.Parameters.AddWithValue("@src_penalty", existingPenalty);
+                        cmd.Parameters.AddWithValue("@src_paid", isPaid);
 
-                        object result = latestPaidCmd.ExecuteScalar();
-                        if (result != null && DateTime.TryParse(result.ToString(), out DateTime latest))
+                        // Execute the function and read the result
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != DBNull.Value && result != null)
                         {
-                            latestPaidDueDate = latest;
-                        }
-                    }
-
-                    // ✅ STEP 2: Find the next unpaid bill AFTER the latest paid one
-                    // This determines where to base the penalty calculation
-                    string unpaidQuery = @"
-                        SELECT tb_bill.bill_id, tb_bill.billcode, tb_bill.duedate, tb_billsettings.graceperiod
-                        FROM tb_bill
-                        JOIN tb_billsettings ON tb_bill.districtno = tb_billsettings.districtno
-                        WHERE tb_bill.accountno = @accountno
-                          AND tb_bill.paid = 0
-                          AND (@latestPaidDueDate IS NULL OR tb_bill.duedate > @latestPaidDueDate)
-                        ORDER BY tb_bill.duedate ASC
-                        LIMIT 1;";
-
-                    using (MySqlCommand unpaidCmd = new MySqlCommand(unpaidQuery, conn))
-                    {
-                        unpaidCmd.Parameters.AddWithValue("@accountno", accountNo);
-                        unpaidCmd.Parameters.AddWithValue("@latestPaidDueDate",
-                            latestPaidDueDate.HasValue ? (object)latestPaidDueDate.Value : DBNull.Value);
-
-                        using (MySqlDataReader reader = unpaidCmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                // 🟢 Unpaid bill found after the latest paid one
-                                int billId = reader.GetInt32("bill_id");
-                                string billCode = reader.GetString("billcode");
-                                DateTime dueDate = reader.GetDateTime("duedate");
-                                int graceDays = reader.GetInt32("graceperiod");
-
-                                dueGracePeriod = dueDate.AddDays(graceDays);
-                                usedDueDate = dueDate;
-                                usedBill_id = billId;
-                                usedBillCode = billCode;
-                                arrears = 1;
-                            }
-                        }
-                    }
-
-                    // ✅ STEP 3: Call MySQL function GETPENALTY()
-                    string funcQuery = @"
-                        SELECT GETPENALTY(
-                            @billCharge,
-                            @dueGracePeriod,
-                            @dueExempt,
-                            @arrears,
-                            @srcPenalty,
-                            @srcPaid
-                        );";
-
-                    using (MySqlCommand funcCmd = new MySqlCommand(funcQuery, conn))
-                    {
-                        funcCmd.Parameters.AddWithValue("@billCharge", billCharge);
-                        funcCmd.Parameters.AddWithValue("@dueGracePeriod", dueGracePeriod.ToString("yyyy-MM-dd"));
-                        funcCmd.Parameters.AddWithValue("@dueExempt", dueExempt);
-                        funcCmd.Parameters.AddWithValue("@arrears", arrears);
-                        funcCmd.Parameters.AddWithValue("@srcPenalty", srcPenalty);
-                        funcCmd.Parameters.AddWithValue("@srcPaid", srcPaid);
-
-                        object result = funcCmd.ExecuteScalar();
-                        if (result != null && decimal.TryParse(result.ToString(), out decimal parsedPenalty))
-                        {
-                            penaltyResult = parsedPenalty;
+                            penalty = Convert.ToDecimal(result);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
+                // Log error or display in debug output
                 Debug.WriteLine($"[GetPenaltyHelper] Error: {ex.Message}");
             }
 
-            return penaltyResult;
+            return penalty;
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿namespace IGBARAS_WATER_DISTRICT
 {
-    partial class DashboardControl
+    partial class AccountsControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-        private Label label;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -29,26 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
-
-            this.label = new Label();
-            this.SuspendLayout();
+            SuspendLayout();
             // 
-            // label
+            // AccountsControl
             // 
-            this.label.Text = "📊 Dashboard";
-            this.label.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
-            this.label.Dock = DockStyle.Fill;
-            this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // DashboardControl
-            // 
-            this.Controls.Add(this.label);
-            this.Name = "DashboardControl";
-            this.Size = new System.Drawing.Size(800, 600);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Name = "AccountsControl";
+            Size = new Size(1378, 931);
+            ResumeLayout(false);
         }
 
         #endregion

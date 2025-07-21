@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace IGBARAS_WATER_DISTRICT
 {
-    public partial class DashboardControl : UserControl
+    public partial class CollectionReceiptForm : Form
     {
-        public DashboardControl()
+        public CollectionReceiptForm()
         {
             InitializeComponent();
         }

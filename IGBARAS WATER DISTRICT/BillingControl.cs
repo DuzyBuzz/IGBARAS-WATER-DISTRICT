@@ -236,14 +236,13 @@ namespace IGBARAS_WATER_DISTRICT
             userIdLabel.Text = $"{UserCredentials.UserId}";
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
-            LoadBillSettingsAsSideways();
+
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm())
             {
                 var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
-                var task2 = DGVHelper.LoadDataToGridAsync(paymentsDataGridView, "tb_payment", loadingForm);
 
-                await Task.WhenAll(task1, task2);
+                await Task.WhenAll(task1);
             }
 
             // 🟢 Optional: Setup autocomplete after data loaded
@@ -252,50 +251,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-        private void LoadBillSettingsAsSideways()
-        {
-            billSettingsListView.Clear(); // clear old data
 
-            // Create 2 columns: Setting | Value
-            billSettingsListView.Columns.Add("Bill Setting", 100, HorizontalAlignment.Left);
-            billSettingsListView.Columns.Add("Value", 70, HorizontalAlignment.Left);
-
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-                {
-                    conn.Open();
-
-                    // 🔹 Get only 1 row (settings are usually single row)
-                    string query = "SELECT * FROM tb_billsettings LIMIT 1";
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            // 🔹 Loop through each column and display as a row
-                            for (int i = 0; i < reader.FieldCount; i++)
-                            {
-                                string columnName = reader.GetName(i);
-                                string columnValue = reader[i].ToString();
-
-                                ListViewItem item = new ListViewItem(columnName); // left column
-                                item.SubItems.Add(columnValue);                  // right column
-                                billSettingsListView.Items.Add(item);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("No settings found.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading settings: " + ex.Message);
-            }
-        }
 
 
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -377,29 +333,6 @@ namespace IGBARAS_WATER_DISTRICT
             if (readingInfo != null)
             {
 
-                // the to reading date is the same as the date billed this is all exacty the same date
-                fromReadingDateLabel.Text = readingInfo.FromReadingDate.ToString("MMMM dd, yyyy");
-                toReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
-                dateBilledLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
-                dueDateLabel.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
-                previousReadingTextBox.Text = readingInfo.PreviousReadingBill.ToString();
-                meterConsumedReadingTextBox.Text = readingInfo.MeterConsumed.ToString();
-                arrearsLabel.Text = readingInfo.RealArrears.ToString("N2");
-                int meterConsumedReading = 0;
-
-                // ➕ Calculate present reading
-                int previousReading = 0;
-                int.TryParse(readingInfo.PreviousReadingBill.ToString(), out previousReading);
-                int.TryParse(readingInfo.MeterConsumed.ToString(), out meterConsumedReading);
-                int previousPenalty = 0;
-                int.TryParse(readingInfo.Penalty.ToString(), out previousPenalty);
-                preniousPenaltyTextBox.Text = previousPenalty.ToString();
-
-                int presentReading = previousReading + meterConsumedReading;
-                presentReadingTextBox.Text = presentReading.ToString();
-
-                Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
-                Debug.WriteLine($"Reading Date: {readingInfo.ToReadingDate.ToShortDateString()}");
 
             }
             else
@@ -448,6 +381,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (!string.IsNullOrWhiteSpace(accountNo))
             {
                 LoadAccountBillHistory(accountNo);
+                LoadAccountPaymentHistory(accountNo);
 
 
 
@@ -483,6 +417,30 @@ namespace IGBARAS_WATER_DISTRICT
                     billDataGridView.DataSource = billData;
                     billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     billDataGridView.Sort(billDataGridView.Columns["bill_id"], ListSortDirection.Descending);
+
+                }
+            }
+
+        }
+        private void LoadAccountPaymentHistory(string accountNo)
+        {
+            // Call helper to load billing summary rows where accountno = accountNo
+
+            DataTable PaymentsData = ExclusiveDGVHelper.LoadRowsByExactAccount("tb_payment", "accountno", accountNo);
+
+            if (CheckIfBillIsPaid())
+            {
+                MessageBox.Show("This bill is already paid.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return; // Exit or disable further actions
+
+            }
+            else
+            {
+                if (PaymentsData != null)
+                {
+                    paymentsDataGridView.DataSource = PaymentsData;
+                    paymentsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                    paymentsDataGridView.Sort(paymentsDataGridView.Columns["paymentid"], ListSortDirection.Descending);
 
                 }
             }
@@ -761,67 +719,9 @@ namespace IGBARAS_WATER_DISTRICT
 
             // Display formatted value
             chargeLabel.Text = chargeSubTotal.ToString("N2");
-            DateTime? usedDueDate;
-            int usedBillId;
-            string billCodeUsed;
-
-            // add penalty here
-            decimal penalty = GetPenaltyHelper.GetPenalty(
-                    accountNo: accountNumberTextBox.Text.Trim(),
-                    billCharge: Convert.ToDecimal(chargeLabel.Text.Trim()),
-                    dueExempt: 0,
-                    srcPenalty: Convert.ToDecimal(penaltyAmountLabel.Text.Trim()),
-                    srcPaid: 0,
-                    usedDueDate: out usedDueDate,
-                    usedBill_id: out usedBillId,
-                    usedBillCode: out billCodeUsed
-                );
-
-            // ✅ STEP: Calculate how many days the bill is overdue (used in penalty)
-            // ─────────────────────────────────────────────────────────────
-            // The value of `usedDueDate` comes from this SQL query:
-            //
-            //     SELECT duedate, graceperiod
-            //     FROM tb_bill
-            //     JOIN tb_billsettings ON tb_bill.districtno = tb_billsettings.districtno
-            //     WHERE accountno = @accountno
-            //       AND paid = 0
-            //     ORDER BY duedate ASC
-            //     LIMIT 1;
-            //
-            // 🔹 This query gets the oldest unpaid bill for the customer (by `duedate`).
-            // 🔹 It joins the bill with the billing settings to get the district's `graceperiod`.
-            // 🔹 The `dueGracePeriod = duedate + graceperiod` is used by the GETPENALTY() MySQL function.
-            //
-            // 👇 This line calculates the number of days that have passed since the due date.
-            //    If no unpaid bill was found (`usedDueDate == null`), we show "0".
-            // ✅ Display how many days overdue, or a status if not overdue
-            DisplayPenaltySummary(penaltySummaryRichTextBox, billCodeUsed, usedDueDate);
 
 
 
-
-
-            Debug.WriteLine("Customer Penalty: ₱" + penalty.ToString("N2"));
-            penaltyAmountLabel.Text = penalty.ToString("N2");
-            decimal totalBillCharge = penalty + Convert.ToDecimal(chargeLabel.Text.Trim());
-
-            totalChargeBillLabel.Text = totalBillCharge.ToString("N2");
-
-
-            // ✅ Compute penalty percentage
-            decimal penaltyPercentage = 0;
-
-            if (Convert.ToDecimal(chargeLabel.Text.Trim()) > 0)
-            {
-                penaltyPercentage = (penalty / Convert.ToDecimal(chargeLabel.Text.Trim())) * 100;
-            }
-
-            // ✅ Optional: round to nearest whole number
-            penaltyPercentage = Math.Round(penaltyPercentage);
-
-            // ✅ Show in penaltyTextBox (e.g. "10" for 10%)
-            penaltyLabel.Text = penaltyPercentage.ToString("N0") + "%";
 
         }
 
@@ -940,11 +840,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void syncButton_Click(object sender, EventArgs e)
         {
-            // 🟡 Load data from DB to billingDataGridView
-            using (var loadingForm = new LoadingForm()) // make sure you created LoadingForm
-            {
-                await DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
-            }
+
         }
 
         private void accountDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
