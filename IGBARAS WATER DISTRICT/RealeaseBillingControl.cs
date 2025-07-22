@@ -1503,6 +1503,45 @@ namespace IGBARAS_WATER_DISTRICT
                 MessageBox.Show($"❌ An error occurred while saving or printing: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        //private void billPaidButton_Click(object sender, EventArgs e)
+        //{
+        //    // 🔒 Check if bill is already paid
+        //    if (CheckIfBillIsPaid())
+        //    {
+        //        MessageBox.Show("❌ This bill has already been paid. Saving or printing is not allowed.", "Bill Already Paid", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        // 💾 Save billing record to database
+        //        UpdateBillingRecord();
+
+        //        MessageBox.Show("✅ Billing record saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //        // 🖨️ Set printer settings to landscape and legal paper
+        //        billingPrintDocument.DefaultPageSettings.Landscape = true;
+
+        //        foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
+        //        {
+        //            if (ps.Kind == PaperKind.Legal)
+        //            {
+        //                billingPrintDocument.DefaultPageSettings.PaperSize = ps;
+        //                break;
+        //            }
+        //        }
+
+        //        // Optional: Set margins (in hundredths of an inch, 30 = 0.3")
+        //        billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30);
+
+        //        // 🖨️ Print the billing document
+        //        billingPrintDocument.Print();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"❌ An error occurred while saving or printing: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
         private bool CheckIfBillIsPaid()
         {
             bool isPaid = false;
@@ -1580,5 +1619,157 @@ namespace IGBARAS_WATER_DISTRICT
 
             return isPaid;
         }
+
+
+        //Y↓\X→|000|025|050|075|100|125|150|175|200|225|250|275|300|325|350|375|400|425|
+        //-----+-----------------------------------------------------------------------+
+        //000  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //025  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //050  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //075  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //100  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //125  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //150  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //175  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //200  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //225  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //250  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //275  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //300  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //325  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //350  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //375  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //400  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //425  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //450  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //475  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //500  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //525  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //550  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //575  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //600  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //625  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //650  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+
+
+
+
+        private void printlangmuna_Click(object sender, EventArgs e)
+        {
+            // Create a new PrintDocument
+            PrintDocument pd = new PrintDocument();
+
+            // Optional: set the paper size to custom 8.25" x 11.75"
+            pd.DefaultPageSettings.PaperSize = new PaperSize("CustomA4", 825, 1175); // 100 DPI units (1 inch = 100)
+
+
+            // Assign the PrintPage handler
+            pd.PrintPage += new PrintPageEventHandler(MapPrintPage);
+
+            // Show a print dialog for user confirmation
+            PrintDialog dialog = new PrintDialog();
+            dialog.Document = pd;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                pd.Print(); // Start the print job
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        void MapPrintPage(object sender, PrintPageEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font font = new Font("Consolas", 4);
+            Pen gridPen = Pens.Orange;
+            Brush brush = Brushes.Red;
+
+            int paperWidth = 425;
+            int paperHeight = 650;
+            int cellSize = 25;
+
+            // 🔲 Draw Grid
+            for (int x = 0; x <= paperWidth; x += cellSize)
+                g.DrawLine(gridPen, x, 0, x, paperHeight);
+
+            for (int y = 0; y <= paperHeight; y += cellSize)
+                g.DrawLine(gridPen, 0, y, paperWidth, y);
+
+            // 🏷 Label Cells
+            for (int y = 0; y < paperHeight; y += cellSize)
+            {
+                for (int x = 0; x < paperWidth; x += cellSize)
+                {
+                    string label = $"{x},\n{y}";
+                    g.DrawString(label, font, brush, x + 2, y + 2);
+                }
+            }
+
+            string name = fullnameTextBox.Text;
+            string address = addressTextBox.Text;
+            string accountNo = accountNumberTextBox.Text;
+            string dateBilled = dateBilledLabel.Text;
+            string dueDate = dueDateLabel.Text;
+
+            g.DrawString(name, font, Brushes.Black, 35, 65);
+            g.DrawString(address, font, Brushes.Black, 25, 75);
+            g.DrawString(accountNo, font, Brushes.Black, 25, 100);
+            g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
+            g.DrawString(dueDate, font, Brushes.Black, 200, 125);
+
+            string[] qtys = { "10", "2", "0" };
+            string[] prices = { "15.00", "20.00", "0.00" };
+            string[] amounts = { "150.00", "40.00", "0.00" };
+
+            int rowStartY = 175;
+            int rowSpacing = 25;
+
+            for (int i = 0; i < qtys.Length; i++)
+            {
+                int rowY = rowStartY + (i * rowSpacing);
+
+                g.DrawString(qtys[i], font, Brushes.Black, 200, rowY);
+                g.DrawString(prices[i], font, Brushes.Black, 250, rowY);
+                g.DrawString(amounts[i], font, Brushes.Black, 300, rowY);
+            }
+
+            e.HasMorePages = false;
+        }
+
+
+        void PrintPages(object sender, PrintPageEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font font = new Font("Arial", 10);
+            Brush brush = Brushes.Black;
+
+            int receiptHeight = 390;
+
+            for (int i = 0; i < 3; i++)
+            {
+                int yOffset = i * receiptHeight;
+
+                // Example: Draw some key labels (map more as needed)
+                g.DrawString("0.00", font, brush, 295, 1 + yOffset);   // totalWaterConsumptionAmountLabel
+                g.DrawString("0", font, brush, 149, 1 + yOffset);       // totalQuantityLabel
+                g.DrawString("0.00", font, brush, 222, 150 + yOffset);  // fortyUpUnitPriceLabel
+                g.DrawString("0", font, brush, 149, 150 + yOffset);     // fortyUpQuantityLabel
+                g.DrawString("0.00", font, brush, 295, 150 + yOffset);  // fortyUpAmountLabel
+                g.DrawString("0.00", font, brush, 295, 125 + yOffset);  // fortyAmountLabel
+
+                // ... add the rest of your label mappings here
+            }
+
+            e.HasMorePages = false;
+        }
+
     }
 }

@@ -47,6 +47,7 @@
             panel3 = new Panel();
             tabControl1 = new TabControl();
             billingInvoice = new TabPage();
+            printlangmuna = new Button();
             latestBillIdLabel = new Label();
             printSaveButton = new Button();
             billCodeLabel = new Label();
@@ -588,6 +589,7 @@
             // 
             // billingInvoice
             // 
+            billingInvoice.Controls.Add(printlangmuna);
             billingInvoice.Controls.Add(latestBillIdLabel);
             billingInvoice.Controls.Add(printSaveButton);
             billingInvoice.Controls.Add(billCodeLabel);
@@ -602,6 +604,17 @@
             billingInvoice.TabIndex = 0;
             billingInvoice.Text = "Billing Invoice";
             billingInvoice.UseVisualStyleBackColor = true;
+            // 
+            // printlangmuna
+            // 
+            printlangmuna.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            printlangmuna.Location = new Point(296, 518);
+            printlangmuna.Name = "printlangmuna";
+            printlangmuna.Size = new Size(98, 28);
+            printlangmuna.TabIndex = 47;
+            printlangmuna.Text = "print";
+            printlangmuna.UseVisualStyleBackColor = true;
+            printlangmuna.Click += printlangmuna_Click;
             // 
             // latestBillIdLabel
             // 
@@ -3409,7 +3422,7 @@
             x.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             x.AutoSize = true;
             x.Font = new Font("Arial", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            x.Location = new Point(459, 490);
+            x.Location = new Point(476, 490);
             x.Name = "x";
             x.Size = new Size(179, 24);
             x.TabIndex = 39;
@@ -5520,5 +5533,6 @@
         private Label label38;
         private Label label159;
         private Label label160;
+        private Button printlangmuna;
     }
 }
