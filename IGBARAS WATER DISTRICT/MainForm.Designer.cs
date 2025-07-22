@@ -36,11 +36,11 @@ namespace IGBARAS_WATER_DISTRICT
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             sidebarPanel = new Panel();
+            reportsButton = new Button();
             button2 = new Button();
             button1 = new Button();
-            transactionsButton = new Button();
+            accountsButton = new Button();
             readingButton = new Button();
-            billingButton = new Button();
             panel1 = new Panel();
             panel7 = new Panel();
             pictureBox1 = new PictureBox();
@@ -63,11 +63,11 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             sidebarPanel.AutoScroll = true;
             sidebarPanel.BackColor = SystemColors.ActiveCaption;
+            sidebarPanel.Controls.Add(reportsButton);
             sidebarPanel.Controls.Add(button2);
             sidebarPanel.Controls.Add(button1);
-            sidebarPanel.Controls.Add(transactionsButton);
+            sidebarPanel.Controls.Add(accountsButton);
             sidebarPanel.Controls.Add(readingButton);
-            sidebarPanel.Controls.Add(billingButton);
             sidebarPanel.Controls.Add(panel1);
             sidebarPanel.Controls.Add(logoutButton);
             sidebarPanel.Dock = DockStyle.Left;
@@ -76,6 +76,20 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.Name = "sidebarPanel";
             sidebarPanel.Size = new Size(206, 961);
             sidebarPanel.TabIndex = 1;
+            // 
+            // reportsButton
+            // 
+            reportsButton.Dock = DockStyle.Top;
+            reportsButton.FlatAppearance.BorderSize = 0;
+            reportsButton.FlatStyle = FlatStyle.Flat;
+            reportsButton.Font = new Font("Arial", 12F);
+            reportsButton.Location = new Point(0, 254);
+            reportsButton.Name = "reportsButton";
+            reportsButton.Size = new Size(206, 45);
+            reportsButton.TabIndex = 13;
+            reportsButton.Text = "📝 Reports";
+            reportsButton.TextAlign = ContentAlignment.MiddleLeft;
+            reportsButton.Click += reportsButton_Click;
             // 
             // button2
             // 
@@ -107,19 +121,19 @@ namespace IGBARAS_WATER_DISTRICT
             button1.TextAlign = ContentAlignment.MiddleLeft;
             button1.Click += settingsButton_Click;
             // 
-            // transactionsButton
+            // accountsButton
             // 
-            transactionsButton.Dock = DockStyle.Top;
-            transactionsButton.FlatAppearance.BorderSize = 0;
-            transactionsButton.FlatStyle = FlatStyle.Flat;
-            transactionsButton.Font = new Font("Arial", 12F);
-            transactionsButton.Location = new Point(0, 254);
-            transactionsButton.Name = "transactionsButton";
-            transactionsButton.Size = new Size(206, 45);
-            transactionsButton.TabIndex = 9;
-            transactionsButton.Text = "📝 Reports";
-            transactionsButton.TextAlign = ContentAlignment.MiddleLeft;
-            transactionsButton.Click += transactionsButton_Click;
+            accountsButton.Dock = DockStyle.Top;
+            accountsButton.FlatAppearance.BorderSize = 0;
+            accountsButton.FlatStyle = FlatStyle.Flat;
+            accountsButton.Font = new Font("Arial", 12F);
+            accountsButton.Location = new Point(0, 209);
+            accountsButton.Name = "accountsButton";
+            accountsButton.Size = new Size(206, 45);
+            accountsButton.TabIndex = 9;
+            accountsButton.Text = "📝 Reports";
+            accountsButton.TextAlign = ContentAlignment.MiddleLeft;
+            accountsButton.Click += transactionsButton_Click;
             // 
             // readingButton
             // 
@@ -127,29 +141,13 @@ namespace IGBARAS_WATER_DISTRICT
             readingButton.FlatAppearance.BorderSize = 0;
             readingButton.FlatStyle = FlatStyle.Flat;
             readingButton.Font = new Font("Arial", 12F);
-            readingButton.Location = new Point(0, 209);
+            readingButton.Location = new Point(0, 164);
             readingButton.Name = "readingButton";
             readingButton.Size = new Size(206, 45);
             readingButton.TabIndex = 7;
-            readingButton.Text = "📅 Reading";
+            readingButton.Text = "💸 Billing Invoice";
             readingButton.TextAlign = ContentAlignment.MiddleLeft;
             readingButton.Click += accountsButton_Click;
-            // 
-            // billingButton
-            // 
-            billingButton.BackgroundImageLayout = ImageLayout.Zoom;
-            billingButton.Dock = DockStyle.Top;
-            billingButton.FlatAppearance.BorderSize = 0;
-            billingButton.FlatStyle = FlatStyle.Flat;
-            billingButton.Font = new Font("Arial", 12F);
-            billingButton.ImageAlign = ContentAlignment.MiddleLeft;
-            billingButton.Location = new Point(0, 164);
-            billingButton.Name = "billingButton";
-            billingButton.Size = new Size(206, 45);
-            billingButton.TabIndex = 8;
-            billingButton.Text = "💸 Billing";
-            billingButton.TextAlign = ContentAlignment.MiddleLeft;
-            billingButton.Click += billingButton_Click;
             // 
             // panel1
             // 
@@ -275,6 +273,8 @@ namespace IGBARAS_WATER_DISTRICT
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "IGBARAS Water District Billing";
+            FormClosing += MainForm_FormClosing;
+            FormClosed += MainForm_FormClosed;
             Load += MainForm_Load;
             sidebarPanel.ResumeLayout(false);
             panel1.ResumeLayout(false);
@@ -288,9 +288,8 @@ namespace IGBARAS_WATER_DISTRICT
         #endregion
 
         private Button logoutButton;
-        private Button transactionsButton;
+        private Button accountsButton;
         private Button readingButton;
-        private Button billingButton;
         private Panel panel1;
         private Panel panel5;
         private Panel panel4;
@@ -304,5 +303,6 @@ namespace IGBARAS_WATER_DISTRICT
         private Label usernameLabel;
         public Panel mainPanel;
         private Button reloadButton;
+        private Button reportsButton;
     }
 }

@@ -43,8 +43,6 @@
             panel1 = new Panel();
             tableLayoutPanel24 = new TableLayoutPanel();
             panel3 = new Panel();
-            penaltySummaryRichTextBox = new RichTextBox();
-            billSettingsListView = new ListView();
             billingPanel = new Panel();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel15 = new TableLayoutPanel();
@@ -140,6 +138,7 @@
             label27 = new Label();
             preniousPenaltyTextBox = new TextBox();
             penaltyLabel = new Label();
+            scfInstallmentTextBox = new TextBox();
             tableLayoutPanel23 = new TableLayoutPanel();
             label79 = new Label();
             label83 = new Label();
@@ -373,8 +372,6 @@
             // 
             panel3.AutoScroll = true;
             panel3.BorderStyle = BorderStyle.Fixed3D;
-            panel3.Controls.Add(penaltySummaryRichTextBox);
-            panel3.Controls.Add(billSettingsListView);
             panel3.Controls.Add(billingPanel);
             panel3.Controls.Add(accountnoBillHistory);
             panel3.Controls.Add(billPaidButton);
@@ -385,36 +382,13 @@
             panel3.Size = new Size(1058, 559);
             panel3.TabIndex = 22;
             // 
-            // penaltySummaryRichTextBox
-            // 
-            penaltySummaryRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            penaltySummaryRichTextBox.Font = new Font("Arial", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            penaltySummaryRichTextBox.Location = new Point(873, 5);
-            penaltySummaryRichTextBox.Name = "penaltySummaryRichTextBox";
-            penaltySummaryRichTextBox.Size = new Size(180, 113);
-            penaltySummaryRichTextBox.TabIndex = 28;
-            penaltySummaryRichTextBox.Text = "";
-            // 
-            // billSettingsListView
-            // 
-            billSettingsListView.Alignment = ListViewAlignment.Left;
-            billSettingsListView.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            billSettingsListView.BorderStyle = BorderStyle.None;
-            billSettingsListView.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            billSettingsListView.Location = new Point(873, 129);
-            billSettingsListView.Name = "billSettingsListView";
-            billSettingsListView.Size = new Size(184, 417);
-            billSettingsListView.TabIndex = 27;
-            billSettingsListView.UseCompatibleStateImageBehavior = false;
-            billSettingsListView.View = View.Details;
-            // 
             // billingPanel
             // 
             billingPanel.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel1);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(26, 7);
+            billingPanel.Location = new Point(10, 5);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(826, 491);
@@ -1475,6 +1449,7 @@
             tableLayoutPanel21.Controls.Add(label27, 0, 4);
             tableLayoutPanel21.Controls.Add(preniousPenaltyTextBox, 2, 6);
             tableLayoutPanel21.Controls.Add(penaltyLabel, 1, 6);
+            tableLayoutPanel21.Controls.Add(scfInstallmentTextBox, 3, 4);
             tableLayoutPanel21.Dock = DockStyle.Fill;
             tableLayoutPanel21.Location = new Point(0, 0);
             tableLayoutPanel21.Margin = new Padding(0);
@@ -1683,6 +1658,19 @@
             penaltyLabel.TabIndex = 29;
             penaltyLabel.Text = "0";
             penaltyLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // scfInstallmentTextBox
+            // 
+            scfInstallmentTextBox.BorderStyle = BorderStyle.None;
+            scfInstallmentTextBox.Dock = DockStyle.Fill;
+            scfInstallmentTextBox.Font = new Font("Calibri", 11.25F);
+            scfInstallmentTextBox.Location = new Point(283, 81);
+            scfInstallmentTextBox.Margin = new Padding(0);
+            scfInstallmentTextBox.Name = "scfInstallmentTextBox";
+            scfInstallmentTextBox.ReadOnly = true;
+            scfInstallmentTextBox.Size = new Size(83, 19);
+            scfInstallmentTextBox.TabIndex = 30;
+            scfInstallmentTextBox.TextAlign = HorizontalAlignment.Center;
             // 
             // tableLayoutPanel23
             // 
@@ -2147,7 +2135,7 @@
             billPaidButton.Anchor = AnchorStyles.None;
             billPaidButton.BackColor = Color.White;
             billPaidButton.Font = new Font("Arial", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billPaidButton.Location = new Point(724, 507);
+            billPaidButton.Location = new Point(716, 508);
             billPaidButton.Name = "billPaidButton";
             billPaidButton.Size = new Size(120, 40);
             billPaidButton.TabIndex = 21;
@@ -2886,7 +2874,6 @@
         private Label penaltyLabel;
         private TextBox billIdTextBox;
         private DataGridView paymentsDataGridView;
-        private ListView billSettingsListView;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn fullname;
         private DataGridViewTextBoxColumn presentreaddates;
@@ -2921,6 +2908,6 @@
         private Label label39;
         private TableLayoutPanel tableLayoutPanel27;
         private Button searchButton;
-        private RichTextBox penaltySummaryRichTextBox;
+        private TextBox scfInstallmentTextBox;
     }
 }

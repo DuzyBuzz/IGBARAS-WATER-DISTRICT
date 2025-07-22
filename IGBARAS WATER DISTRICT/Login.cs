@@ -183,5 +183,12 @@ namespace IGBARAS_WATER_DISTRICT
         private void Login_Paint(object sender, PaintEventArgs e)
         {
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            var panel = new CollectionReceiptForm();
+            panel.Show();
+            this.Hide();
+        }
     }
 }

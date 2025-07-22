@@ -60,8 +60,6 @@ namespace IGBARAS_WATER_DISTRICT
         }
 
         // Button click handlers
-        private void dashboardButton_Click(object sender, EventArgs e) => LoadControl("Dashboard");
-        private void billingButton_Click(object sender, EventArgs e) => LoadControl("Billing");
         private void settingsButton_Click(object sender, EventArgs e) => LoadControl("Settings");
         private void systemInformationButton_Click(object sender, EventArgs e) => LoadControl("SystemInformation");
         private void accountsButton_Click(object sender, EventArgs e) => LoadControl("RealeaseBilling");
@@ -69,7 +67,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LoadControl("Billing");
+            LoadControl("RealeaseBilling");
             usernameLabel.Text = $"{UserCredentials.Username}";
         }
         private void reloadButton_Click(object sender, EventArgs e)
@@ -89,14 +87,39 @@ namespace IGBARAS_WATER_DISTRICT
                 loadedControls.Remove(currentControlName);
             }
 
-            LoadControl("Billing");
+            LoadControl("RealeaseBilling");
 
         }
 
 
         private void logoutButton_Click(object sender, EventArgs e)
         {
+            DialogResult result = MessageBox.Show("Are you sure you want to close the application?", "Confirm Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             // You can add logout logic here
+            var loginForm = new Login();
+            loginForm.Show();
+
+
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to close the application?", "Confirm Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true; // Cancel the form closing event
+            }
+        }
+
+        private void reportsButton_Click(object sender, EventArgs e)
+        {
+            LoadControl("Reports");
         }
     }
 }
