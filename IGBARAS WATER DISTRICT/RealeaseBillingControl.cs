@@ -233,11 +233,6 @@ namespace IGBARAS_WATER_DISTRICT
                     con.Open();
 
                     string query = @"UPDATE tb_bill SET
-                charge = @charge,
-                taxpercent = @taxpercent,
-                taxamount = @taxamount,
-                scpercent = @scpercent,
-                senioramount = @senioramount,
                 totalbillcharge = @totalbillcharge,
                 billcharge = @billcharge,
                 balance = @balance,
@@ -245,65 +240,59 @@ namespace IGBARAS_WATER_DISTRICT
                 amountpaid = @amountpaid,
                 penaltyamount = @penaltyamount,
                 arrearsamount = @arrearsamount,
-                datebilled = @datebilled,
                 partiallypaid = @partiallypaid,
                 adjustdebit = @adjustdebit,
                 adjustcredit = @adjustcredit,
-                uploaded = @uploaded
+                uploaded = @uploaded,
+                arrears = @arrears
                 WHERE bill_id = @bill_id";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        // Parse and calculate financial fields
-                        double charge = double.TryParse(subTotalAmountDueLabel.Text, out double c) ? c : 0;
-                        int taxPercent = int.TryParse(taxExemptedPercentLabel.Text, out int tp) ? tp : 0;
-                        double taxAmount = (charge * taxPercent) / 100;
+                        // Parse monetary values from UI controls
+                        double totalBillCharge = double.TryParse(totalAmountDueLabel2.Text.Replace(",", ""), out double tbc) ? tbc : 0;
+                        double amountPaid = double.TryParse(collectionTotalPaidAmointLabel.Text.Replace(",", ""), out double ap) ? ap : 0;
+                        double penaltyAmount = double.TryParse(collectionTotalAmountPaidTextBox.Text.Replace(",", ""), out double pa) ? pa : 0;
+                        double arrearsAmount = double.TryParse(collectionArrearsAmountLabel.Text.Replace(",", ""), out double ar) ? ar : 0;
 
-                        int scPercent = int.TryParse(discountedPercentLabel.Text, out int scp) ? scp : 0;
-                        double seniorAmount = (charge * scPercent) / 100;
 
-                        double totalBillCharge = double.TryParse(totalAmountDueLabel.Text, out double tbc) ? tbc : 0;
-                        double amountPaid = double.TryParse(amountPaidTextBox.Text, out double ap) ? ap : 0;
+                        // Optional: Adjustments — customize if needed
+                        double adjustDebit = 0;
+                        double adjustCredit = 0;
 
-                        double penaltyAmount = double.TryParse(penaltyAmountLabel.Text, out double pa) ? pa : 0;
-                        double arrearsAmount = double.TryParse(arrearsAmountLabel.Text, out double ar) ? ar : 0;
-
-                        // 🧮 Calculate balance
+                        // 1. Calculate balance
                         double balance = totalBillCharge - amountPaid;
-                        if (balance < 0) balance = 0; // Never negative
 
-                        // ✅ Set payment status
-                        int paid = (balance == 0 && amountPaid > 0) ? 1 : 0; // Fully paid if no balance and payment was made
-                        int partiallyPaid = (amountPaid > 0 && balance > 0) ? 1 : 0; // Partially paid
+                        // 2. Clamp balance to zero if overpaid
+                        if (balance < 0) balance = 0;
 
-                        int arrears = 0;
+                        // 3. Determine payment status
+                        int paid = (balance == 0 && amountPaid > 0) ? 1 : 0;
+                        int partiallyPaid = (amountPaid > 0 && balance > 0) ? 1 : 0;
 
-                        if (paid == 0 || partiallyPaid == 1)
-                            arrears = 1;
-                        else
-                            arrears = 0;
+                        // 4. Determine if overdue (for real-world arrears)
+                        DateTime dueDate = DateTime.TryParse(dueDateLabel.Text, out DateTime dd) ? dd : DateTime.MinValue;
+                        bool isOverdue = DateTime.Today > dueDate;
 
+                        // 5. Set arrears only if unpaid or underpaid AND overdue
+                        int arrears = (paid == 0 && isOverdue) ? 1 : 0;
 
-                        // Add parameters to the command
-                        cmd.Parameters.AddWithValue("@charge", charge);
-                        cmd.Parameters.AddWithValue("@taxpercent", taxPercent);
-                        cmd.Parameters.AddWithValue("@taxamount", taxAmount);
-                        cmd.Parameters.AddWithValue("@scpercent", scPercent);
-                        cmd.Parameters.AddWithValue("@senioramount", seniorAmount);
+                        // Add parameters to SQL command
                         cmd.Parameters.AddWithValue("@totalbillcharge", totalBillCharge);
-                        cmd.Parameters.AddWithValue("@billcharge", totalBillCharge); // for simplicity same as total for now
+                        cmd.Parameters.AddWithValue("@billcharge", totalBillCharge); // May separate later for raw vs full charge
                         cmd.Parameters.AddWithValue("@balance", balance);
                         cmd.Parameters.AddWithValue("@paid", paid);
                         cmd.Parameters.AddWithValue("@amountpaid", amountPaid);
                         cmd.Parameters.AddWithValue("@penaltyamount", penaltyAmount);
                         cmd.Parameters.AddWithValue("@arrearsamount", arrearsAmount);
-                        cmd.Parameters.AddWithValue("@datebilled", DateTime.Now);
                         cmd.Parameters.AddWithValue("@partiallypaid", partiallyPaid);
+                        cmd.Parameters.AddWithValue("@adjustdebit", adjustDebit);
+                        cmd.Parameters.AddWithValue("@adjustcredit", adjustCredit);
+                        cmd.Parameters.AddWithValue("@uploaded", 0); // 0 = not yet synced to cloud
                         cmd.Parameters.AddWithValue("@arrears", arrears);
-                        cmd.Parameters.AddWithValue("@uploaded", 0); // default value
                         cmd.Parameters.AddWithValue("@bill_id", latestBillIdLabel.Text);
 
-                        // Execute update
+                        // Execute the update
                         int rowsAffected = cmd.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
@@ -323,11 +312,13 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
+
         private void SetDateNow()
         {
             dueDateLabel.Text = DateTime.Now.AddDays(14).ToString("MMMM dd, yyyy");
             dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
             toReadingDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
+            paymentDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
         }
 
         private void InsertToBillingTable(string[] data)
@@ -668,15 +659,13 @@ namespace IGBARAS_WATER_DISTRICT
                 // FOR THE COLLECTION TAB 
                 collectionNameLabel.Text = readingInfo.Name;
                 collectionAddressLabel.Text = readingInfo.Address;
-                collectionPenaltyLabel.Text = readingInfo.PenaltyAmount.ToString("N2");
-                collectionArrearsLabel.Text = readingInfo.ArrearsAmount.ToString("N2");
+                collectionArrearsAmountLabel.Text = readingInfo.ArrearsAmount.ToString("N2");
                 arrearsAmountLabel2.Text = readingInfo.ArrearsAmount.ToString("N2");
                 dueDateLabel2.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
 
 
 
                 collectionTaxAmountLabel.Text = readingInfo.TaxAmount.ToString("N2");
-
                 collectionTotalAddtionalChargeLabel.Text = readingInfo.TotalAditionalCharge.ToString("N2");
                 collectionBillingInvoiceLabel.Text = readingInfo.BillCode;
                 if (currentTabLabel.Text == "Collection Reciept")
@@ -685,7 +674,10 @@ namespace IGBARAS_WATER_DISTRICT
 
                     {
                         ClearWaterChargeLabels2(); // clear values first
+
+
                         CalculateWaterCharges2(totalConsumption); // calculate new values
+                        collectionPenaltyLabel.Text = penaltyAmountLabel2.Text;
                         collectionTotalMeteredAmountLabel.Text = totalWaterConsumptionAmountLabel2.Text; // update collection label
                     }
                 }
@@ -1421,6 +1413,9 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void totalAmountPaidTextBox_TextChanged(object sender, EventArgs e)
         {
+            TextBox textBox = (TextBox)sender;
+
+            // Disable the button if the textbox is empty or zero
             if (string.IsNullOrWhiteSpace(collectionTotalAmountPaidTextBox.Text) || collectionTotalAmountPaidTextBox.Text == "0.00")
             {
                 billPaidButton.Enabled = false;
@@ -1428,41 +1423,65 @@ namespace IGBARAS_WATER_DISTRICT
             else
             {
                 billPaidButton.Enabled = true;
-
             }
 
-            TextBox textBox = (TextBox)sender;
-
+            // Return early if empty to avoid parsing issues
             if (string.IsNullOrWhiteSpace(textBox.Text))
+            {
+                collectionTotalPaidAmointLabel.Text = "0.00";
                 return;
+            }
 
-            // Save cursor position
+            // Save cursor position before formatting
             int cursorPosition = textBox.SelectionStart;
 
-            // Remove commas first
+            // Remove commas to parse clean number
             string rawText = textBox.Text.Replace(",", "");
 
-            // Try parse
-            if (decimal.TryParse(rawText, out decimal value))
+            // Try parsing the value from the textbox
+            if (decimal.TryParse(rawText, out decimal paidAmount))
             {
-                // Format using helper
-                string formattedText = NumberFormatterHelper.FormatWithCommas(value);
+                // Format with commas (e.g., 1,000.00)
+                string formattedText = NumberFormatterHelper.FormatWithCommas(paidAmount);
 
-                // Update only if changed to avoid flicker
+                // Update text only if it's different (to avoid flicker)
                 if (textBox.Text != formattedText)
                 {
                     textBox.Text = formattedText;
 
-                    // Set cursor at end (you can improve to restore exact position if needed)
+                    // Move cursor to the end
                     textBox.SelectionStart = textBox.Text.Length;
+                }
+
+                // Try to parse the total amount due from the label
+                if (decimal.TryParse(totalAmountDueLabel2.Text.Replace(",", ""), out decimal totalAmountDue))
+                {
+                    // Compare entered amount with total due
+                    if (paidAmount > totalAmountDue)
+                    {
+                        // Show total amount due only if paid amount exceeds it
+                        collectionTotalPaidAmointLabel.Text = totalAmountDue.ToString("N2");
+                    }
+                    else
+                    {
+                        // Show the entered amount if within limit
+                        collectionTotalPaidAmointLabel.Text = formattedText;
+                    }
+                }
+                else
+                {
+                    // Handle if the total due label contains invalid number
+                    collectionTotalPaidAmointLabel.Text = "0.00";
                 }
             }
             else
             {
-                // Invalid input, clear or handle as needed
+                // If input is not valid number, clear textbox and label
                 textBox.Text = "";
+                collectionTotalPaidAmointLabel.Text = "0.00";
             }
         }
+
 
         private void billPaidButton_Click(object sender, EventArgs e)
         {
@@ -1553,13 +1572,13 @@ namespace IGBARAS_WATER_DISTRICT
                     con.Open();
                     Debug.WriteLine("✅ Database connection opened.");
 
-                    string query = "SELECT paid, datebilled FROM tb_bill WHERE bill_id = @billcode";
+                    string query = "SELECT paid, datebilled FROM tb_bill WHERE billcode = @billcode";
                     Debug.WriteLine($"🟡 Executing query: {query}");
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
                         string billcode = collectionBillingInvoiceLabel.Text.Trim();
-                        cmd.Parameters.AddWithValue("@billId", billcode);
+                        cmd.Parameters.AddWithValue("@billcode", billcode);
                         Debug.WriteLine($"🔍 Using bill ID: {billcode}");
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -1771,5 +1790,44 @@ namespace IGBARAS_WATER_DISTRICT
             e.HasMorePages = false;
         }
 
+        private void sfcInstallmentTextBox_TextChanged(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+
+            if (string.IsNullOrWhiteSpace(textBox.Text))
+                return;
+
+            // Save cursor position
+            int cursorPosition = textBox.SelectionStart;
+
+            // Remove commas first
+            string rawText = textBox.Text.Replace(",", "");
+
+            // Try parse
+            if (decimal.TryParse(rawText, out decimal value))
+            {
+                // Format using helper
+                string formattedText = NumberFormatterHelper.FormatWithCommas(value);
+
+                // Update only if changed to avoid flicker
+                if (textBox.Text != formattedText)
+                {
+                    textBox.Text = formattedText;
+
+                    // Set cursor at end (you can improve to restore exact position if needed)
+                    textBox.SelectionStart = textBox.Text.Length;
+                }
+            }
+            else
+            {
+                // Invalid input, clear or handle as needed
+                textBox.Text = "";
+            }
+        }
+
+        private void tableLayoutPanel51_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
