@@ -60,11 +60,13 @@
             tableLayoutPanel3 = new TableLayoutPanel();
             billingSummaryDailyCheckBox = new CheckBox();
             billingSummaryDailyRichTextBox = new RichTextBox();
-            exportReportsButton = new Button();
             tableLayoutPanel13 = new TableLayoutPanel();
             label2 = new Label();
             allCheckBox = new CheckBox();
             label1 = new Label();
+            tableLayoutPanel14 = new TableLayoutPanel();
+            refreshReportsButton = new Button();
+            exportReportsButton = new Button();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
@@ -78,6 +80,7 @@
             tableLayoutPanel4.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             tableLayoutPanel13.SuspendLayout();
+            tableLayoutPanel14.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -110,8 +113,8 @@
             tableLayoutPanel2.Controls.Add(tableLayoutPanel5, 0, 1);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel4, 1, 0);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 0, 0);
-            tableLayoutPanel2.Controls.Add(exportReportsButton, 1, 5);
             tableLayoutPanel2.Controls.Add(tableLayoutPanel13, 0, 5);
+            tableLayoutPanel2.Controls.Add(tableLayoutPanel14, 1, 5);
             tableLayoutPanel2.Dock = DockStyle.Fill;
             tableLayoutPanel2.Location = new Point(150, 66);
             tableLayoutPanel2.Margin = new Padding(150, 3, 150, 3);
@@ -133,13 +136,14 @@
             tableLayoutPanel12.Controls.Add(outstandingBalancesCheckBox, 0, 0);
             tableLayoutPanel12.Controls.Add(outstandingBalancesRichTextBox, 0, 1);
             tableLayoutPanel12.Dock = DockStyle.Fill;
-            tableLayoutPanel12.Location = new Point(542, 655);
+            tableLayoutPanel12.Location = new Point(589, 655);
+            tableLayoutPanel12.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel12.Name = "tableLayoutPanel12";
             tableLayoutPanel12.RowCount = 2;
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel12.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel12.Size = new Size(533, 157);
+            tableLayoutPanel12.Size = new Size(439, 157);
             tableLayoutPanel12.TabIndex = 9;
             // 
             // outstandingBalancesCheckBox
@@ -163,7 +167,7 @@
             outstandingBalancesRichTextBox.Name = "outstandingBalancesRichTextBox";
             outstandingBalancesRichTextBox.ReadOnly = true;
             outstandingBalancesRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            outstandingBalancesRichTextBox.Size = new Size(527, 114);
+            outstandingBalancesRichTextBox.Size = new Size(433, 114);
             outstandingBalancesRichTextBox.TabIndex = 1;
             outstandingBalancesRichTextBox.Text = "";
             // 
@@ -174,13 +178,14 @@
             tableLayoutPanel11.Controls.Add(disconnectionCheckBox, 0, 0);
             tableLayoutPanel11.Controls.Add(disconnectionRichTextBox, 0, 1);
             tableLayoutPanel11.Dock = DockStyle.Fill;
-            tableLayoutPanel11.Location = new Point(3, 655);
+            tableLayoutPanel11.Location = new Point(50, 655);
+            tableLayoutPanel11.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel11.Name = "tableLayoutPanel11";
             tableLayoutPanel11.RowCount = 2;
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel11.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel11.Size = new Size(533, 157);
+            tableLayoutPanel11.Size = new Size(439, 157);
             tableLayoutPanel11.TabIndex = 8;
             // 
             // disconnectionCheckBox
@@ -204,7 +209,7 @@
             disconnectionRichTextBox.Name = "disconnectionRichTextBox";
             disconnectionRichTextBox.ReadOnly = true;
             disconnectionRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            disconnectionRichTextBox.Size = new Size(527, 114);
+            disconnectionRichTextBox.Size = new Size(433, 114);
             disconnectionRichTextBox.TabIndex = 1;
             disconnectionRichTextBox.Text = "";
             // 
@@ -215,13 +220,14 @@
             tableLayoutPanel10.Controls.Add(partiallyPaidCheckBox, 0, 0);
             tableLayoutPanel10.Controls.Add(partiallyPaidRichTextBox, 0, 1);
             tableLayoutPanel10.Dock = DockStyle.Fill;
-            tableLayoutPanel10.Location = new Point(542, 492);
+            tableLayoutPanel10.Location = new Point(589, 492);
+            tableLayoutPanel10.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel10.Name = "tableLayoutPanel10";
             tableLayoutPanel10.RowCount = 2;
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel10.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel10.Size = new Size(533, 157);
+            tableLayoutPanel10.Size = new Size(439, 157);
             tableLayoutPanel10.TabIndex = 7;
             // 
             // partiallyPaidCheckBox
@@ -244,7 +250,7 @@
             partiallyPaidRichTextBox.Location = new Point(3, 40);
             partiallyPaidRichTextBox.Name = "partiallyPaidRichTextBox";
             partiallyPaidRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            partiallyPaidRichTextBox.Size = new Size(527, 114);
+            partiallyPaidRichTextBox.Size = new Size(433, 114);
             partiallyPaidRichTextBox.TabIndex = 1;
             partiallyPaidRichTextBox.Text = "";
             // 
@@ -255,13 +261,14 @@
             tableLayoutPanel9.Controls.Add(penaltyRevenueCheckBox, 0, 0);
             tableLayoutPanel9.Controls.Add(penaltyRevenueRichTextBox, 0, 1);
             tableLayoutPanel9.Dock = DockStyle.Fill;
-            tableLayoutPanel9.Location = new Point(3, 492);
+            tableLayoutPanel9.Location = new Point(50, 492);
+            tableLayoutPanel9.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel9.Name = "tableLayoutPanel9";
             tableLayoutPanel9.RowCount = 2;
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel9.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel9.Size = new Size(533, 157);
+            tableLayoutPanel9.Size = new Size(439, 157);
             tableLayoutPanel9.TabIndex = 6;
             // 
             // penaltyRevenueCheckBox
@@ -284,7 +291,7 @@
             penaltyRevenueRichTextBox.Location = new Point(3, 40);
             penaltyRevenueRichTextBox.Name = "penaltyRevenueRichTextBox";
             penaltyRevenueRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            penaltyRevenueRichTextBox.Size = new Size(527, 114);
+            penaltyRevenueRichTextBox.Size = new Size(433, 114);
             penaltyRevenueRichTextBox.TabIndex = 1;
             penaltyRevenueRichTextBox.Text = "";
             // 
@@ -295,13 +302,14 @@
             tableLayoutPanel8.Controls.Add(collectionSummaryYearlyCheckBox, 0, 0);
             tableLayoutPanel8.Controls.Add(collectionSummaryYearlyRichTextBox, 0, 1);
             tableLayoutPanel8.Dock = DockStyle.Fill;
-            tableLayoutPanel8.Location = new Point(542, 329);
+            tableLayoutPanel8.Location = new Point(589, 329);
+            tableLayoutPanel8.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel8.Name = "tableLayoutPanel8";
             tableLayoutPanel8.RowCount = 2;
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel8.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel8.Size = new Size(533, 157);
+            tableLayoutPanel8.Size = new Size(439, 157);
             tableLayoutPanel8.TabIndex = 5;
             // 
             // collectionSummaryYearlyCheckBox
@@ -325,7 +333,7 @@
             collectionSummaryYearlyRichTextBox.Name = "collectionSummaryYearlyRichTextBox";
             collectionSummaryYearlyRichTextBox.ReadOnly = true;
             collectionSummaryYearlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            collectionSummaryYearlyRichTextBox.Size = new Size(527, 114);
+            collectionSummaryYearlyRichTextBox.Size = new Size(433, 114);
             collectionSummaryYearlyRichTextBox.TabIndex = 1;
             collectionSummaryYearlyRichTextBox.Text = "";
             // 
@@ -336,13 +344,14 @@
             tableLayoutPanel7.Controls.Add(billingSummaryYearlyCheckBox, 0, 0);
             tableLayoutPanel7.Controls.Add(billingSummaryYearlyRichTextBox, 0, 1);
             tableLayoutPanel7.Dock = DockStyle.Fill;
-            tableLayoutPanel7.Location = new Point(3, 329);
+            tableLayoutPanel7.Location = new Point(50, 329);
+            tableLayoutPanel7.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel7.Name = "tableLayoutPanel7";
             tableLayoutPanel7.RowCount = 2;
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel7.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel7.Size = new Size(533, 157);
+            tableLayoutPanel7.Size = new Size(439, 157);
             tableLayoutPanel7.TabIndex = 4;
             // 
             // billingSummaryYearlyCheckBox
@@ -366,7 +375,7 @@
             billingSummaryYearlyRichTextBox.Name = "billingSummaryYearlyRichTextBox";
             billingSummaryYearlyRichTextBox.ReadOnly = true;
             billingSummaryYearlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            billingSummaryYearlyRichTextBox.Size = new Size(527, 114);
+            billingSummaryYearlyRichTextBox.Size = new Size(433, 114);
             billingSummaryYearlyRichTextBox.TabIndex = 1;
             billingSummaryYearlyRichTextBox.Text = "";
             // 
@@ -377,13 +386,14 @@
             tableLayoutPanel6.Controls.Add(collectionSummaryMonthlyCheckBox, 0, 0);
             tableLayoutPanel6.Controls.Add(collectionSummaryMonthlyRichTextBox, 0, 1);
             tableLayoutPanel6.Dock = DockStyle.Fill;
-            tableLayoutPanel6.Location = new Point(542, 166);
+            tableLayoutPanel6.Location = new Point(589, 166);
+            tableLayoutPanel6.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel6.Name = "tableLayoutPanel6";
             tableLayoutPanel6.RowCount = 2;
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel6.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel6.Size = new Size(533, 157);
+            tableLayoutPanel6.Size = new Size(439, 157);
             tableLayoutPanel6.TabIndex = 3;
             // 
             // collectionSummaryMonthlyCheckBox
@@ -406,7 +416,7 @@
             collectionSummaryMonthlyRichTextBox.Name = "collectionSummaryMonthlyRichTextBox";
             collectionSummaryMonthlyRichTextBox.ReadOnly = true;
             collectionSummaryMonthlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            collectionSummaryMonthlyRichTextBox.Size = new Size(527, 114);
+            collectionSummaryMonthlyRichTextBox.Size = new Size(433, 114);
             collectionSummaryMonthlyRichTextBox.TabIndex = 1;
             collectionSummaryMonthlyRichTextBox.Text = "";
             // 
@@ -417,13 +427,14 @@
             tableLayoutPanel5.Controls.Add(billingSummaryMonthlyCheckBox, 0, 0);
             tableLayoutPanel5.Controls.Add(billingSummaryMonthlyRichTextBox, 0, 1);
             tableLayoutPanel5.Dock = DockStyle.Fill;
-            tableLayoutPanel5.Location = new Point(3, 166);
+            tableLayoutPanel5.Location = new Point(50, 166);
+            tableLayoutPanel5.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel5.Name = "tableLayoutPanel5";
             tableLayoutPanel5.RowCount = 2;
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel5.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel5.Size = new Size(533, 157);
+            tableLayoutPanel5.Size = new Size(439, 157);
             tableLayoutPanel5.TabIndex = 2;
             // 
             // billingSummaryMonthlyCheckBox
@@ -446,7 +457,7 @@
             billingSummaryMonthlyRichTextBox.Name = "billingSummaryMonthlyRichTextBox";
             billingSummaryMonthlyRichTextBox.ReadOnly = true;
             billingSummaryMonthlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            billingSummaryMonthlyRichTextBox.Size = new Size(527, 114);
+            billingSummaryMonthlyRichTextBox.Size = new Size(433, 114);
             billingSummaryMonthlyRichTextBox.TabIndex = 1;
             billingSummaryMonthlyRichTextBox.Text = "";
             // 
@@ -457,13 +468,14 @@
             tableLayoutPanel4.Controls.Add(collectionSummaryDailyCheckBox, 0, 0);
             tableLayoutPanel4.Controls.Add(collectionSummaryDailyRichTextBox, 0, 1);
             tableLayoutPanel4.Dock = DockStyle.Fill;
-            tableLayoutPanel4.Location = new Point(542, 3);
+            tableLayoutPanel4.Location = new Point(589, 3);
+            tableLayoutPanel4.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel4.Name = "tableLayoutPanel4";
             tableLayoutPanel4.RowCount = 2;
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel4.Size = new Size(533, 157);
+            tableLayoutPanel4.Size = new Size(439, 157);
             tableLayoutPanel4.TabIndex = 1;
             // 
             // collectionSummaryDailyCheckBox
@@ -487,7 +499,7 @@
             collectionSummaryDailyRichTextBox.Name = "collectionSummaryDailyRichTextBox";
             collectionSummaryDailyRichTextBox.ReadOnly = true;
             collectionSummaryDailyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            collectionSummaryDailyRichTextBox.Size = new Size(527, 114);
+            collectionSummaryDailyRichTextBox.Size = new Size(433, 114);
             collectionSummaryDailyRichTextBox.TabIndex = 1;
             collectionSummaryDailyRichTextBox.Text = "";
             // 
@@ -498,13 +510,14 @@
             tableLayoutPanel3.Controls.Add(billingSummaryDailyCheckBox, 0, 0);
             tableLayoutPanel3.Controls.Add(billingSummaryDailyRichTextBox, 0, 1);
             tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Location = new Point(50, 3);
+            tableLayoutPanel3.Margin = new Padding(50, 3, 50, 3);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
             tableLayoutPanel3.RowCount = 2;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 120F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel3.Size = new Size(533, 157);
+            tableLayoutPanel3.Size = new Size(439, 157);
             tableLayoutPanel3.TabIndex = 0;
             // 
             // billingSummaryDailyCheckBox
@@ -528,21 +541,9 @@
             billingSummaryDailyRichTextBox.Name = "billingSummaryDailyRichTextBox";
             billingSummaryDailyRichTextBox.ReadOnly = true;
             billingSummaryDailyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
-            billingSummaryDailyRichTextBox.Size = new Size(527, 114);
+            billingSummaryDailyRichTextBox.Size = new Size(433, 114);
             billingSummaryDailyRichTextBox.TabIndex = 1;
             billingSummaryDailyRichTextBox.Text = "";
-            // 
-            // exportReportsButton
-            // 
-            exportReportsButton.BackColor = Color.Green;
-            exportReportsButton.ForeColor = Color.White;
-            exportReportsButton.Location = new Point(542, 818);
-            exportReportsButton.Name = "exportReportsButton";
-            exportReportsButton.Size = new Size(533, 41);
-            exportReportsButton.TabIndex = 10;
-            exportReportsButton.Text = "📊 EXPORT TO EXCEL";
-            exportReportsButton.UseVisualStyleBackColor = false;
-            exportReportsButton.Click += exportReportsButton_Click;
             // 
             // tableLayoutPanel13
             // 
@@ -596,6 +597,45 @@
             label1.Text = "IGBARAS WATER DISTRICT REPORT";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // tableLayoutPanel14
+            // 
+            tableLayoutPanel14.ColumnCount = 2;
+            tableLayoutPanel14.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 69.98124F));
+            tableLayoutPanel14.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30.0187626F));
+            tableLayoutPanel14.Controls.Add(exportReportsButton, 0, 0);
+            tableLayoutPanel14.Controls.Add(refreshReportsButton, 1, 0);
+            tableLayoutPanel14.Dock = DockStyle.Fill;
+            tableLayoutPanel14.Location = new Point(542, 818);
+            tableLayoutPanel14.Name = "tableLayoutPanel14";
+            tableLayoutPanel14.RowCount = 1;
+            tableLayoutPanel14.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel14.Size = new Size(533, 41);
+            tableLayoutPanel14.TabIndex = 12;
+            // 
+            // refreshReportsButton
+            // 
+            refreshReportsButton.BackColor = Color.RoyalBlue;
+            refreshReportsButton.ForeColor = Color.White;
+            refreshReportsButton.Location = new Point(376, 3);
+            refreshReportsButton.Name = "refreshReportsButton";
+            refreshReportsButton.Size = new Size(154, 35);
+            refreshReportsButton.TabIndex = 12;
+            refreshReportsButton.Text = "🔁 Refresh Reports";
+            refreshReportsButton.UseVisualStyleBackColor = false;
+            refreshReportsButton.Click += refreshReportsButton_Click;
+            // 
+            // exportReportsButton
+            // 
+            exportReportsButton.BackColor = Color.Green;
+            exportReportsButton.Dock = DockStyle.Fill;
+            exportReportsButton.ForeColor = Color.White;
+            exportReportsButton.Location = new Point(3, 3);
+            exportReportsButton.Name = "exportReportsButton";
+            exportReportsButton.Size = new Size(367, 35);
+            exportReportsButton.TabIndex = 13;
+            exportReportsButton.Text = "📊 EXPORT TO EXCEL";
+            exportReportsButton.UseVisualStyleBackColor = false;
+            // 
             // ReportsControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -630,6 +670,7 @@
             tableLayoutPanel3.PerformLayout();
             tableLayoutPanel13.ResumeLayout(false);
             tableLayoutPanel13.PerformLayout();
+            tableLayoutPanel14.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -668,9 +709,11 @@
         private CheckBox billingSummaryDailyCheckBox;
         private RichTextBox billingSummaryDailyRichTextBox;
         private Label label1;
-        private Button exportReportsButton;
         private TableLayoutPanel tableLayoutPanel13;
         private Label label2;
         private CheckBox allCheckBox;
+        private TableLayoutPanel tableLayoutPanel14;
+        private Button exportReportsButton;
+        private Button refreshReportsButton;
     }
 }

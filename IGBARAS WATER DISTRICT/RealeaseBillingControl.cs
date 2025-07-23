@@ -46,31 +46,58 @@ namespace IGBARAS_WATER_DISTRICT
                 return;
             }
 
+            // First confirmation message
+            string verifyDataMessage = "Please verify the input data carefully to ensure accuracy.\n\nDo you want to proceed with saving the billing record?";
+            DialogResult verifyResult = MessageBox.Show(verifyDataMessage, "Verify Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (verifyResult == DialogResult.No)
+            {
+                return;
+            }
+
+            // Second confirmation message
+            string preparePrinterMessage = "Please prepare the preprint paper and ensure the printer is properly set up and ready to print.\n\nAre you ready to proceed?";
+            DialogResult prepareResult = MessageBox.Show(preparePrinterMessage, "Prepare Printer", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (prepareResult == DialogResult.No)
+            {
+                return;
+            }
+
             try
             {
-                // ✅ Save billing data to database
+                // Save billing data to database
                 InsertToBillingTable(selectedBillingData);
-                MessageBox.Show("Billing record saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // ✅ Setup print document settings
-                billingPrintDocument.DefaultPageSettings.Landscape = false;
-                billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
+                // Third confirmation message
+                string printConfirmationMessage = "The billing record has been saved successfully.\n\nDo you want to print the billing invoice now?";
+                DialogResult printResult = MessageBox.Show(printConfirmationMessage, "Print Invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                using (PrintDialog printDialog = new PrintDialog())
+                if (printResult == DialogResult.Yes)
                 {
-                    printDialog.Document = billingPrintDocument;
-                    printDialog.AllowSomePages = false;
-                    printDialog.AllowSelection = false;
+                    // Setup print document settings
+                    billingPrintDocument.DefaultPageSettings.Landscape = false;
+                    billingPrintDocument.DefaultPageSettings.Margins = new Margins(3, 3, 3, 3);
 
-                    // ✅ Show printer selection dialog
-                    if (printDialog.ShowDialog() == DialogResult.OK)
+                    using (PrintDialog printDialog = new PrintDialog())
                     {
-                        // 🔒 Use selected printer settings
-                        billingPrintDocument.DefaultPageSettings.PaperSize = new PaperSize("A4", 827, 1169);
+                        printDialog.Document = billingPrintDocument;
+                        printDialog.AllowSomePages = false;
+                        printDialog.AllowSelection = false;
 
-                        // 🖨️ Print directly
-                        billingPrintDocument.Print();
+                        // Show printer selection dialog
+                        if (printDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            // Use selected printer settings
+                            billingPrintDocument.DefaultPageSettings.PaperSize = new PaperSize("A4", 827, 1169);
+
+                            // Print directly
+                            billingPrintDocument.Print();
+                        }
                     }
+                }
+                else
+                {
                 }
             }
             catch (Exception ex)
@@ -620,7 +647,7 @@ namespace IGBARAS_WATER_DISTRICT
             //    out usedBillCode
             //);
 
-            concessionaireCodeLabel.Text = concessionaireCode + "000001";
+            concessionaireCodeLabel.Text = concessionaireCode + "-000001";
             // 🟦 Get the latest bill_id for this account
             string latestBillID = GetLatestBillIDHelper.GetLatestBillId(accountNo);
             Debug.WriteLine(!string.IsNullOrEmpty(latestBillID)
@@ -637,8 +664,6 @@ namespace IGBARAS_WATER_DISTRICT
                 // 🟦 Show user-friendly date
                 fromReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
 
-                // 🟦 Store DB-safe value (for processing later)
-                fromReadingDateLabel.Tag = readingInfo.ToReadingDate;
 
 
 
@@ -1650,9 +1675,37 @@ namespace IGBARAS_WATER_DISTRICT
                 return;
             }
 
+            // First confirmation message
+            string paymentConfirmationMessage = "Are you certain that this bill has been paid in full and all details are accurate?";
+            DialogResult paymentResult = MessageBox.Show(paymentConfirmationMessage, "Confirm Payment", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (paymentResult == DialogResult.No)
+            {
+                return;
+            }
+
+            // Second confirmation message
+            string printerPreparationMessage = "Please ensure that the printer is properly set up, loaded with the correct paper (legal size), and all necessary documents are prepared for printing.\n\nAre you ready to proceed?";
+            DialogResult printerResult = MessageBox.Show(printerPreparationMessage, "Prepare Printer", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (printerResult == DialogResult.No)
+            {
+                return;
+            }
+
+            // Third confirmation message
+            string printConfirmationMessage = "The billing record will now be saved and printed. This action cannot be undone.\n\nStart printing?";
+            DialogResult printResult = MessageBox.Show(printConfirmationMessage, "Start Printing", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (printResult == DialogResult.No)
+            {
+                return;
+            }
+
+            // Proceed with saving and printing
             try
             {
-                // 💾 Save billing record to database
+                // Save billing record to database
                 UpdateBillingRecord();
                 InsertIntoPayments();
                 if (checkCheckBox.Checked)
@@ -1663,9 +1716,7 @@ namespace IGBARAS_WATER_DISTRICT
                     InsertCheque(chequeNo, chequeAmount);
                 }
 
-                MessageBox.Show("✅ Billing record saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // 🖨️ Set printer settings to landscape and legal paper
+                // Set printer settings to landscape and legal paper
                 billingPrintDocument.DefaultPageSettings.Landscape = true;
                 LoadPayments();
                 foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
@@ -1680,8 +1731,10 @@ namespace IGBARAS_WATER_DISTRICT
                 // Optional: Set margins (in hundredths of an inch, 30 = 0.3")
                 billingPrintDocument.DefaultPageSettings.Margins = new Margins(30, 30, 30, 30);
 
-                // 🖨️ Print the billing document
+                // Print the billing document
                 billingPrintDocument.Print();
+
+                MessageBox.Show("✅ Billing record saved and printed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -1877,8 +1930,8 @@ namespace IGBARAS_WATER_DISTRICT
             Pen gridPen = Pens.Orange;
             Brush brush = Brushes.Red;
 
-            int paperWidth = 425;
-            int paperHeight = 650;
+            int paperWidth = 825;
+            int paperHeight = 1175;
             int cellSize = 25;
 
             // 🔲 Draw Grid

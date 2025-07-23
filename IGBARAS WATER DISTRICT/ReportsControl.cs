@@ -90,7 +90,6 @@ namespace IGBARAS_WATER_DISTRICT
                 totalBalance += Convert.ToDouble(row["Total Balance"]);
             }
 
-            AppendColoredLine(box, $"📄 Billing Summary ({group})", Color.Black, true);
             AppendColoredLine(box, $"💰 Total Paid: ₱{totalPaid:N2}", Color.ForestGreen);
             AppendColoredLine(box, $"🧾 Total Bills: {totalBills}", Color.MediumBlue);
             AppendColoredLine(box, $"🔴 Outstanding: ₱{totalBalance:N2}", Color.DarkRed);
@@ -118,7 +117,6 @@ namespace IGBARAS_WATER_DISTRICT
                 totalCollected += Convert.ToDouble(row["Total Collected"]);
             }
 
-            AppendColoredLine(box, $"📄 Collection Summary ({group})", Color.Black, true);
             AppendColoredLine(box, $"💵 Total Collected: ₱{totalCollected:N2}", Color.ForestGreen);
             AppendColoredLine(box, $"🧾 Payments Made: {totalPayments}", Color.MediumBlue);
 
@@ -145,7 +143,6 @@ namespace IGBARAS_WATER_DISTRICT
                 totalPenalty += Convert.ToDouble(row["Total Penalty Revenue"]);
             }
 
-            AppendColoredLine(box, "📄 Penalty Revenue (Monthly)", Color.Black, true);
             AppendColoredLine(box, $"💸 Total Penalty: ₱{totalPenalty:N2}", Color.DarkOrange);
             AppendColoredLine(box, $"📑 Bills With Penalty: {penaltyBills}", Color.MediumBlue);
 
@@ -172,7 +169,6 @@ namespace IGBARAS_WATER_DISTRICT
                 totalBalance += Convert.ToDouble(row["balance"]);
             }
 
-            AppendColoredLine(box, "📄 Partially Paid Bills", Color.Black, true);
             AppendColoredLine(box, $"💰 Total Paid: ₱{totalPaid:N2}", Color.ForestGreen);
             AppendColoredLine(box, $"🔴 Still Due: ₱{totalBalance:N2}", Color.DarkRed);
             AppendColoredLine(box, $"🧾 Partial Bills: {count}", Color.MediumBlue);
@@ -197,7 +193,6 @@ namespace IGBARAS_WATER_DISTRICT
             foreach (DataRow row in table.Rows)
                 totalBalance += Convert.ToDouble(row["balance"]);
 
-            AppendColoredLine(box, "📄 Disconnection Candidates", Color.Black, true);
             AppendColoredLine(box, $"🔴 Accounts: {count}", Color.DarkRed);
             AppendColoredLine(box, $"💸 Total Balance: ₱{totalBalance:N2}", Color.OrangeRed);
 
@@ -221,7 +216,6 @@ namespace IGBARAS_WATER_DISTRICT
             foreach (DataRow row in table.Rows)
                 totalOutstanding += Convert.ToDouble(row["Total Outstanding Balance"]);
 
-            AppendColoredLine(box, "📄 Outstanding Balances", Color.Black, true);
             AppendColoredLine(box, $"💸 Total Outstanding: ₱{totalOutstanding:N2}", Color.DarkRed);
             AppendColoredLine(box, $"🔴 Affected Accounts: {count}", Color.MediumBlue);
 
@@ -342,6 +336,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (allCheckBox.Checked)
             {
                 billingSummaryDailyCheckBox.Checked = true;
+                billingSummaryDailyCheckBox.Checked = true;
                 billingSummaryMonthlyCheckBox.Checked = true;
                 billingSummaryYearlyCheckBox.Checked = true;
                 collectionSummaryDailyCheckBox.Checked = true;
@@ -354,6 +349,17 @@ namespace IGBARAS_WATER_DISTRICT
             }
             else
             {
+                billingSummaryDailyCheckBox.Checked = false;
+                billingSummaryDailyCheckBox.Checked = false;
+                billingSummaryMonthlyCheckBox.Checked = false;
+                billingSummaryYearlyCheckBox.Checked = false;
+                collectionSummaryDailyCheckBox.Checked = false;
+                collectionSummaryMonthlyCheckBox.Checked = false;
+                collectionSummaryYearlyCheckBox.Checked = false;
+                penaltyRevenueCheckBox.Checked = false;
+                partiallyPaidCheckBox.Checked = false;
+                disconnectionCheckBox.Checked = false;
+                outstandingBalancesCheckBox.Checked = false;
                 allCheckBox.Checked = IsAllChecked();
             }
         }
@@ -414,6 +420,17 @@ namespace IGBARAS_WATER_DISTRICT
         private void billingSummaryDailyCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             allCheckBox.Checked = IsAllChecked();
+        }
+
+        private async void refreshReportsButton_Click(object sender, EventArgs e)
+        {
+            refreshReportsButton.Enabled = false;
+            refreshReportsButton.Text = "⏳ Refreshing...";
+
+            await LoadReportSummariesAsync();
+
+            refreshReportsButton.Text = "🔁 Refresh Reports";
+            refreshReportsButton.Enabled = true;
         }
     }
 }

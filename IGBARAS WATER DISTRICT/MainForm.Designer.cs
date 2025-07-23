@@ -76,44 +76,53 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // reportsButton
             // 
+            reportsButton.BackColor = SystemColors.ControlLight;
             reportsButton.Dock = DockStyle.Top;
             reportsButton.FlatAppearance.BorderSize = 0;
-            reportsButton.FlatStyle = FlatStyle.System;
+            reportsButton.FlatStyle = FlatStyle.Popup;
             reportsButton.Font = new Font("Arial", 12F);
             reportsButton.Location = new Point(0, 254);
+            reportsButton.Margin = new Padding(50);
             reportsButton.Name = "reportsButton";
             reportsButton.Size = new Size(202, 45);
             reportsButton.TabIndex = 13;
             reportsButton.Text = "📝 Reports";
             reportsButton.TextAlign = ContentAlignment.MiddleLeft;
+            reportsButton.UseVisualStyleBackColor = false;
             reportsButton.Click += reportsButton_Click;
             // 
             // accountsButton
             // 
+            accountsButton.BackColor = SystemColors.ControlLight;
             accountsButton.Dock = DockStyle.Top;
             accountsButton.FlatAppearance.BorderSize = 0;
-            accountsButton.FlatStyle = FlatStyle.System;
+            accountsButton.FlatStyle = FlatStyle.Popup;
             accountsButton.Font = new Font("Arial", 12F);
             accountsButton.Location = new Point(0, 209);
+            accountsButton.Margin = new Padding(50);
             accountsButton.Name = "accountsButton";
             accountsButton.Size = new Size(202, 45);
             accountsButton.TabIndex = 9;
             accountsButton.Text = "👥 Concessionaire";
             accountsButton.TextAlign = ContentAlignment.MiddleLeft;
+            accountsButton.UseVisualStyleBackColor = false;
             accountsButton.Click += transactionsButton_Click;
             // 
             // readingButton
             // 
+            readingButton.BackColor = SystemColors.ControlLight;
             readingButton.Dock = DockStyle.Top;
             readingButton.FlatAppearance.BorderSize = 0;
-            readingButton.FlatStyle = FlatStyle.System;
+            readingButton.FlatStyle = FlatStyle.Popup;
             readingButton.Font = new Font("Arial", 12F);
             readingButton.Location = new Point(0, 164);
+            readingButton.Margin = new Padding(50);
             readingButton.Name = "readingButton";
             readingButton.Size = new Size(202, 45);
             readingButton.TabIndex = 7;
             readingButton.Text = "💸 Billing Invoice";
             readingButton.TextAlign = ContentAlignment.MiddleLeft;
+            readingButton.UseVisualStyleBackColor = false;
             readingButton.Click += accountsButton_Click;
             // 
             // panel1
@@ -208,13 +217,14 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // logoutButton
             // 
-            logoutButton.BackColor = Color.Red;
+            logoutButton.BackColor = Color.Firebrick;
             logoutButton.Dock = DockStyle.Bottom;
             logoutButton.FlatAppearance.BorderSize = 0;
-            logoutButton.FlatStyle = FlatStyle.System;
+            logoutButton.FlatStyle = FlatStyle.Flat;
             logoutButton.Font = new Font("Arial", 12F);
-            logoutButton.ForeColor = Color.Red;
+            logoutButton.ForeColor = SystemColors.Control;
             logoutButton.Location = new Point(0, 912);
+            logoutButton.Margin = new Padding(50);
             logoutButton.Name = "logoutButton";
             logoutButton.Size = new Size(202, 45);
             logoutButton.TabIndex = 5;
