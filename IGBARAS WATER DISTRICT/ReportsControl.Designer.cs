@@ -61,10 +61,10 @@
             billingSummaryDailyCheckBox = new CheckBox();
             billingSummaryDailyRichTextBox = new RichTextBox();
             exportReportsButton = new Button();
-            label1 = new Label();
             tableLayoutPanel13 = new TableLayoutPanel();
             label2 = new Label();
-            checkBox1 = new CheckBox();
+            allCheckBox = new CheckBox();
+            label1 = new Label();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
@@ -153,6 +153,7 @@
             outstandingBalancesCheckBox.TabIndex = 0;
             outstandingBalancesCheckBox.Text = "Outstanding Balances";
             outstandingBalancesCheckBox.UseVisualStyleBackColor = true;
+            outstandingBalancesCheckBox.CheckedChanged += outstandingBalancesCheckBox_CheckedChanged;
             // 
             // outstandingBalancesRichTextBox
             // 
@@ -160,6 +161,7 @@
             outstandingBalancesRichTextBox.Font = new Font("Arial", 14.25F);
             outstandingBalancesRichTextBox.Location = new Point(3, 40);
             outstandingBalancesRichTextBox.Name = "outstandingBalancesRichTextBox";
+            outstandingBalancesRichTextBox.ReadOnly = true;
             outstandingBalancesRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             outstandingBalancesRichTextBox.Size = new Size(527, 114);
             outstandingBalancesRichTextBox.TabIndex = 1;
@@ -192,6 +194,7 @@
             disconnectionCheckBox.TabIndex = 0;
             disconnectionCheckBox.Text = "Disconnection Candidates";
             disconnectionCheckBox.UseVisualStyleBackColor = true;
+            disconnectionCheckBox.CheckedChanged += disconnectionCheckBox_CheckedChanged;
             // 
             // disconnectionRichTextBox
             // 
@@ -199,6 +202,7 @@
             disconnectionRichTextBox.Font = new Font("Arial", 14.25F);
             disconnectionRichTextBox.Location = new Point(3, 40);
             disconnectionRichTextBox.Name = "disconnectionRichTextBox";
+            disconnectionRichTextBox.ReadOnly = true;
             disconnectionRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             disconnectionRichTextBox.Size = new Size(527, 114);
             disconnectionRichTextBox.TabIndex = 1;
@@ -231,6 +235,7 @@
             partiallyPaidCheckBox.TabIndex = 0;
             partiallyPaidCheckBox.Text = "Partially Paid Bills";
             partiallyPaidCheckBox.UseVisualStyleBackColor = true;
+            partiallyPaidCheckBox.CheckedChanged += partiallyPaidCheckBox_CheckedChanged;
             // 
             // partiallyPaidRichTextBox
             // 
@@ -270,6 +275,7 @@
             penaltyRevenueCheckBox.TabIndex = 0;
             penaltyRevenueCheckBox.Text = "Penalty Revenue (Monthly)";
             penaltyRevenueCheckBox.UseVisualStyleBackColor = true;
+            penaltyRevenueCheckBox.CheckedChanged += penaltyRevenueCheckBox_CheckedChanged;
             // 
             // penaltyRevenueRichTextBox
             // 
@@ -309,6 +315,7 @@
             collectionSummaryYearlyCheckBox.TabIndex = 0;
             collectionSummaryYearlyCheckBox.Text = "Collection Summary (Yearly)";
             collectionSummaryYearlyCheckBox.UseVisualStyleBackColor = true;
+            collectionSummaryYearlyCheckBox.CheckedChanged += collectionSummaryYearlyCheckBox_CheckedChanged;
             // 
             // collectionSummaryYearlyRichTextBox
             // 
@@ -316,6 +323,7 @@
             collectionSummaryYearlyRichTextBox.Font = new Font("Arial", 14.25F);
             collectionSummaryYearlyRichTextBox.Location = new Point(3, 40);
             collectionSummaryYearlyRichTextBox.Name = "collectionSummaryYearlyRichTextBox";
+            collectionSummaryYearlyRichTextBox.ReadOnly = true;
             collectionSummaryYearlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             collectionSummaryYearlyRichTextBox.Size = new Size(527, 114);
             collectionSummaryYearlyRichTextBox.TabIndex = 1;
@@ -348,6 +356,7 @@
             billingSummaryYearlyCheckBox.TabIndex = 0;
             billingSummaryYearlyCheckBox.Text = "Billing Summary (Yearly) ";
             billingSummaryYearlyCheckBox.UseVisualStyleBackColor = true;
+            billingSummaryYearlyCheckBox.CheckedChanged += billingSummaryYearlyCheckBox_CheckedChanged;
             // 
             // billingSummaryYearlyRichTextBox
             // 
@@ -355,6 +364,7 @@
             billingSummaryYearlyRichTextBox.Font = new Font("Arial", 14.25F);
             billingSummaryYearlyRichTextBox.Location = new Point(3, 40);
             billingSummaryYearlyRichTextBox.Name = "billingSummaryYearlyRichTextBox";
+            billingSummaryYearlyRichTextBox.ReadOnly = true;
             billingSummaryYearlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             billingSummaryYearlyRichTextBox.Size = new Size(527, 114);
             billingSummaryYearlyRichTextBox.TabIndex = 1;
@@ -394,6 +404,7 @@
             collectionSummaryMonthlyRichTextBox.Font = new Font("Arial", 14.25F);
             collectionSummaryMonthlyRichTextBox.Location = new Point(3, 40);
             collectionSummaryMonthlyRichTextBox.Name = "collectionSummaryMonthlyRichTextBox";
+            collectionSummaryMonthlyRichTextBox.ReadOnly = true;
             collectionSummaryMonthlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             collectionSummaryMonthlyRichTextBox.Size = new Size(527, 114);
             collectionSummaryMonthlyRichTextBox.TabIndex = 1;
@@ -433,6 +444,7 @@
             billingSummaryMonthlyRichTextBox.Font = new Font("Arial", 14.25F);
             billingSummaryMonthlyRichTextBox.Location = new Point(3, 40);
             billingSummaryMonthlyRichTextBox.Name = "billingSummaryMonthlyRichTextBox";
+            billingSummaryMonthlyRichTextBox.ReadOnly = true;
             billingSummaryMonthlyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             billingSummaryMonthlyRichTextBox.Size = new Size(527, 114);
             billingSummaryMonthlyRichTextBox.TabIndex = 1;
@@ -465,6 +477,7 @@
             collectionSummaryDailyCheckBox.TabIndex = 0;
             collectionSummaryDailyCheckBox.Text = "Collection Summary (Daily)";
             collectionSummaryDailyCheckBox.UseVisualStyleBackColor = true;
+            collectionSummaryDailyCheckBox.CheckedChanged += collectionSummaryDailyCheckBox_CheckedChanged;
             // 
             // collectionSummaryDailyRichTextBox
             // 
@@ -472,6 +485,7 @@
             collectionSummaryDailyRichTextBox.Font = new Font("Arial", 14.25F);
             collectionSummaryDailyRichTextBox.Location = new Point(3, 40);
             collectionSummaryDailyRichTextBox.Name = "collectionSummaryDailyRichTextBox";
+            collectionSummaryDailyRichTextBox.ReadOnly = true;
             collectionSummaryDailyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             collectionSummaryDailyRichTextBox.Size = new Size(527, 114);
             collectionSummaryDailyRichTextBox.TabIndex = 1;
@@ -504,6 +518,7 @@
             billingSummaryDailyCheckBox.TabIndex = 0;
             billingSummaryDailyCheckBox.Text = "Billing Summary (Daily)";
             billingSummaryDailyCheckBox.UseVisualStyleBackColor = true;
+            billingSummaryDailyCheckBox.CheckedChanged += billingSummaryDailyCheckBox_CheckedChanged;
             // 
             // billingSummaryDailyRichTextBox
             // 
@@ -511,6 +526,7 @@
             billingSummaryDailyRichTextBox.Font = new Font("Arial", 14.25F);
             billingSummaryDailyRichTextBox.Location = new Point(3, 40);
             billingSummaryDailyRichTextBox.Name = "billingSummaryDailyRichTextBox";
+            billingSummaryDailyRichTextBox.ReadOnly = true;
             billingSummaryDailyRichTextBox.ScrollBars = RichTextBoxScrollBars.None;
             billingSummaryDailyRichTextBox.Size = new Size(527, 114);
             billingSummaryDailyRichTextBox.TabIndex = 1;
@@ -528,25 +544,13 @@
             exportReportsButton.UseVisualStyleBackColor = false;
             exportReportsButton.Click += exportReportsButton_Click;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(3, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(1372, 63);
-            label1.TabIndex = 1;
-            label1.Text = "IGBARAS WATER DISTRICT REPORT";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // tableLayoutPanel13
             // 
             tableLayoutPanel13.ColumnCount = 2;
             tableLayoutPanel13.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 86.30394F));
             tableLayoutPanel13.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 13.69606F));
             tableLayoutPanel13.Controls.Add(label2, 0, 0);
-            tableLayoutPanel13.Controls.Add(checkBox1, 1, 0);
+            tableLayoutPanel13.Controls.Add(allCheckBox, 1, 0);
             tableLayoutPanel13.Dock = DockStyle.Fill;
             tableLayoutPanel13.Location = new Point(3, 818);
             tableLayoutPanel13.Name = "tableLayoutPanel13";
@@ -567,17 +571,30 @@
             label2.Text = "Please select the reports you want to export to Excel by checking the corresponding boxes.";
             label2.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // checkBox1
+            // allCheckBox
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Dock = DockStyle.Fill;
-            checkBox1.Font = new Font("Arial", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            checkBox1.Location = new Point(463, 3);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(67, 35);
-            checkBox1.TabIndex = 1;
-            checkBox1.Text = "ALL";
-            checkBox1.UseVisualStyleBackColor = true;
+            allCheckBox.AutoSize = true;
+            allCheckBox.Dock = DockStyle.Fill;
+            allCheckBox.Font = new Font("Arial", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            allCheckBox.Location = new Point(463, 3);
+            allCheckBox.Name = "allCheckBox";
+            allCheckBox.Size = new Size(67, 35);
+            allCheckBox.TabIndex = 1;
+            allCheckBox.Text = "ALL";
+            allCheckBox.UseVisualStyleBackColor = true;
+            allCheckBox.CheckedChanged += allCheckBox_CheckedChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(3, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(1372, 63);
+            label1.TabIndex = 1;
+            label1.Text = "IGBARAS WATER DISTRICT REPORT";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ReportsControl
             // 
@@ -654,6 +671,6 @@
         private Button exportReportsButton;
         private TableLayoutPanel tableLayoutPanel13;
         private Label label2;
-        private CheckBox checkBox1;
+        private CheckBox allCheckBox;
     }
 }

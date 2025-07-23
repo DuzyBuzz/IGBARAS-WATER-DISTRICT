@@ -467,7 +467,7 @@ namespace IGBARAS_WATER_DISTRICT
                 await Task.WhenAll(task1);
             }
             // 🟢 Optional: Setup autocomplete after data loaded
-            AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "fullname" }, searchAccountNumberTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "name" }, searchAccountNumberTextBox);
         }
 
         private void LoadZoneComboBox()
@@ -530,7 +530,7 @@ namespace IGBARAS_WATER_DISTRICT
             string billCode = selectedRow.Cells["billcodex"].Value?.ToString();
             string balance = selectedRow.Cells["balancex"].Value?.ToString();
             string districtno = selectedRow.Cells["districtno"].Value?.ToString();
-
+            string concessionaireCode = selectedRow.Cells["concessionairecode"].Value?.ToString();
 
             selectedBillingData = new string[]
             {
@@ -620,7 +620,7 @@ namespace IGBARAS_WATER_DISTRICT
             //    out usedBillCode
             //);
 
-
+            concessionaireCodeLabel.Text = concessionaireCode + "000001";
             // 🟦 Get the latest bill_id for this account
             string latestBillID = GetLatestBillIDHelper.GetLatestBillId(accountNo);
             Debug.WriteLine(!string.IsNullOrEmpty(latestBillID)
@@ -667,7 +667,7 @@ namespace IGBARAS_WATER_DISTRICT
 
                 collectionTaxAmountLabel.Text = readingInfo.TaxAmount.ToString("N2");
                 collectionTotalAddtionalChargeLabel.Text = readingInfo.TotalAditionalCharge.ToString("N2");
-                collectionBillingInvoiceLabel.Text = readingInfo.BillCode;
+                collectionBillingInvoiceTextBox.Text = readingInfo.BillCode.ToString();
                 if (currentTabLabel.Text == "Collection Reciept")
                 {
                     int totalConsumption = readingInfo.MeterConsumed;
@@ -692,6 +692,168 @@ namespace IGBARAS_WATER_DISTRICT
 
 
         }
+
+        private void InsertIntoPayments()
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                INSERT INTO tb_payment (
+                    ornumber, paymentdate, billcode, transactioncode, transno,
+                    bill, penalty, totalamount, districtno, concessionairecode, 
+                    accountno, cash, service_connection_fee, 
+                    other_charge1, other_charge2, other_charge3,
+                    other_charge1_amount, other_charge2_amount, other_charge3_amount, 
+                    total_other_charges, discount1, discount2, discount3,
+                    discount1_amount, discount2_amount, discount3_amount, 
+                    total_discount, tax, total_cheque, cash_tendered, bill_without_tax
+                )
+                VALUES (
+                    @ornumber, @paymentdate, @billcode, @transactioncode, @transno,
+                    @bill, @penalty, @totalamount, @districtno, @concessionairecode, 
+                    @accountno, @cash, @scf, 
+                    @other1, @other2, @other3,
+                    @other1_amount, @other2_amount, @other3_amount, 
+                    @total_other, @discount1, @discount2, @discount3,
+                    @discount1_amount, @discount2_amount, @discount3_amount, 
+                    @total_discount, @tax, @cheque, @cash_tendered, @bill_without_tax
+                );
+            ";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        // Basic info
+                        cmd.Parameters.AddWithValue("@ornumber", orNumberTextBox.Text.Trim());
+                        cmd.Parameters.AddWithValue("@paymentdate", DateTime.Now.Date);
+                        cmd.Parameters.AddWithValue("@billcode", collectionBillingInvoiceTextBox.Text.Trim());
+                        cmd.Parameters.AddWithValue("@transactioncode", concessionaireCodeLabel.Text.Trim());
+                        cmd.Parameters.AddWithValue("@transno", 1);
+
+                        // Amounts (remove commas)
+                        decimal billAmount = decimal.Parse(totalWaterConsumptionAmountLabel2.Text.Replace(",", "").Trim());
+                        decimal penalty = decimal.Parse(penaltyAmountLabel2.Text.Replace(",", "").Trim());
+                        decimal totalAmount = billAmount + penalty;
+
+                        cmd.Parameters.AddWithValue("@bill", billAmount);
+                        cmd.Parameters.AddWithValue("@penalty", penalty);
+                        cmd.Parameters.AddWithValue("@totalamount", totalAmount);
+
+                        // Concessionaire info
+                        string accountNo = accountNumberTextBox.Text.Trim();
+                        var (districtNo, concessionaireCode) = GetConcessionaireInfo(accountNo, conn);
+
+                        cmd.Parameters.AddWithValue("@districtno", districtNo);
+                        cmd.Parameters.AddWithValue("@concessionairecode", concessionaireCode);
+                        cmd.Parameters.AddWithValue("@accountno", accountNo);
+
+                        // Payment mode
+                        if (cashCheckBox.Checked)
+                        {
+                            cmd.Parameters.AddWithValue("@cash", totalAmount);
+                            cmd.Parameters.AddWithValue("@cheque", 0.00m);
+                        }
+                        else if (checkCheckBox.Checked)
+                        {
+                            cmd.Parameters.AddWithValue("@cash", 0.00m);
+                            cmd.Parameters.AddWithValue("@cheque", totalAmount);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@cash", 0.00m);
+                            cmd.Parameters.AddWithValue("@cheque", 0.00m);
+                        }
+
+                        // Service connection fee and other charges
+                        cmd.Parameters.AddWithValue("@scf", 0.00m);
+                        cmd.Parameters.AddWithValue("@other1", "");
+                        cmd.Parameters.AddWithValue("@other2", "");
+                        cmd.Parameters.AddWithValue("@other3", "");
+                        cmd.Parameters.AddWithValue("@other1_amount", 0.00m);
+                        cmd.Parameters.AddWithValue("@other2_amount", 0.00m);
+                        cmd.Parameters.AddWithValue("@other3_amount", 0.00m);
+                        cmd.Parameters.AddWithValue("@total_other", 0.00m);
+
+                        // Discounts
+                        cmd.Parameters.AddWithValue("@discount1", "");
+                        cmd.Parameters.AddWithValue("@discount2", "");
+                        cmd.Parameters.AddWithValue("@discount3", "");
+                        decimal discount = decimal.TryParse(penaltyPercentLabel.Text.Replace(",", "").Trim(), out var d) ? d : 0.00m;
+                        cmd.Parameters.AddWithValue("@discount1_amount", discount);
+                        cmd.Parameters.AddWithValue("@discount2_amount", 0.00m);
+                        cmd.Parameters.AddWithValue("@discount3_amount", 0.00m);
+                        cmd.Parameters.AddWithValue("@total_discount", discount);
+
+                        // Tax, cash tendered, bill without tax
+                        cmd.Parameters.AddWithValue("@tax", 0.00m);
+                        cmd.Parameters.AddWithValue("@cash_tendered", decimal.Parse(collectionTotalAmountPaidTextBox.Text.Replace(",", "").Trim()));
+                        cmd.Parameters.AddWithValue("@bill_without_tax", billAmount);
+
+                        // Execute
+                        int rows = cmd.ExecuteNonQuery();
+                        MessageBox.Show(rows > 0 ? "✅ Payment inserted successfully!" : "❌ Failed to insert payment.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ ERROR: " + ex.Message);
+            }
+        }
+        private void InsertCheque(string chequeNo, decimal amount)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                INSERT INTO tb_cheque ( dateissued, chequeno, amount)
+                VALUES (@dateissued, @chequeno, @amount)";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@dateissued", DateTime.Now.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@chequeno", chequeNo);
+                        cmd.Parameters.AddWithValue("@amount", decimal.Parse(collectionTotalAmountPaidTextBox.Text.Replace(",", "").Trim()));
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Failed to insert cheque data: " + ex.Message);
+            }
+        }
+
+
+        private (int districtNo, string concessionaireCode) GetConcessionaireInfo(string accountNo, MySqlConnection conn)
+        {
+            string query = "SELECT districtno, concessionairecode FROM tb_concessionaire WHERE accountno = @accNo";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@accNo", accountNo);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return (
+                            reader.GetInt32("districtno"),
+                            reader.GetString("concessionairecode")
+                        );
+                    }
+                }
+            }
+
+            return (0, ""); // fallback if not found
+        }
+
         private string GenerateNextBillCode_Advanced(string zoneCode, DateTime billingDate)
         {
             string formattedBillCode = "";
@@ -807,7 +969,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (accountDataGridView.DataSource is DataTable dt)
             {
                 // Filter on both 'accountno' and 'fullname' columns
-                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
+                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR name LIKE '%{keyword}%'";
             }
         }
 
@@ -1131,10 +1293,6 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-
-
-
-
         }
 
 
@@ -1325,7 +1483,7 @@ namespace IGBARAS_WATER_DISTRICT
             if (accountDataGridView.DataSource is DataTable dt)
             {
                 // Filter on both 'accountno' and 'fullname' columns
-                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
+                dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR name LIKE '%{keyword}%'";
             }
         }
 
@@ -1392,7 +1550,7 @@ namespace IGBARAS_WATER_DISTRICT
                 if (accountDataGridView.DataSource is DataTable dt)
                 {
                     // Filter on both 'accountno' and 'fullname' columns
-                    dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR fullname LIKE '%{keyword}%'";
+                    dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR name LIKE '%{keyword}%'";
                 }
                 e.Handled = true; // Optional, to prevent the Enter key from being processed further
             }
@@ -1496,12 +1654,20 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 // 💾 Save billing record to database
                 UpdateBillingRecord();
+                InsertIntoPayments();
+                if (checkCheckBox.Checked)
+                {
+                    string chequeNo = bankNumberTextBox.Text.Trim();
+                    decimal chequeAmount = decimal.Parse(collectionTotalAmountPaidTextBox.Text.Trim());
+
+                    InsertCheque(chequeNo, chequeAmount);
+                }
 
                 MessageBox.Show("✅ Billing record saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // 🖨️ Set printer settings to landscape and legal paper
                 billingPrintDocument.DefaultPageSettings.Landscape = true;
-
+                LoadPayments();
                 foreach (PaperSize ps in billingPrintDocument.PrinterSettings.PaperSizes)
                 {
                     if (ps.Kind == PaperKind.Legal)
@@ -1572,14 +1738,14 @@ namespace IGBARAS_WATER_DISTRICT
                     con.Open();
                     Debug.WriteLine("✅ Database connection opened.");
 
-                    string query = "SELECT paid, datebilled FROM tb_bill WHERE billcode = @billcode";
+                    string query = "SELECT paid, datebilled FROM tb_bill WHERE bill_id = @bill_id";
                     Debug.WriteLine($"🟡 Executing query: {query}");
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        string billcode = collectionBillingInvoiceLabel.Text.Trim();
-                        cmd.Parameters.AddWithValue("@billcode", billcode);
-                        Debug.WriteLine($"🔍 Using bill ID: {billcode}");
+                        string bill_id = latestBillIdLabel.Text.Trim();
+                        cmd.Parameters.AddWithValue("@bill_id", bill_id);
+                        Debug.WriteLine($"🔍 Using bill ID: {bill_id}");
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -1826,6 +1992,16 @@ namespace IGBARAS_WATER_DISTRICT
         }
 
         private void tableLayoutPanel51_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void orNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void collectionTotalPaidAmointLabel_Click(object sender, EventArgs e)
         {
 
         }

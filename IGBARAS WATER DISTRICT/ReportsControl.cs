@@ -91,9 +91,9 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             AppendColoredLine(box, $"📄 Billing Summary ({group})", Color.Black, true);
-            AppendColoredLine(box, $"💰 Total Paid: {totalPaid:C}", Color.ForestGreen);
+            AppendColoredLine(box, $"💰 Total Paid: ₱{totalPaid:N2}", Color.ForestGreen);
             AppendColoredLine(box, $"🧾 Total Bills: {totalBills}", Color.MediumBlue);
-            AppendColoredLine(box, $"🔴 Outstanding: {totalBalance:C}", Color.DarkRed);
+            AppendColoredLine(box, $"🔴 Outstanding: ₱{totalBalance:N2}", Color.DarkRed);
 
 
         }
@@ -119,7 +119,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             AppendColoredLine(box, $"📄 Collection Summary ({group})", Color.Black, true);
-            AppendColoredLine(box, $"💵 Total Collected: {totalCollected:C}", Color.ForestGreen);
+            AppendColoredLine(box, $"💵 Total Collected: ₱{totalCollected:N2}", Color.ForestGreen);
             AppendColoredLine(box, $"🧾 Payments Made: {totalPayments}", Color.MediumBlue);
 
 
@@ -146,7 +146,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             AppendColoredLine(box, "📄 Penalty Revenue (Monthly)", Color.Black, true);
-            AppendColoredLine(box, $"💸 Total Penalty: {totalPenalty:C}", Color.DarkOrange);
+            AppendColoredLine(box, $"💸 Total Penalty: ₱{totalPenalty:N2}", Color.DarkOrange);
             AppendColoredLine(box, $"📑 Bills With Penalty: {penaltyBills}", Color.MediumBlue);
 
 
@@ -173,8 +173,8 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             AppendColoredLine(box, "📄 Partially Paid Bills", Color.Black, true);
-            AppendColoredLine(box, $"💰 Total Paid: {totalPaid:C}", Color.ForestGreen);
-            AppendColoredLine(box, $"🔴 Still Due: {totalBalance:C}", Color.DarkRed);
+            AppendColoredLine(box, $"💰 Total Paid: ₱{totalPaid:N2}", Color.ForestGreen);
+            AppendColoredLine(box, $"🔴 Still Due: ₱{totalBalance:N2}", Color.DarkRed);
             AppendColoredLine(box, $"🧾 Partial Bills: {count}", Color.MediumBlue);
 
 
@@ -199,7 +199,7 @@ namespace IGBARAS_WATER_DISTRICT
 
             AppendColoredLine(box, "📄 Disconnection Candidates", Color.Black, true);
             AppendColoredLine(box, $"🔴 Accounts: {count}", Color.DarkRed);
-            AppendColoredLine(box, $"💸 Total Balance: {totalBalance:C}", Color.OrangeRed);
+            AppendColoredLine(box, $"💸 Total Balance: ₱{totalBalance:N2}", Color.OrangeRed);
 
 
         }
@@ -222,7 +222,7 @@ namespace IGBARAS_WATER_DISTRICT
                 totalOutstanding += Convert.ToDouble(row["Total Outstanding Balance"]);
 
             AppendColoredLine(box, "📄 Outstanding Balances", Color.Black, true);
-            AppendColoredLine(box, $"💸 Total Outstanding: {totalOutstanding:C}", Color.DarkRed);
+            AppendColoredLine(box, $"💸 Total Outstanding: ₱{totalOutstanding:N2}", Color.DarkRed);
             AppendColoredLine(box, $"🔴 Affected Accounts: {count}", Color.MediumBlue);
 
 
@@ -316,7 +316,7 @@ namespace IGBARAS_WATER_DISTRICT
             using SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-                FileName = $"WaterReports_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                FileName = $"IWD_REPORT_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
             };
 
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -324,7 +324,7 @@ namespace IGBARAS_WATER_DISTRICT
                 try
                 {
                     await ExcelExportHelper.ExportReportsToExcelAsync(selectedReports, saveFileDialog.FileName);
-                    MessageBox.Show("✅ Reports successfully exported!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Reports successfully exported!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -333,6 +333,87 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
 
+        }
+        private void ChecUnCheck()
+        {
+            if (allCheckBox.Checked)
+            {
+                billingSummaryDailyCheckBox.Checked = true;
+                billingSummaryMonthlyCheckBox.Checked = true;
+                billingSummaryYearlyCheckBox.Checked = true;
+                collectionSummaryDailyCheckBox.Checked = true;
+                collectionSummaryMonthlyCheckBox.Checked = true;
+                collectionSummaryYearlyCheckBox.Checked = true;
+                penaltyRevenueCheckBox.Checked = true;
+                partiallyPaidCheckBox.Checked = true;
+                disconnectionCheckBox.Checked = true;
+                outstandingBalancesCheckBox.Checked = true;
+            }
+            else
+            {
+                allCheckBox.Checked = IsAllChecked();
+            }
+        }
+
+        private bool IsAllChecked()
+        {
+            return billingSummaryDailyCheckBox.Checked &&
+                   billingSummaryMonthlyCheckBox.Checked &&
+                   billingSummaryYearlyCheckBox.Checked &&
+                   collectionSummaryDailyCheckBox.Checked &&
+                   collectionSummaryMonthlyCheckBox.Checked &&
+                   collectionSummaryYearlyCheckBox.Checked &&
+                   penaltyRevenueCheckBox.Checked &&
+                   partiallyPaidCheckBox.Checked &&
+                   disconnectionCheckBox.Checked &&
+                   outstandingBalancesCheckBox.Checked;
+        }
+        private void allCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ChecUnCheck();
+        }
+
+        private void disconnectionCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void outstandingBalancesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void penaltyRevenueCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void partiallyPaidCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void billingSummaryYearlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void collectionSummaryYearlyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void collectionSummaryDailyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
+
+        private void billingSummaryDailyCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            allCheckBox.Checked = IsAllChecked();
+        }
     }
 }
