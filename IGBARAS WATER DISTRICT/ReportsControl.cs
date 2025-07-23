@@ -26,332 +26,313 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void ReportsControl_Load(object sender, EventArgs e)
         {
-            using (var loadingForm = new LoadingForm())
-            {
-                billingDataTable = await DGVHelper.LoadDataToDataTableAsync("tb_bill", loadingForm);
-            }
-            // Billing Summary
-            LoadBillingSummary(dailyBillingReportDataGridView, dailyBillingReportChart, "daily");
-            LoadBillingSummary(monthlyBillingReportDataGridView, monthlyBillingReportChart, "monthly");
-            LoadBillingSummary(yearlyBillingReportDataGridView, yearlyBillingReportChart, "yearly");
-
-            // Collection Summary
-            LoadCollectionSummary(dailyCollectionReportDataGridView, dailyCollectionReportChart, "daily");
-            LoadCollectionSummary(monthlyCollectionReportDataGridView, monthlyCollectionReportChart, "monthly");
-            LoadCollectionSummary(yearlyCollectionReportDataGridView, yearlyCollectionReportChart, "yearly");
-
-            LoadBillingPerZoneChart();
+            await LoadReportSummariesAsync();
         }
 
-        /// <summary>
-        /// Loads a billing chart into the given Chart control using data from a DataGridView.
-        /// Supports grouping by "Yearly", "Monthly", or "Daily".
-        /// </summary>
-        /// <param name="sourceGrid">The source DataGridView with billing data.</param>
-        /// <param name="targetChart">The Chart control to draw the data.</param>
-        /// <param name="groupBy">"Yearly", "Monthly", or "Daily"</param>
-        /// <param name="title">Title of the chart</param>
-        public void LoadBillingSummary(DataGridView grid, Chart chart, string groupBy)
+        private async Task LoadReportSummariesAsync()
         {
-            // Ensure the table is not empty
-            if (billingDataTable == null || billingDataTable.Rows.Count == 0)
+            // Billing Summaries
+            await SetBillingSummaryAsync("Daily", billingSummaryDailyRichTextBox);
+            await SetBillingSummaryAsync("Monthly", billingSummaryMonthlyRichTextBox);
+            await SetBillingSummaryAsync("Yearly", billingSummaryYearlyRichTextBox);
+
+            // Collection Summaries
+            await SetCollectionSummaryAsync("Daily", collectionSummaryDailyRichTextBox);
+            await SetCollectionSummaryAsync("Monthly", collectionSummaryMonthlyRichTextBox);
+            await SetCollectionSummaryAsync("Yearly", collectionSummaryYearlyRichTextBox);
+
+            // Penalty Revenue
+            await SetPenaltyRevenueSummaryAsync(penaltyRevenueRichTextBox);
+
+            // Partially Paid Bills
+            await SetPartiallyPaidSummaryAsync(partiallyPaidRichTextBox);
+
+            // Disconnection Candidates
+            await SetDisconnectionSummaryAsync(disconnectionRichTextBox);
+
+            // Outstanding Balances
+            await SetOutstandingSummaryAsync(outstandingBalancesRichTextBox);
+        }
+
+        private void AppendColoredLine(RichTextBox box, string text, Color color, bool bold = false)
+        {
+            int start = box.TextLength;
+            box.AppendText(text + Environment.NewLine);
+            box.Select(start, text.Length);
+            box.SelectionColor = color;
+
+            if (bold)
+                box.SelectionFont = new Font(box.Font, FontStyle.Bold);
+
+            box.SelectionLength = 0;
+            box.SelectionColor = box.ForeColor;
+            box.SelectionFont = box.Font;
+        }
+
+        private async Task SetBillingSummaryAsync(string group, RichTextBox box)
+        {
+            box.Clear();
+
+            var table = await ReportQueries.GetBillingSummaryAsync(group);
+            if (table.Rows.Count == 0)
             {
-                MessageBox.Show("No billing data available.");
+                box.Text = "No billing data available.";
                 return;
             }
 
-            // 🧠 Group data by: Daily, Monthly, or Yearly
-            var groupedData = billingDataTable.AsEnumerable()
-                .Where(row => !row.IsNull("datebilled"))
-                .GroupBy(row =>
-                {
-                    var date = Convert.ToDateTime(row["datebilled"]);
-                    return groupBy.ToLower() switch
-                    {
-                        "daily" => date.ToString("yyyy-MM-dd"),
-                        "monthly" => date.ToString("yyyy-MM"),
-                        "yearly" => date.Year.ToString(),
-                        _ => date.ToString("yyyy-MM")
-                    };
-                })
-                .Select(g => new
-                {
-                    Period = g.Key,
-                    BillCount = g.Count(),
-                    TotalCharges = g.Sum(r => Convert.ToDouble(r["totalbillcharge"])),
-                    TotalPaid = g.Sum(r => Convert.ToDouble(r["amountpaid"])),
-                    TotalBalance = g.Sum(r => Convert.ToDouble(r["balance"]))
-                })
-                .OrderByDescending(x => x.Period)
-                .ToList();
+            int totalBills = 0;
+            double totalPaid = 0, totalBalance = 0;
 
-            // ⬇️ Load into DataGridView
-            DataTable resultTable = new DataTable();
-            resultTable.Columns.Add(groupBy switch
+            foreach (DataRow row in table.Rows)
             {
-                "daily" => "Billing Date",
-                "monthly" => "Billing Month",
-                "yearly" => "Billing Year",
-                _ => "Period"
-            });
-            resultTable.Columns.Add("Number of Bills", typeof(int));
-            resultTable.Columns.Add("Total Charges", typeof(string));  // formatted string
-            resultTable.Columns.Add("Total Paid", typeof(string));
-            resultTable.Columns.Add("Total Balance", typeof(string));
-
-            foreach (var row in groupedData)
-            {
-                resultTable.Rows.Add(
-                    row.Period,
-                    row.BillCount,
-                    row.TotalCharges.ToString("₱#,##0.00"),
-                    row.TotalPaid.ToString("₱#,##0.00"),
-                    row.TotalBalance.ToString("₱#,##0.00")
-                );
+                totalBills += Convert.ToInt32(row["Number of Bills"]);
+                totalPaid += Convert.ToDouble(row["Total Paid"]);
+                totalBalance += Convert.ToDouble(row["Total Balance"]);
             }
 
-            // 👀 Assign to grid
-            grid.DataSource = resultTable;
+            AppendColoredLine(box, $"📄 Billing Summary ({group})", Color.Black, true);
+            AppendColoredLine(box, $"💰 Total Paid: {totalPaid:C}", Color.ForestGreen);
+            AppendColoredLine(box, $"🧾 Total Bills: {totalBills}", Color.MediumBlue);
+            AppendColoredLine(box, $"🔴 Outstanding: {totalBalance:C}", Color.DarkRed);
 
-            // 📊 Load chart
-            chart.Series.Clear();
-            chart.ChartAreas.Clear();
-            chart.Titles.Clear();
-            chart.Legends.Clear();
 
-            ChartArea area = new ChartArea();
-            area.AxisX.Title = groupBy switch
-            {
-                "daily" => "Date",
-                "yearly" => "Year",
-                _ => "Month"
-            };
-            area.AxisY.Title = "Amount (₱)";
-            area.AxisX.LabelStyle.Angle = -45;
-            area.AxisY.LabelStyle.Format = "₱#,##0";
-            chart.ChartAreas.Add(area);
-
-            Series chargeSeries = new Series("Total Charges") { ChartType = SeriesChartType.Column, Color = Color.SteelBlue };
-            Series paidSeries = new Series("Total Paid") { ChartType = SeriesChartType.Column, Color = Color.SeaGreen };
-            Series balanceSeries = new Series("Total Balance") { ChartType = SeriesChartType.Column, Color = Color.IndianRed };
-
-            foreach (var row in groupedData)
-            {
-                chargeSeries.Points.AddXY(row.Period, row.TotalCharges);
-                paidSeries.Points.AddXY(row.Period, row.TotalPaid);
-                balanceSeries.Points.AddXY(row.Period, row.TotalBalance);
-            }
-
-            chart.Series.Add(chargeSeries);
-            chart.Series.Add(paidSeries);
-            chart.Series.Add(balanceSeries);
-
-            chart.Titles.Add(new Title($"{groupBy} Billing Summary", Docking.Top, new Font("Arial", 12, FontStyle.Bold), Color.Black));
-
-            chart.Legends.Add(new Legend
-            {
-                Docking = Docking.Bottom,
-                Font = new Font("Arial", 9),
-                Alignment = StringAlignment.Center
-            });
         }
 
-        public void LoadCollectionSummary(DataGridView grid, Chart chart, string groupBy)
+        private async Task SetCollectionSummaryAsync(string group, RichTextBox box)
         {
-            if (billingDataTable == null || billingDataTable.Rows.Count == 0)
+            box.Clear();
+
+            var table = await ReportQueries.GetCollectionSummaryAsync(group);
+            if (table.Rows.Count == 0)
             {
-                MessageBox.Show("No data loaded.");
+                box.Text = "No collection data available.";
                 return;
             }
 
-            var filteredRows = billingDataTable.AsEnumerable()
-                .Where(row =>
-                    !row.IsNull("datebilled") &&
-                    !row.IsNull("amountpaid") &&
-                    Convert.ToDouble(row["amountpaid"]) > 0)
-                .ToList();
+            int totalPayments = 0;
+            double totalCollected = 0;
 
-            if (filteredRows.Count == 0)
+            foreach (DataRow row in table.Rows)
             {
-                MessageBox.Show("No payment data found.");
+                totalPayments += Convert.ToInt32(row["Number of Payments"]);
+                totalCollected += Convert.ToDouble(row["Total Collected"]);
+            }
+
+            AppendColoredLine(box, $"📄 Collection Summary ({group})", Color.Black, true);
+            AppendColoredLine(box, $"💵 Total Collected: {totalCollected:C}", Color.ForestGreen);
+            AppendColoredLine(box, $"🧾 Payments Made: {totalPayments}", Color.MediumBlue);
+
+
+        }
+
+        private async Task SetPenaltyRevenueSummaryAsync(RichTextBox box)
+        {
+            box.Clear();
+
+            var table = await ReportQueries.GetPenaltyRevenueByMonthAsync();
+            if (table.Rows.Count == 0)
+            {
+                box.Text = "No penalty data found.";
                 return;
             }
 
-            var groupedData = filteredRows
-                .GroupBy(row =>
-                {
-                    DateTime date = Convert.ToDateTime(row["datebilled"]);
-                    return groupBy.ToLower() switch
-                    {
-                        "daily" => date.ToString("yyyy-MM-dd"),
-                        "monthly" => date.ToString("yyyy-MM"),
-                        "yearly" => date.ToString("yyyy"),
-                        _ => date.ToString("yyyy-MM")
-                    };
-                })
-                .Select(g => new
-                {
-                    Period = g.Key,
-                    PaymentCount = g.Count(),
-                    TotalCollected = g.Sum(r => Convert.ToDouble(r["amountpaid"]))
-                })
-                .OrderByDescending(x => x.Period)
-                .ToList();
+            double totalPenalty = 0;
+            int penaltyBills = 0;
 
-            // 🔁 Fill DataGridView
-            var dt = new DataTable();
-            string periodHeader = groupBy.ToLower() switch
+            foreach (DataRow row in table.Rows)
             {
-                "daily" => "Collection Date",
-                "monthly" => "Collection Month",
-                "yearly" => "Collection Year",
-                _ => "Period"
-            };
-
-            dt.Columns.Add(periodHeader);
-            dt.Columns.Add("Number of Payments", typeof(int));
-            dt.Columns.Add("Total Collected", typeof(string)); // formatted
-
-            foreach (var item in groupedData)
-            {
-                dt.Rows.Add(item.Period, item.PaymentCount, item.TotalCollected.ToString("₱#,##0.00"));
+                penaltyBills += Convert.ToInt32(row["Bills With Penalty"]);
+                totalPenalty += Convert.ToDouble(row["Total Penalty Revenue"]);
             }
 
-            grid.DataSource = dt;
+            AppendColoredLine(box, "📄 Penalty Revenue (Monthly)", Color.Black, true);
+            AppendColoredLine(box, $"💸 Total Penalty: {totalPenalty:C}", Color.DarkOrange);
+            AppendColoredLine(box, $"📑 Bills With Penalty: {penaltyBills}", Color.MediumBlue);
 
-            // 📊 Chart setup
-            chart.Series.Clear();
-            chart.ChartAreas.Clear();
-            chart.Titles.Clear();
-            chart.Legends.Clear();
 
-            ChartArea area = new ChartArea("CollectionArea");
-            area.AxisX.Title = periodHeader;
-            area.AxisY.Title = "Collected (₱)";
-            area.AxisX.LabelStyle.Angle = -45;
-            area.AxisY.LabelStyle.Format = "₱#,##0";
-            chart.ChartAreas.Add(area);
+        }
 
-            Series series = new Series("Total Collected")
+        private async Task SetPartiallyPaidSummaryAsync(RichTextBox box)
+        {
+            box.Clear();
+
+            var table = await ReportQueries.GetPartiallyPaidBillsAsync();
+            if (table.Rows.Count == 0)
             {
-                ChartType = SeriesChartType.Column,
-                Color = Color.MediumSeaGreen,
-                Font = new Font("Arial", 9)
-            };
-
-            foreach (var item in groupedData)
-            {
-                series.Points.AddXY(item.Period, item.TotalCollected);
+                box.Text = "No partially paid bills.";
+                return;
             }
 
-            chart.Series.Add(series);
-            chart.Titles.Add(new Title($"{groupBy} Collection Summary", Docking.Top, new Font("Arial", 12, FontStyle.Bold), Color.Black));
+            double totalPaid = 0, totalBalance = 0;
+            int count = table.Rows.Count;
 
-            chart.Legends.Add(new Legend
+            foreach (DataRow row in table.Rows)
             {
-                Docking = Docking.Bottom,
-                Font = new Font("Arial", 9),
-                Alignment = StringAlignment.Center
-            });
-        }
-
-
-
-
-        private void LoadBillingPerZoneChart()
-        {
-            // 🔄 Reset chart
-            billingPerZoneChart.Series.Clear();
-            billingPerZoneChart.ChartAreas.Clear();
-            billingPerZoneChart.Titles.Clear();
-            billingPerZoneChart.Legends.Clear();
-
-            // 📊 Chart Area
-            ChartArea area = new ChartArea("PieArea");
-            area.BackColor = Color.White;
-            area.Area3DStyle.Enable3D = true;
-            billingPerZoneChart.ChartAreas.Add(area);
-
-            // 🧾 Title
-            billingPerZoneChart.Titles.Add("Billing Charges per Zone");
-            billingPerZoneChart.Titles[0].Font = new Font("Arial", 14, FontStyle.Bold);
-            billingPerZoneChart.Titles[0].ForeColor = Color.Black;
-
-            // 🧾 Legend
-            Legend legend = new Legend("Legend");
-            legend.Docking = Docking.Right;
-            legend.Font = new Font("Arial", 9, FontStyle.Regular);
-            legend.IsTextAutoFit = false;
-            legend.ForeColor = Color.Black;
-            billingPerZoneChart.Legends.Add(legend);
-
-            // 📌 Pie Series Setup
-            Series pieSeries = new Series("Zone Billing")
-            {
-                ChartType = SeriesChartType.Pie,
-                Font = new Font("Arial", 9),
-                IsValueShownAsLabel = true,
-                LabelForeColor = Color.Black,
-                BorderColor = Color.White,
-                BorderWidth = 1,
-            };
-
-            // Format and Group Data
-            var summary = billingDataTable.AsEnumerable()
-                .Where(row => !row.IsNull("zonecode") && !row.IsNull("totalbillcharge") && !row.IsNull("balance"))
-                .GroupBy(row => row["zonecode"].ToString())
-                .Select(g => new
-                {
-                    Zone = g.Key,
-                    TotalCharges = g.Sum(r => Convert.ToDecimal(r["totalbillcharge"])),
-                    Outstanding = g.Sum(r => Convert.ToDecimal(r["balance"]))
-                })
-                .OrderBy(z => z.Zone)
-                .ToList();
-
-            foreach (var zone in summary)
-            {
-                // 📎 Format amounts
-                string formattedCharge = $"₱{zone.TotalCharges:N2}";
-                string formattedOutstanding = $"₱{zone.Outstanding:N2}";
-
-                // ➕ Add data point
-                DataPoint dp = new DataPoint
-                {
-                    AxisLabel = zone.Zone, // 🔹 Label is just zone code (e.g., "001")
-                    YValues = new[] { (double)zone.TotalCharges },
-                    Label = zone.Zone,
-                    ToolTip = $"Zone {zone.Zone}"
-                };
-
-                // 🗒️ Add detailed legend entry
-                dp.LegendText = $"\nZone {zone.Zone} - {formattedCharge}\n" +
-                    $"(Outstanding: {formattedOutstanding})";
-
-                pieSeries.Points.Add(dp);
+                totalPaid += Convert.ToDouble(row["amountpaid"]);
+                totalBalance += Convert.ToDouble(row["balance"]);
             }
 
-            // 🔧 Pie Style Settings
-            pieSeries["PieLabelStyle"] = "Outside";
-            pieSeries["PieDrawingStyle"] = "SoftEdge";
-            pieSeries["CollectedThreshold"] = "1"; // combine very small zones
+            AppendColoredLine(box, "📄 Partially Paid Bills", Color.Black, true);
+            AppendColoredLine(box, $"💰 Total Paid: {totalPaid:C}", Color.ForestGreen);
+            AppendColoredLine(box, $"🔴 Still Due: {totalBalance:C}", Color.DarkRed);
+            AppendColoredLine(box, $"🧾 Partial Bills: {count}", Color.MediumBlue);
 
-            billingPerZoneChart.Series.Add(pieSeries);
+
         }
 
-
-
-
-        private void billingReportChart_Click(object sender, EventArgs e)
+        private async Task SetDisconnectionSummaryAsync(RichTextBox box)
         {
+            box.Clear();
+
+            var table = await ReportQueries.GetDisconnectionCandidatesAsync();
+            if (table.Rows.Count == 0)
+            {
+                box.Text = "No disconnection candidates.";
+                return;
+            }
+
+            int count = table.Rows.Count;
+            double totalBalance = 0;
+
+            foreach (DataRow row in table.Rows)
+                totalBalance += Convert.ToDouble(row["balance"]);
+
+            AppendColoredLine(box, "📄 Disconnection Candidates", Color.Black, true);
+            AppendColoredLine(box, $"🔴 Accounts: {count}", Color.DarkRed);
+            AppendColoredLine(box, $"💸 Total Balance: {totalBalance:C}", Color.OrangeRed);
+
 
         }
-        private DateTime SafeToDateTime(object dateObj)
+
+        private async Task SetOutstandingSummaryAsync(RichTextBox box)
         {
-            return dateObj is MySql.Data.Types.MySqlDateTime mysqlDate
-                ? mysqlDate.GetDateTime()
-                : Convert.ToDateTime(dateObj);
+            box.Clear();
+
+            var table = await ReportQueries.GetOutstandingBalancesAsync();
+            if (table.Rows.Count == 0)
+            {
+                box.Text = "No outstanding balances.";
+                return;
+            }
+
+            int count = table.Rows.Count;
+            double totalOutstanding = 0;
+
+            foreach (DataRow row in table.Rows)
+                totalOutstanding += Convert.ToDouble(row["Total Outstanding Balance"]);
+
+            AppendColoredLine(box, "📄 Outstanding Balances", Color.Black, true);
+            AppendColoredLine(box, $"💸 Total Outstanding: {totalOutstanding:C}", Color.DarkRed);
+            AppendColoredLine(box, $"🔴 Affected Accounts: {count}", Color.MediumBlue);
+
+
         }
+
+        private async void exportReportsButton_Click(object sender, EventArgs e)
+        {
+            DataSet selectedReports = new DataSet();
+
+            // Billing
+            if (billingSummaryDailyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetBillingSummaryAsync("Daily");
+                table.TableName = "Billing Summary (Daily)";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (billingSummaryMonthlyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetBillingSummaryAsync("Monthly");
+                table.TableName = "Billing Summary (Monthly)";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (billingSummaryYearlyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetBillingSummaryAsync("Yearly");
+                table.TableName = "Billing Summary (Yearly)";
+                selectedReports.Tables.Add(table);
+            }
+
+            // Collection
+            if (collectionSummaryDailyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetCollectionSummaryAsync("Daily");
+                table.TableName = "Collection Summary (Daily)";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (collectionSummaryMonthlyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetCollectionSummaryAsync("Monthly");
+                table.TableName = "Collection Summary (Monthly)";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (collectionSummaryYearlyCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetCollectionSummaryAsync("Yearly");
+                table.TableName = "Collection Summary (Yearly)";
+                selectedReports.Tables.Add(table);
+            }
+
+            // Others
+            if (penaltyRevenueCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetPenaltyRevenueByMonthAsync();
+                table.TableName = "Penalty Revenue";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (partiallyPaidCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetPartiallyPaidBillsAsync();
+                table.TableName = "Partially Paid Bills";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (disconnectionCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetDisconnectionCandidatesAsync();
+                table.TableName = "Disconnection Candidates";
+                selectedReports.Tables.Add(table);
+            }
+
+            if (outstandingBalancesCheckBox.Checked)
+            {
+                var table = await ReportQueries.GetOutstandingBalancesAsync();
+                table.TableName = "Outstanding Balances";
+                selectedReports.Tables.Add(table);
+            }
+
+            // Check if empty
+            if (selectedReports.Tables.Count == 0)
+            {
+                MessageBox.Show("Please select at least one report to export.", "No Reports Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Save dialog
+            using SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                FileName = $"WaterReports_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    await ExcelExportHelper.ExportReportsToExcelAsync(selectedReports, saveFileDialog.FileName);
+                    MessageBox.Show("✅ Reports successfully exported!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"❌ Export failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
 
     }
 }
