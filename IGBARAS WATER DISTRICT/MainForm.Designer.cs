@@ -37,8 +37,6 @@ namespace IGBARAS_WATER_DISTRICT
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             sidebarPanel = new Panel();
             reportsButton = new Button();
-            button2 = new Button();
-            button1 = new Button();
             accountsButton = new Button();
             readingButton = new Button();
             panel1 = new Panel();
@@ -62,10 +60,9 @@ namespace IGBARAS_WATER_DISTRICT
             // sidebarPanel
             // 
             sidebarPanel.AutoScroll = true;
-            sidebarPanel.BackColor = SystemColors.ActiveCaption;
+            sidebarPanel.BackColor = Color.White;
+            sidebarPanel.BorderStyle = BorderStyle.Fixed3D;
             sidebarPanel.Controls.Add(reportsButton);
-            sidebarPanel.Controls.Add(button2);
-            sidebarPanel.Controls.Add(button1);
             sidebarPanel.Controls.Add(accountsButton);
             sidebarPanel.Controls.Add(readingButton);
             sidebarPanel.Controls.Add(panel1);
@@ -79,74 +76,53 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // reportsButton
             // 
+            reportsButton.BackColor = SystemColors.ControlLight;
             reportsButton.Dock = DockStyle.Top;
             reportsButton.FlatAppearance.BorderSize = 0;
-            reportsButton.FlatStyle = FlatStyle.Flat;
+            reportsButton.FlatStyle = FlatStyle.Popup;
             reportsButton.Font = new Font("Arial", 12F);
             reportsButton.Location = new Point(0, 254);
+            reportsButton.Margin = new Padding(50);
             reportsButton.Name = "reportsButton";
-            reportsButton.Size = new Size(206, 45);
+            reportsButton.Size = new Size(202, 45);
             reportsButton.TabIndex = 13;
             reportsButton.Text = "📝 Reports";
             reportsButton.TextAlign = ContentAlignment.MiddleLeft;
+            reportsButton.UseVisualStyleBackColor = false;
             reportsButton.Click += reportsButton_Click;
-            // 
-            // button2
-            // 
-            button2.Dock = DockStyle.Bottom;
-            button2.FlatAppearance.BorderSize = 0;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Arial", 12F);
-            button2.ForeColor = Color.Black;
-            button2.Location = new Point(0, 826);
-            button2.Name = "button2";
-            button2.Size = new Size(206, 45);
-            button2.TabIndex = 12;
-            button2.Text = "ℹ️ System Info";
-            button2.TextAlign = ContentAlignment.MiddleLeft;
-            button2.Click += systemInformationButton_Click;
-            // 
-            // button1
-            // 
-            button1.Dock = DockStyle.Bottom;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Arial", 12F);
-            button1.ForeColor = Color.Black;
-            button1.Location = new Point(0, 871);
-            button1.Name = "button1";
-            button1.Size = new Size(206, 45);
-            button1.TabIndex = 11;
-            button1.Text = "⚙️ Settings";
-            button1.TextAlign = ContentAlignment.MiddleLeft;
-            button1.Click += settingsButton_Click;
             // 
             // accountsButton
             // 
+            accountsButton.BackColor = SystemColors.ControlLight;
             accountsButton.Dock = DockStyle.Top;
             accountsButton.FlatAppearance.BorderSize = 0;
-            accountsButton.FlatStyle = FlatStyle.Flat;
+            accountsButton.FlatStyle = FlatStyle.Popup;
             accountsButton.Font = new Font("Arial", 12F);
             accountsButton.Location = new Point(0, 209);
+            accountsButton.Margin = new Padding(50);
             accountsButton.Name = "accountsButton";
-            accountsButton.Size = new Size(206, 45);
+            accountsButton.Size = new Size(202, 45);
             accountsButton.TabIndex = 9;
-            accountsButton.Text = "📝 Reports";
+            accountsButton.Text = "👥 Concessionaire";
             accountsButton.TextAlign = ContentAlignment.MiddleLeft;
+            accountsButton.UseVisualStyleBackColor = false;
             accountsButton.Click += transactionsButton_Click;
             // 
             // readingButton
             // 
+            readingButton.BackColor = SystemColors.ControlLight;
             readingButton.Dock = DockStyle.Top;
             readingButton.FlatAppearance.BorderSize = 0;
-            readingButton.FlatStyle = FlatStyle.Flat;
+            readingButton.FlatStyle = FlatStyle.Popup;
             readingButton.Font = new Font("Arial", 12F);
             readingButton.Location = new Point(0, 164);
+            readingButton.Margin = new Padding(50);
             readingButton.Name = "readingButton";
-            readingButton.Size = new Size(206, 45);
+            readingButton.Size = new Size(202, 45);
             readingButton.TabIndex = 7;
             readingButton.Text = "💸 Billing Invoice";
             readingButton.TextAlign = ContentAlignment.MiddleLeft;
+            readingButton.UseVisualStyleBackColor = false;
             readingButton.Click += accountsButton_Click;
             // 
             // panel1
@@ -161,7 +137,7 @@ namespace IGBARAS_WATER_DISTRICT
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(206, 164);
+            panel1.Size = new Size(202, 164);
             panel1.TabIndex = 6;
             // 
             // panel7
@@ -170,7 +146,7 @@ namespace IGBARAS_WATER_DISTRICT
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(35, 15);
             panel7.Name = "panel7";
-            panel7.Size = new Size(134, 94);
+            panel7.Size = new Size(130, 94);
             panel7.TabIndex = 8;
             // 
             // pictureBox1
@@ -180,7 +156,7 @@ namespace IGBARAS_WATER_DISTRICT
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Margin = new Padding(0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(134, 94);
+            pictureBox1.Size = new Size(130, 94);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -191,7 +167,7 @@ namespace IGBARAS_WATER_DISTRICT
             panel6.Dock = DockStyle.Bottom;
             panel6.Location = new Point(35, 109);
             panel6.Name = "panel6";
-            panel6.Size = new Size(134, 33);
+            panel6.Size = new Size(130, 33);
             panel6.TabIndex = 7;
             // 
             // usernameLabel
@@ -218,7 +194,7 @@ namespace IGBARAS_WATER_DISTRICT
             // panel4
             // 
             panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(169, 15);
+            panel4.Location = new Point(165, 15);
             panel4.Name = "panel4";
             panel4.Size = new Size(35, 127);
             panel4.TabIndex = 4;
@@ -228,7 +204,7 @@ namespace IGBARAS_WATER_DISTRICT
             panel3.Dock = DockStyle.Bottom;
             panel3.Location = new Point(0, 142);
             panel3.Name = "panel3";
-            panel3.Size = new Size(204, 20);
+            panel3.Size = new Size(200, 20);
             panel3.TabIndex = 3;
             // 
             // panel2
@@ -236,22 +212,25 @@ namespace IGBARAS_WATER_DISTRICT
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(204, 15);
+            panel2.Size = new Size(200, 15);
             panel2.TabIndex = 2;
             // 
             // logoutButton
             // 
+            logoutButton.BackColor = Color.Firebrick;
             logoutButton.Dock = DockStyle.Bottom;
             logoutButton.FlatAppearance.BorderSize = 0;
             logoutButton.FlatStyle = FlatStyle.Flat;
             logoutButton.Font = new Font("Arial", 12F);
-            logoutButton.ForeColor = Color.Red;
-            logoutButton.Location = new Point(0, 916);
+            logoutButton.ForeColor = SystemColors.Control;
+            logoutButton.Location = new Point(0, 912);
+            logoutButton.Margin = new Padding(50);
             logoutButton.Name = "logoutButton";
-            logoutButton.Size = new Size(206, 45);
+            logoutButton.Size = new Size(202, 45);
             logoutButton.TabIndex = 5;
             logoutButton.Text = "⍈ Logout";
             logoutButton.TextAlign = ContentAlignment.MiddleLeft;
+            logoutButton.UseVisualStyleBackColor = false;
             logoutButton.Click += logoutButton_Click;
             // 
             // mainPanel
@@ -295,8 +274,6 @@ namespace IGBARAS_WATER_DISTRICT
         private Panel panel4;
         private Panel panel3;
         private Panel panel2;
-        private Button button2;
-        private Button button1;
         private Panel panel7;
         private PictureBox pictureBox1;
         private Panel panel6;

@@ -93,26 +93,29 @@ namespace IGBARAS_WATER_DISTRICT
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
-                        cmd.Parameters.AddWithValue("@password", password); // Note: in production, hash passwords
+                        cmd.Parameters.AddWithValue("@password", password);
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                // Get the values from database
-                                string userId = reader["devicecode"].ToString();
-                                string usernameFromDb = reader["username"].ToString();
-
-                                // Store in static class
-                                UserCredentials.UserId = userId;
-                                UserCredentials.Username = usernameFromDb;
+                                // Store all relevant fields in UserCredentials
+                                UserCredentials.UserId = reader["deviceuserid"].ToString();
+                                UserCredentials.DeviceCode = reader["devicecode"].ToString();
+                                UserCredentials.DistrictNo = reader["districtno"] != DBNull.Value ? Convert.ToInt32(reader["districtno"]) : 0;
+                                UserCredentials.Username = reader["username"].ToString();
+                                UserCredentials.LastName = reader["lastname"].ToString();
+                                UserCredentials.FirstName = reader["firstname"].ToString();
+                                UserCredentials.MiddleName = reader["middlename"].ToString();
+                                UserCredentials.Name = reader["name"].ToString();
+                                UserCredentials.ContactNo = reader["contactno"].ToString();
+                                UserCredentials.Gender = reader["gender"].ToString();
 
                                 // Launch MainForm
                                 var dashboard = new MainForm();
                                 dashboard.Show();
                                 this.Hide();
                             }
-
                             else
                             {
                                 MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);

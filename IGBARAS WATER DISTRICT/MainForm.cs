@@ -109,14 +109,22 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to close the application?", "Confirm Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show("Are you sure you want to Logout?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.No)
             {
                 e.Cancel = true; // Cancel the form closing event
             }
-        }
+            else
+            {
+                // Hide the current form
+                this.Close();
 
+                // Show the login form
+                Login loginForm = new Login();
+                loginForm.Show();
+            }
+        }
         private void reportsButton_Click(object sender, EventArgs e)
         {
             LoadControl("Reports");

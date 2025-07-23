@@ -1,3 +1,4 @@
+
 namespace IGBARAS_WATER_DISTRICT
 {
     internal static class Program
