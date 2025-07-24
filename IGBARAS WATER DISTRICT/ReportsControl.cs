@@ -12,17 +12,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace IGBARAS_WATER_DISTRICT
 {
     public partial class ReportsControl : UserControl
     {
+
         public ReportsControl()
         {
             InitializeComponent();
         }
 
-        private DataTable billingDataTable = new DataTable();
+        private DataTable dailyBillingReportDataTable = new DataTable();
 
         private async void ReportsControl_Load(object sender, EventArgs e)
         {
@@ -222,110 +224,66 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
 
-        private async void exportReportsButton_Click(object sender, EventArgs e)
+        private void exportReportsButton_Click(object sender, EventArgs e)
         {
-            DataSet selectedReports = new DataSet();
+            // 🔹 Prepare list to hold selected DataTables
+            List<DataTable> selectedReports = new List<DataTable>();
 
-            // Billing
+            // 🔹 Check each checkbox and add corresponding report
             if (billingSummaryDailyCheckBox.Checked)
             {
-                var table = await ReportQueries.GetBillingSummaryAsync("Daily");
-                table.TableName = "Billing Summary (Daily)";
-                selectedReports.Tables.Add(table);
+                string dailyQuery = @"SELECT DATE(datebilled) AS BillingDate,
+                                     COUNT(*) AS TotalBills,
+                                     SUM(totalbillcharge) AS TotalAmount
+                              FROM tb_bill
+                              GROUP BY DATE(datebilled)";
+                selectedReports.Add(ReportHelper.GetDataTable(dailyQuery, "Daily Billing Report"));
             }
 
             if (billingSummaryMonthlyCheckBox.Checked)
             {
-                var table = await ReportQueries.GetBillingSummaryAsync("Monthly");
-                table.TableName = "Billing Summary (Monthly)";
-                selectedReports.Tables.Add(table);
+                string monthlyQuery = @"SELECT CONCAT(YEAR(datebilled), '-', LPAD(MONTH(datebilled), 2, '0')) AS BillingMonth,
+                                       COUNT(*) AS TotalBills,
+                                       SUM(totalbillcharge) AS TotalAmount
+                                FROM tb_bill
+                                GROUP BY YEAR(datebilled), MONTH(datebilled)";
+                selectedReports.Add(ReportHelper.GetDataTable(monthlyQuery, "Monthly Billing Report"));
             }
 
             if (billingSummaryYearlyCheckBox.Checked)
             {
-                var table = await ReportQueries.GetBillingSummaryAsync("Yearly");
-                table.TableName = "Billing Summary (Yearly)";
-                selectedReports.Tables.Add(table);
+                string yearlyQuery = @"SELECT YEAR(datebilled) AS BillingYear,
+                                      COUNT(*) AS TotalBills,
+                                      SUM(totalbillcharge) AS TotalAmount
+                               FROM tb_bill
+                               GROUP BY YEAR(datebilled)";
+                selectedReports.Add(ReportHelper.GetDataTable(yearlyQuery, "Yearly Billing Report"));
             }
 
-            // Collection
-            if (collectionSummaryDailyCheckBox.Checked)
+            // ❌ If no reports selected, alert the user
+            if (selectedReports.Count == 0)
             {
-                var table = await ReportQueries.GetCollectionSummaryAsync("Daily");
-                table.TableName = "Collection Summary (Daily)";
-                selectedReports.Tables.Add(table);
-            }
-
-            if (collectionSummaryMonthlyCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetCollectionSummaryAsync("Monthly");
-                table.TableName = "Collection Summary (Monthly)";
-                selectedReports.Tables.Add(table);
-            }
-
-            if (collectionSummaryYearlyCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetCollectionSummaryAsync("Yearly");
-                table.TableName = "Collection Summary (Yearly)";
-                selectedReports.Tables.Add(table);
-            }
-
-            // Others
-            if (penaltyRevenueCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetPenaltyRevenueByMonthAsync();
-                table.TableName = "Penalty Revenue";
-                selectedReports.Tables.Add(table);
-            }
-
-            if (partiallyPaidCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetPartiallyPaidBillsAsync();
-                table.TableName = "Partially Paid Bills";
-                selectedReports.Tables.Add(table);
-            }
-
-            if (disconnectionCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetDisconnectionCandidatesAsync();
-                table.TableName = "Disconnection Candidates";
-                selectedReports.Tables.Add(table);
-            }
-
-            if (outstandingBalancesCheckBox.Checked)
-            {
-                var table = await ReportQueries.GetOutstandingBalancesAsync();
-                table.TableName = "Outstanding Balances";
-                selectedReports.Tables.Add(table);
-            }
-
-            // Check if empty
-            if (selectedReports.Tables.Count == 0)
-            {
-                MessageBox.Show("Please select at least one report to export.", "No Reports Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("⚠️ Please select at least one report to export.", "No Reports", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Save dialog
-            using SaveFileDialog saveFileDialog = new SaveFileDialog
+            // 📁 Choose where to save
+            using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
-                FileName = $"IWD_REPORT_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
-            };
+                sfd.Filter = "Excel Workbook (*.xlsx)|*.xlsx";
+                sfd.FileName = $"BillingReports_{DateTime.Now:yyyyMMdd_HHmm}.xlsx";
 
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                try
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    await ExcelExportHelper.ExportReportsToExcelAsync(selectedReports, saveFileDialog.FileName);
-                    MessageBox.Show("Reports successfully exported!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"❌ Export failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // ✅ Export all selected reports
+                    ReportHelper.ExportToExcel(sfd.FileName, selectedReports.ToArray());
+
+                    MessageBox.Show("✅ Report(s) exported successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
+
+
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {

@@ -237,6 +237,10 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 printSaveButton.Enabled = true;
             }
+            if(collectionTotalAmountPaidTextBox.Text == "0")
+            {
+                billPaidButton.Enabled = false;
+            }
         }
         private void ClearButtonDisable()
         {
@@ -324,7 +328,7 @@ namespace IGBARAS_WATER_DISTRICT
 
                         if (rowsAffected > 0)
                         {
-                            MessageBox.Show("✅ Billing record updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Debug.WriteLine("✅ Billing record updated successfully.", "Success");
                         }
                         else
                         {
@@ -462,7 +466,6 @@ namespace IGBARAS_WATER_DISTRICT
 
                         // Execute insert
                         cmd.ExecuteNonQuery();
-                        MessageBox.Show("Billing record inserted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }
@@ -517,13 +520,11 @@ namespace IGBARAS_WATER_DISTRICT
         {
             ClearWaterChargeLabels();
             ClearWaterChargeLabels2();
+            collectionTotalAmountPaidTextBox.Text = "0";
             fromReadingDateLabel.Text = "";
             previousReadingTextBox.Text = "0";
             meterConsumedReadingTextBox.Text = "0";
             presentReadingTextBox.Text = "";
-            previousReadingTextBox.Text = "0";
-
-
             totalQuantityLabel.Text = "0.00";
             totalWaterConsumptionAmountLabel.Text = "0";
             totalAmountDueLabel.Text = "0.00";
@@ -531,7 +532,19 @@ namespace IGBARAS_WATER_DISTRICT
             isWithHoldingTaxLabel.Text = "0";
             isArrearsLabel.Text = "0";
             dueExemptLabel.Text = "0";
-
+            collectionTotalMeteredAmountLabel.Text = "0.00";
+            totalWaterConsumptionAmountLabel2.Text = "0.00";
+            collectionTaxAmountLabel.Text = "0.00";
+            collectionTotalMeteredAmountLabel.Text = "0.00";
+            collectionPenaltyLabel.Text = "0.00";
+            collectionArrearsAmountLabel.Text = "0.00";
+            collectionTotalPaidAmointLabel.Text = "0.00";
+            taxExemptedPercentLabel2.Text = "2%";
+            arrearsAmountLabel2.Text = "0.00";
+            totalAmountDueLabel2.Text = "0.00";
+            penaltyPercentLabel2.Text = "0%";
+            totalQuantityLabel2.Text = "0";
+            bankNumberTextBox.Text = "0.00";
             DisableButton();
             if (e.RowIndex < 0) return; // Ignore header or invalid rows
 
@@ -597,7 +610,7 @@ namespace IGBARAS_WATER_DISTRICT
                 string[] parts = nextBillCode.Split('-');
                 if (parts.Length == 2)
                 {
-                    invoiceLabel.Text = parts[1]; // e.g., "0000401"
+                    invoiceTextBox.Text = parts[1]; // e.g., "0000401"
                 }
 
                 // Step 6: Display full billcode (e.g., "001-0000401")
@@ -681,23 +694,24 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-                // FOR THE COLLECTION TAB 
-                collectionNameLabel.Text = readingInfo.Name;
-                collectionAddressLabel.Text = readingInfo.Address;
-                collectionArrearsAmountLabel.Text = readingInfo.ArrearsAmount.ToString("N2");
-                arrearsAmountLabel2.Text = readingInfo.ArrearsAmount.ToString("N2");
-                dueDateLabel2.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
-
-
-
-                collectionTaxAmountLabel.Text = readingInfo.TaxAmount.ToString("N2");
-                collectionTotalAddtionalChargeLabel.Text = readingInfo.TotalAditionalCharge.ToString("N2");
-                collectionBillingInvoiceTextBox.Text = readingInfo.BillCode.ToString();
                 if (currentTabLabel.Text == "Collection Reciept")
                 {
                     int totalConsumption = readingInfo.MeterConsumed;
 
                     {
+
+                        // FOR THE COLLECTION TAB 
+                        collectionNameLabel.Text = readingInfo.Name;
+                        collectionAddressLabel.Text = readingInfo.Address;
+                        collectionArrearsAmountLabel.Text = readingInfo.ArrearsAmount.ToString("N2");
+                        arrearsAmountLabel2.Text = readingInfo.ArrearsAmount.ToString("N2");
+                        dueDateLabel2.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
+
+
+
+                        collectionTaxAmountLabel.Text = readingInfo.TaxAmount.ToString("N2");
+                        collectionTotalAddtionalChargeLabel.Text = readingInfo.TotalAditionalCharge.ToString("N2");
+                        collectionBillingInvoiceTextBox.Text = readingInfo.BillCode.ToString();
                         ClearWaterChargeLabels2(); // clear values first
 
 
@@ -706,8 +720,13 @@ namespace IGBARAS_WATER_DISTRICT
                         collectionTotalMeteredAmountLabel.Text = totalWaterConsumptionAmountLabel2.Text; // update collection label
                     }
                 }
+                else
+                {
+                    ClearWaterChargeLabels();
+                }
 
-                Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
+
+                    Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
                 Debug.WriteLine($"Reading Date: {readingInfo.FromReadingDate.ToShortDateString()}");
             }
             else
@@ -819,7 +838,7 @@ namespace IGBARAS_WATER_DISTRICT
 
                         // Execute
                         int rows = cmd.ExecuteNonQuery();
-                        MessageBox.Show(rows > 0 ? "✅ Payment inserted successfully!" : "❌ Failed to insert payment.");
+                        Debug.WriteLine("✅ Billing record updated successfully.", "Success");
                     }
                 }
             }
@@ -925,7 +944,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             formattedBillCode = $"{zoneCode}-{nextBillNumber.ToString("D7")}";
-            invoiceLabel.Text = nextBillNumber.ToString("D7");
+            invoiceTextBox.Text = nextBillNumber.ToString("D7");
             billCodeLabel.Text = formattedBillCode;
 
             return formattedBillCode;
@@ -1343,18 +1362,41 @@ namespace IGBARAS_WATER_DISTRICT
             penaltyAmountLabel2.Text = "0.00";
         }
 
-        private void sf()
+        private void ClearAmounts()
         {
+
             // Clear discount and tax labels
             discountedPercentLabel.Text = "0";
             discountedAmountLabel.Text = "0";
             taxExemptedPercentLabel.Text = "0";
             TaxExemptedAmountLabel.Text = "0.00";
             subTotalAmountDueLabel.Text = "0.00";
-
+            arrearsAmountLabel.Text = "0.00";
+            totalAmountDueLabel.Text = "0.00";
             // Also clear totals
             totalQuantityLabel.Text = "0";
             totalWaterConsumptionAmountLabel.Text = "0.00";
+        }
+        private void ClearAmounts2()
+        {
+            // Clear discount and tax labels
+            discountedPercentLabel2.Text = "0";
+            discountedAmountLabel2.Text = "0";
+            taxExemptedPercentLabel2.Text = "0";
+            TaxExemptedAmountLabel2.Text = "0.00";
+            arrearsAmountLabel2.Text = "0.00";
+            subTotalAmountDueLabel2.Text = "0.00";
+            totalAmountDueLabel2.Text = "0.00";
+
+            totalWaterConsumptionAmountLabel2.Text = "0.00";
+            // Also clear totals
+            totalQuantityLabel.Text = "0";
+            totalWaterConsumptionAmountLabel.Text = "0.00";
+
+
+            collectionArrearsAmountLabel.Text = "0.00";
+            collectionBillingInvoiceTextBox.Text = "000-0000000";
+            collectionTotalAmountPaidTextBox.Text = "0.00";
         }
         private void ClearWaterChargeLabels()
         {
@@ -1586,7 +1628,10 @@ namespace IGBARAS_WATER_DISTRICT
             var tabControl = sender as TabControl;
             var selectedTab = tabControl.SelectedTab; // TabPage object
             int selectedIndex = tabControl.SelectedIndex; // Index
-
+            ClearWaterChargeLabels();
+            ClearWaterChargeLabels2();
+            ClearAmounts();
+            ClearAmounts2();
             // Example: Show tab name in a label
             currentTabLabel.Text = $"{selectedTab.Text}";
 
@@ -1599,7 +1644,7 @@ namespace IGBARAS_WATER_DISTRICT
             TextBox textBox = (TextBox)sender;
 
             // Disable the button if the textbox is empty or zero
-            if (string.IsNullOrWhiteSpace(collectionTotalAmountPaidTextBox.Text) || collectionTotalAmountPaidTextBox.Text == "0.00")
+            if (string.IsNullOrWhiteSpace(collectionTotalAmountPaidTextBox.Text) || collectionTotalAmountPaidTextBox.Text == "0")
             {
                 billPaidButton.Enabled = false;
             }
@@ -1704,6 +1749,7 @@ namespace IGBARAS_WATER_DISTRICT
 
             // Proceed with saving and printing
             try
+                           
             {
                 // Save billing record to database
                 UpdateBillingRecord();
@@ -1734,7 +1780,6 @@ namespace IGBARAS_WATER_DISTRICT
                 // Print the billing document
                 billingPrintDocument.Print();
 
-                MessageBox.Show("✅ Billing record saved and printed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -1913,9 +1958,9 @@ namespace IGBARAS_WATER_DISTRICT
                 pd.Print(); // Start the print job
             }
         }
-        
 
-          
+
+
 
 
 
@@ -2057,6 +2102,36 @@ namespace IGBARAS_WATER_DISTRICT
         private void collectionTotalPaidAmointLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void cashCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cashCheckBox.Checked)
+            {
+                // If cash is selected, disable check-related fields
+                bankNumberTextBox.Enabled = false;
+                checkCheckBox.Checked = false;
+                bankNumberTextBox.Text = "";
+            }
+            else
+            {
+                // Enable check-related fields if cash is not selected
+                bankNumberTextBox.Enabled = true;
+                checkCheckBox.Enabled = true;
+            }
+        }
+
+        private void checkCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkCheckBox.Checked)
+            {
+                cashCheckBox.Checked = false;
+               
+            }
+            else
+            {
+                cashCheckBox.Checked = true;
+            }
         }
     }
 }

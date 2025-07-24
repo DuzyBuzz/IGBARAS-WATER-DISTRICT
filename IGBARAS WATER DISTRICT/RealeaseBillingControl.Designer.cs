@@ -84,7 +84,7 @@
             label13 = new Label();
             tableLayoutPanel5 = new TableLayoutPanel();
             label14 = new Label();
-            invoiceLabel = new Label();
+            invoiceTextBox = new TextBox();
             tableLayoutPanel6 = new TableLayoutPanel();
             label16 = new Label();
             dateBilledLabel = new Label();
@@ -610,6 +610,7 @@
             concessionaireCodeLabel.Size = new Size(48, 15);
             concessionaireCodeLabel.TabIndex = 32;
             concessionaireCodeLabel.Text = "label40";
+            concessionaireCodeLabel.Visible = false;
             // 
             // printSaveButton
             // 
@@ -1121,7 +1122,7 @@
             tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel5.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel5.Controls.Add(label14, 0, 0);
-            tableLayoutPanel5.Controls.Add(invoiceLabel, 1, 0);
+            tableLayoutPanel5.Controls.Add(invoiceTextBox, 1, 0);
             tableLayoutPanel5.Dock = DockStyle.Fill;
             tableLayoutPanel5.Location = new Point(196, 1);
             tableLayoutPanel5.Margin = new Padding(0);
@@ -1144,19 +1145,17 @@
             label14.Text = "Invoice No.";
             label14.TextAlign = ContentAlignment.MiddleRight;
             // 
-            // invoiceLabel
+            // invoiceTextBox
             // 
-            invoiceLabel.AutoSize = true;
-            invoiceLabel.Dock = DockStyle.Fill;
-            invoiceLabel.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            invoiceLabel.ForeColor = Color.Red;
-            invoiceLabel.Location = new Point(90, 0);
-            invoiceLabel.Margin = new Padding(0);
-            invoiceLabel.Name = "invoiceLabel";
-            invoiceLabel.Size = new Size(167, 25);
-            invoiceLabel.TabIndex = 1;
-            invoiceLabel.Text = "0000007122221";
-            invoiceLabel.TextAlign = ContentAlignment.MiddleRight;
+            invoiceTextBox.BorderStyle = BorderStyle.None;
+            invoiceTextBox.Dock = DockStyle.Right;
+            invoiceTextBox.Font = new Font("Calibri", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            invoiceTextBox.Location = new Point(90, 0);
+            invoiceTextBox.Margin = new Padding(0);
+            invoiceTextBox.Name = "invoiceTextBox";
+            invoiceTextBox.Size = new Size(167, 19);
+            invoiceTextBox.TabIndex = 16;
+            invoiceTextBox.TextAlign = HorizontalAlignment.Right;
             // 
             // tableLayoutPanel6
             // 
@@ -2536,6 +2535,7 @@
             accountnoBillHistory.Size = new Size(119, 24);
             accountnoBillHistory.TabIndex = 22;
             accountnoBillHistory.Text = "Account ID:";
+            accountnoBillHistory.Visible = false;
             // 
             // collectionRecieptTab
             // 
@@ -3807,7 +3807,6 @@
             collectionAddressLabel.Name = "collectionAddressLabel";
             collectionAddressLabel.Size = new Size(251, 20);
             collectionAddressLabel.TabIndex = 12;
-            collectionAddressLabel.Text = "M. Ezpelata St., Igbaraas, Iloilo";
             collectionAddressLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label80
@@ -3883,9 +3882,8 @@
             collectionNameLabel.Font = new Font("Arial", 9F);
             collectionNameLabel.Location = new Point(141, 0);
             collectionNameLabel.Name = "collectionNameLabel";
-            collectionNameLabel.Size = new Size(94, 15);
+            collectionNameLabel.Size = new Size(0, 15);
             collectionNameLabel.TabIndex = 8;
-            collectionNameLabel.Text = "Dela Cruz, Juan";
             collectionNameLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel44
@@ -4099,7 +4097,7 @@
             collectionTotalMeteredAmountLabel.Size = new Size(74, 20);
             collectionTotalMeteredAmountLabel.TabIndex = 15;
             collectionTotalMeteredAmountLabel.Tag = "";
-            collectionTotalMeteredAmountLabel.Text = "00,000.00";
+            collectionTotalMeteredAmountLabel.Text = "0.00";
             collectionTotalMeteredAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label142
@@ -4379,6 +4377,7 @@
             cashCheckBox.Text = " ";
             cashCheckBox.TextAlign = ContentAlignment.MiddleCenter;
             cashCheckBox.UseVisualStyleBackColor = true;
+            cashCheckBox.CheckedChanged += cashCheckBox_CheckedChanged;
             // 
             // label159
             // 
@@ -4419,6 +4418,7 @@
             checkCheckBox.Text = " ";
             checkCheckBox.TextAlign = ContentAlignment.MiddleCenter;
             checkCheckBox.UseVisualStyleBackColor = true;
+            checkCheckBox.CheckedChanged += checkCheckBox_CheckedChanged;
             // 
             // label160
             // 
@@ -4881,7 +4881,7 @@
             // 
             latestBillIdLabel.AutoSize = true;
             latestBillIdLabel.Font = new Font("Arial", 8.25F);
-            latestBillIdLabel.Location = new Point(570, 24);
+            latestBillIdLabel.Location = new Point(412, 24);
             latestBillIdLabel.Name = "latestBillIdLabel";
             latestBillIdLabel.Size = new Size(87, 14);
             latestBillIdLabel.TabIndex = 32;
@@ -4902,11 +4902,12 @@
             // currentTabLabel
             // 
             currentTabLabel.AutoSize = true;
-            currentTabLabel.Location = new Point(678, 17);
+            currentTabLabel.Location = new Point(527, 24);
             currentTabLabel.Name = "currentTabLabel";
-            currentTabLabel.Size = new Size(44, 15);
+            currentTabLabel.Size = new Size(74, 15);
             currentTabLabel.TabIndex = 46;
-            currentTabLabel.Text = "label60";
+            currentTabLabel.Text = "current table";
+            currentTabLabel.Visible = false;
             // 
             // paymentsOnThisDayDataGridView
             // 
@@ -5208,7 +5209,6 @@
         private Label label13;
         private TableLayoutPanel tableLayoutPanel5;
         private Label label14;
-        private Label invoiceLabel;
         private TableLayoutPanel tableLayoutPanel6;
         private Label label16;
         private Label dateBilledLabel;
@@ -5501,5 +5501,6 @@
         private TextBox orNumberTextBox;
         private TextBox collectionBillingInvoiceTextBox;
         private Label concessionaireCodeLabel;
+        private TextBox invoiceTextBox;
     }
 }

@@ -94,13 +94,24 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void logoutButton_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to close the application?", "Confirm Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            // You can add logout logic here
-            var loginForm = new Login();
-            loginForm.Show();
+            DialogResult result = MessageBox.Show(
+                "Are you sure you want to logout and return to the login screen?",
+                "Confirm Logout",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
+            if (result == DialogResult.Yes)
+            {
+                this.Hide();
+                // Open login form before closing main form
+                Login loginForm = new Login();
+                loginForm.Show();
 
+                // Close current main form
+            }
+            // If "No" is selected, do nothing
         }
+
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -109,22 +120,34 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to Logout?", "Confirm Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.No)
+            // Show confirmation only if it's a user-initiated close (not from Application.Exit)
+            if (e.CloseReason == CloseReason.UserClosing)
             {
-                e.Cancel = true; // Cancel the form closing event
-            }
-            else
-            {
-                // Hide the current form
-                this.Close();
+                DialogResult result = MessageBox.Show(
+                    "You are about to close the application.\n\nDo you want to exit now?",
+                    "Confirm Exit",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
-                // Show the login form
-                Login loginForm = new Login();
-                loginForm.Show();
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                // Close all running forms safely
+                foreach (Form form in Application.OpenForms.Cast<Form>().ToList())
+                {
+                    form.FormClosing -= MainForm_FormClosing; // Unsubscribe to avoid second trigger
+                    form.Close();
+                }
+
+                Application.Exit(); // Exit the application
             }
         }
+
+
         private void reportsButton_Click(object sender, EventArgs e)
         {
             LoadControl("Reports");

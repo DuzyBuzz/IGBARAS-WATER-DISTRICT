@@ -63,10 +63,10 @@
             tableLayoutPanel13 = new TableLayoutPanel();
             label2 = new Label();
             allCheckBox = new CheckBox();
-            label1 = new Label();
             tableLayoutPanel14 = new TableLayoutPanel();
-            refreshReportsButton = new Button();
             exportReportsButton = new Button();
+            refreshReportsButton = new Button();
+            label1 = new Label();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel12.SuspendLayout();
@@ -460,6 +460,7 @@
             billingSummaryMonthlyRichTextBox.Size = new Size(433, 114);
             billingSummaryMonthlyRichTextBox.TabIndex = 1;
             billingSummaryMonthlyRichTextBox.Text = "";
+            billingSummaryMonthlyRichTextBox.TextChanged += exportReportsButton_Click;
             // 
             // tableLayoutPanel4
             // 
@@ -585,18 +586,6 @@
             allCheckBox.UseVisualStyleBackColor = true;
             allCheckBox.CheckedChanged += allCheckBox_CheckedChanged;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(3, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(1372, 63);
-            label1.TabIndex = 1;
-            label1.Text = "IGBARAS WATER DISTRICT REPORT";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // tableLayoutPanel14
             // 
             tableLayoutPanel14.ColumnCount = 2;
@@ -612,6 +601,18 @@
             tableLayoutPanel14.Size = new Size(533, 41);
             tableLayoutPanel14.TabIndex = 12;
             // 
+            // exportReportsButton
+            // 
+            exportReportsButton.BackColor = Color.Green;
+            exportReportsButton.Dock = DockStyle.Fill;
+            exportReportsButton.ForeColor = Color.White;
+            exportReportsButton.Location = new Point(3, 3);
+            exportReportsButton.Name = "exportReportsButton";
+            exportReportsButton.Size = new Size(367, 35);
+            exportReportsButton.TabIndex = 13;
+            exportReportsButton.Text = "📊 EXPORT TO EXCEL";
+            exportReportsButton.UseVisualStyleBackColor = false;
+            // 
             // refreshReportsButton
             // 
             refreshReportsButton.BackColor = Color.RoyalBlue;
@@ -624,17 +625,17 @@
             refreshReportsButton.UseVisualStyleBackColor = false;
             refreshReportsButton.Click += refreshReportsButton_Click;
             // 
-            // exportReportsButton
+            // label1
             // 
-            exportReportsButton.BackColor = Color.Green;
-            exportReportsButton.Dock = DockStyle.Fill;
-            exportReportsButton.ForeColor = Color.White;
-            exportReportsButton.Location = new Point(3, 3);
-            exportReportsButton.Name = "exportReportsButton";
-            exportReportsButton.Size = new Size(367, 35);
-            exportReportsButton.TabIndex = 13;
-            exportReportsButton.Text = "📊 EXPORT TO EXCEL";
-            exportReportsButton.UseVisualStyleBackColor = false;
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(3, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(1372, 63);
+            label1.TabIndex = 1;
+            label1.Text = "IGBARAS WATER DISTRICT REPORT";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // ReportsControl
             // 
