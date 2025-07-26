@@ -1,6 +1,6 @@
 ﻿namespace IGBARAS_WATER_DISTRICT
 {
-    partial class EditWaterMeterForm : Form
+    public partial class EditWaterMeterForm : Form
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -14,46 +14,70 @@
 
         private void InitializeComponent()
         {
+            // === Form Setup ===
             this.Text = "Edit Concessionaire Info";
-            this.ClientSize = new System.Drawing.Size(700, 700);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.ClientSize = new System.Drawing.Size(900, 750);
+            this.Font = new Font("Segoe UI", 10F);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Font = new System.Drawing.Font("Segoe UI", 10F);
 
-            // --- TableLayoutPanel for grid layout ---
-            var table = new TableLayoutPanel
+            // === Scrollable Panel ===
+            var scrollPanel = new Panel
             {
-                Location = new System.Drawing.Point(0, 0),
-                Size = new System.Drawing.Size(680, 600),
-                ColumnCount = 2,
-                RowCount = 27,
+                Dock = DockStyle.Fill,
                 AutoScroll = true,
-                Dock = DockStyle.Top,
-                Padding = new Padding(20, 20, 20, 20),
+                Padding = new Padding(20),
+                BackColor = SystemColors.Control
             };
-            table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
-            table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
 
-            int row = 0;
-
-            // Helper to add a row
-            void AddRow(string label, Control control)
+            // === Grid-style TableLayoutPanel ===
+            var grid = new TableLayoutPanel
             {
-                table.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
-                table.Controls.Add(new Label
+                ColumnCount = 4,
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                CellBorderStyle = TableLayoutPanelCellBorderStyle.None,
+                Padding = new Padding(10),
+            };
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F)); // Label 1
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));   // Control 1
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F)); // Label 2
+            grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));   // Control 2
+
+            int currentColumn = 0;
+            int currentRow = 0;
+
+            // === Helper to add controls in grid pattern ===
+            void AddGridField(string label, Control control)
+            {
+                // Add a new row every 2 fields (i.e., when column reaches 4)
+                if (currentColumn >= 4)
+                {
+                    currentColumn = 0;
+                    currentRow++;
+                    grid.RowStyles.Add(new RowStyle(SizeType.Absolute, 36F));
+                }
+
+                // Add label
+                var lbl = new Label
                 {
                     Text = label,
-                    TextAlign = System.Drawing.ContentAlignment.MiddleRight,
+                    TextAlign = ContentAlignment.MiddleRight,
                     Dock = DockStyle.Fill,
-                    Font = new System.Drawing.Font("Segoe UI", 10F)
-                }, 0, row);
+                    Padding = new Padding(0, 0, 5, 0)
+                };
+                grid.Controls.Add(lbl, currentColumn, currentRow);
+                currentColumn++;
+
+                // Add control
                 control.Dock = DockStyle.Fill;
-                table.Controls.Add(control, 1, row);
-                row++;
+                control.Margin = new Padding(0, 3, 10, 3);
+                grid.Controls.Add(control, currentColumn, currentRow);
+                currentColumn++;
             }
 
-            // Controls
+            // === Controls ===
             accountnoTextBox = new TextBox();
             concessionairenoTextBox = new TextBox();
             districtnoTextBox = new TextBox();
@@ -76,74 +100,76 @@
             addressTextBox = new TextBox();
             routenoTextBox = new TextBox();
             statusTextBox = new TextBox();
-            applyBillCheckBox = new CheckBox { Text = "Apply Bill" };
+            applyBillCheckBox = new CheckBox { Text = "Apply", AutoSize = true };
             meternoTextBox = new TextBox();
             brandTextBox = new TextBox();
             watermetercodeTextBox = new TextBox();
             zonetempTextBox = new TextBox();
 
-            // Add all fields to the grid
-            AddRow("Account No:", accountnoTextBox);
-            AddRow("Concessionaire No:", concessionairenoTextBox);
-            AddRow("District No:", districtnoTextBox);
-            AddRow("Concessionaire Code:", concessionairecodeTextBox);
-            AddRow("Zone Code:", zonecodeTextBox);
-            AddRow("Zone:", zoneTextBox);
-            AddRow("Service Code:", servicecodeTextBox);
-            AddRow("Service Type:", servicetypeTextBox);
-            AddRow("Pipe Size:", pipesizeTextBox);
-            AddRow("Service Rate:", servicerateTextBox);
-            AddRow("Connection No:", connectionnoTextBox);
-            AddRow("Date Installed:", dateinstalledPicker);
-            AddRow("Last Name:", lastnameTextBox);
-            AddRow("First Name:", firstnameTextBox);
-            AddRow("MI:", miTextBox);
-            AddRow("Business Name:", businessnameTextBox);
-            AddRow("Contact No:", contactnoTextBox);
-            AddRow("Barangay:", barangayTextBox);
-            AddRow("Barangay Code:", barangaycodeTextBox);
-            AddRow("Address:", addressTextBox);
-            AddRow("Route No:", routenoTextBox);
-            AddRow("Status:", statusTextBox);
-            AddRow("Apply Bill:", applyBillCheckBox);
-            AddRow("Meter No:", meternoTextBox);
-            AddRow("Brand:", brandTextBox);
-            AddRow("Water Meter Code:", watermetercodeTextBox);
-            AddRow("Zone Temp:", zonetempTextBox);
+            // === Add Fields in Grid ===
+            AddGridField("Account No:", accountnoTextBox);
+            AddGridField("Concessionaire No:", concessionairenoTextBox);
+            AddGridField("District No:", districtnoTextBox);
+            AddGridField("Concessionaire Code:", concessionairecodeTextBox);
+            AddGridField("Zone Code:", zonecodeTextBox);
+            AddGridField("Zone:", zoneTextBox);
+            AddGridField("Service Code:", servicecodeTextBox);
+            AddGridField("Service Type:", servicetypeTextBox);
+            AddGridField("Pipe Size:", pipesizeTextBox);
+            AddGridField("Service Rate:", servicerateTextBox);
+            AddGridField("Connection No:", connectionnoTextBox);
+            AddGridField("Date Installed:", dateinstalledPicker);
+            AddGridField("Last Name:", lastnameTextBox);
+            AddGridField("First Name:", firstnameTextBox);
+            AddGridField("MI:", miTextBox);
+            AddGridField("Business Name:", businessnameTextBox);
+            AddGridField("Contact No:", contactnoTextBox);
+            AddGridField("Barangay:", barangayTextBox);
+            AddGridField("Barangay Code:", barangaycodeTextBox);
+            AddGridField("Address:", addressTextBox);
+            AddGridField("Route No:", routenoTextBox);
+            AddGridField("Status:", statusTextBox);
+            AddGridField("Apply Bill:", applyBillCheckBox);
+            AddGridField("Meter No:", meternoTextBox);
+            AddGridField("Brand:", brandTextBox);
+            AddGridField("Water Meter Code:", watermetercodeTextBox);
+            AddGridField("Zone Temp:", zonetempTextBox);
 
-            // --- Buttons ---
-            saveButton = new Button
-            {
-                Text = "Save",
-                Width = 110,
-                Height = 36,
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Anchor = AnchorStyles.Right
-            };
-            saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            scrollPanel.Controls.Add(grid);
 
-            cancelButton = new Button
-            {
-                Text = "Cancel",
-                Width = 110,
-                Height = 36,
-                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
-                Anchor = AnchorStyles.Left
-            };
-            cancelButton.Click += (s, e) => this.Close();
-
+            // === Buttons Panel ===
             var buttonPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.RightToLeft,
                 Dock = DockStyle.Bottom,
-                Height = 50,
-                Padding = new Padding(0, 10, 20, 10)
+                Height = 60,
+                Padding = new Padding(20, 10, 20, 10),
+                BackColor = SystemColors.ControlLight
             };
+
+            saveButton = new Button
+            {
+                Text = "Save",
+                Width = 120,
+                Height = 36,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+            };
+            saveButton.Click += new EventHandler(this.saveButton_Click);
+
+            cancelButton = new Button
+            {
+                Text = "Cancel",
+                Width = 120,
+                Height = 36,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+            };
+            cancelButton.Click += (s, e) => this.Close();
+
             buttonPanel.Controls.Add(saveButton);
             buttonPanel.Controls.Add(cancelButton);
 
-            // --- Add to Form ---
-            this.Controls.Add(table);
+            // === Add to Form ===
+            this.Controls.Add(scrollPanel);
             this.Controls.Add(buttonPanel);
         }
 
@@ -163,4 +189,3 @@
         #endregion
     }
 }
-

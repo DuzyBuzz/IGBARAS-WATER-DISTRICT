@@ -77,35 +77,34 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 using var conn = new MySqlConnection(DbConfig.ConnectionString);
                 await conn.OpenAsync();
-
                 string updateQuery = @"
-                    UPDATE tb_concessionaire SET 
-                        concessionaireno = @concessionaireno,
-                        districtno = @districtno,
-                        concessionairecode = @concessionairecode,
-                        zonecode = @zonecode,
-                        zone = @zone,
-                        servicecode = @servicecode,
-                        servicetype = @servicetype,
-                        pipesize = @pipesize,
-                        servicerate = @servicerate,
-                        connectionno = @connectionno,
-                        dateinstalled = @dateinstalled,
-                        lastname = @lastname,
-                        firstname = @firstname,
-                        mi = @mi,
-                        businessname = @businessname,
-                        contactno = @contactno,
-                        barangay = @barangay,
-                        barangaycode = @barangaycode,
-                        address = @address,
-                        routeno = @routeno,
-                        status = @status,
-                        applybill = @applybill,
-                        meterno = @meterno,
-                        brand = @brand,
-                        watermetercode = @watermetercode,
-                    WHERE accountno = @accountno";
+                UPDATE tb_concessionaire SET 
+                    concessionaireno = @concessionaireno,
+                    districtno = @districtno,
+                    concessionairecode = @concessionairecode,
+                    zonecode = @zonecode,
+                    zone = @zone,
+                    servicecode = @servicecode,
+                    servicetype = @servicetype,
+                    pipesize = @pipesize,
+                    servicerate = @servicerate,
+                    dateinstalled = @dateinstalled,
+                    lastname = @lastname,
+                    firstname = @firstname,
+                    mi = @mi,
+                    businessname = @businessname,
+                    contactno = @contactno,
+                    barangay = @barangay,
+                    barangaycode = @barangaycode,
+                    address = @address,
+                    routeno = @routeno,
+                    status = @status,
+                    applybill = @applybill,
+                    meterno = @meterno,
+                    brand = @brand,
+                    watermetercode = @watermetercode
+                WHERE accountno = @accountno";
+
 
                 using var cmd = new MySqlCommand(updateQuery, conn);
                 cmd.Parameters.AddWithValue("@concessionaireno", concessionairenoTextBox.Text);
@@ -117,7 +116,6 @@ namespace IGBARAS_WATER_DISTRICT
                 cmd.Parameters.AddWithValue("@servicetype", servicetypeTextBox.Text);
                 cmd.Parameters.AddWithValue("@pipesize", pipesizeTextBox.Text);
                 cmd.Parameters.AddWithValue("@servicerate", servicerateTextBox.Text);
-                cmd.Parameters.AddWithValue("@connectionno", connectionnoTextBox.Text);
                 cmd.Parameters.AddWithValue("@dateinstalled", dateinstalledPicker.Value.Date);
                 cmd.Parameters.AddWithValue("@lastname", lastnameTextBox.Text);
                 cmd.Parameters.AddWithValue("@firstname", firstnameTextBox.Text);
