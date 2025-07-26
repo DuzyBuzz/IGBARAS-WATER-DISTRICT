@@ -106,7 +106,7 @@ namespace IGBARAS_WATER_DISTRICT
             accountsButton.Text = "👥 Concessionaire";
             accountsButton.TextAlign = ContentAlignment.MiddleLeft;
             accountsButton.UseVisualStyleBackColor = false;
-            accountsButton.Click += transactionsButton_Click;
+            accountsButton.Click += accountsButton_Click;
             // 
             // readingButton
             // 
@@ -123,7 +123,7 @@ namespace IGBARAS_WATER_DISTRICT
             readingButton.Text = "💸 Billing Invoice";
             readingButton.TextAlign = ContentAlignment.MiddleLeft;
             readingButton.UseVisualStyleBackColor = false;
-            readingButton.Click += accountsButton_Click;
+            readingButton.Click += billingButton_Click;
             // 
             // panel1
             // 
@@ -240,6 +240,7 @@ namespace IGBARAS_WATER_DISTRICT
             mainPanel.Name = "mainPanel";
             mainPanel.Size = new Size(1378, 961);
             mainPanel.TabIndex = 3;
+            mainPanel.Click += accountsButton_Click;
             // 
             // MainForm
             // 

@@ -141,14 +141,6 @@ namespace IGBARAS_WATER_DISTRICT
         private void passwordTextBox_TextChanged(object sender, EventArgs e)
         {
 
-            if (!isPlaceholderActive && string.IsNullOrWhiteSpace(passwordTextBox.Text))
-            {
-                passwordTextBox.UseSystemPasswordChar = false;
-                passwordTextBox.ForeColor = Color.Gray;
-                passwordTextBox.Text = "🔐 Password";
-                passwordTextBox.SelectionStart = passwordTextBox.Text.Length;
-                isPlaceholderActive = true;
-            }
         }
 
         private void showPasswordCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -171,11 +163,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void passwordTextBox_Leave(object sender, EventArgs e)
         {
-            RemovePasswordPlaceholder();
-            if (string.IsNullOrWhiteSpace(passwordTextBox.Text))
-            {
-                SetPasswordPlaceholder();
-            }
+
         }
 
         private void passwordTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -189,9 +177,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            var panel = new CollectionReceiptForm();
-            panel.Show();
-            this.Hide();
+
         }
     }
 }

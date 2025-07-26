@@ -62,8 +62,8 @@ namespace IGBARAS_WATER_DISTRICT
         // Button click handlers
         private void settingsButton_Click(object sender, EventArgs e) => LoadControl("Settings");
         private void systemInformationButton_Click(object sender, EventArgs e) => LoadControl("SystemInformation");
-        private void accountsButton_Click(object sender, EventArgs e) => LoadControl("RealeaseBilling");
-        private void transactionsButton_Click(object sender, EventArgs e) => LoadControl("Transactions");
+        private void accountsButton_Click(object sender, EventArgs e) => LoadControl("Accounts");
+        private void billingButton_Click(object sender, EventArgs e) => LoadControl("RealeaseBilling");
 
         private void MainForm_Load(object sender, EventArgs e)
         {

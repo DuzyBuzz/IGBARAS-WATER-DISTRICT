@@ -161,7 +161,7 @@
             isArrearsLabel = new Label();
             arrearsAmountLabel = new Label();
             withHoldingTaxAmountLabel = new Label();
-            TaxExemptedAmountLabel = new Label();
+            taxAmountLabel = new Label();
             isWithHoldingTaxLabel = new Label();
             taxExemptedPercentLabel = new Label();
             label69 = new Label();
@@ -186,8 +186,8 @@
             label67 = new Label();
             label74 = new Label();
             extractedBillNumberLabel = new Label();
-            accountnoBillHistory = new Label();
             collectionRecieptTab = new TabPage();
+            changeLabel = new Label();
             label38 = new Label();
             tableLayoutPanel50 = new TableLayoutPanel();
             totalAmountDueLabel2 = new Label();
@@ -203,7 +203,7 @@
             isArrearsLabel2 = new Label();
             arrearsAmountLabel2 = new Label();
             withHoldingTaxAmountLabel2 = new Label();
-            TaxExemptedAmountLabel2 = new Label();
+            taxAmountLabel2 = new Label();
             isWithHoldingTaxLabel2 = new Label();
             taxExemptedPercentLabel2 = new Label();
             label131 = new Label();
@@ -370,6 +370,7 @@
             currentTabLabel = new Label();
             paymentsOnThisDayDataGridView = new DataGridView();
             label36 = new Label();
+            accountnoBillHistory = new Label();
             paymentsDataGridView = new DataGridView();
             panel4 = new Panel();
             label71 = new Label();
@@ -591,7 +592,6 @@
             billingInvoiceTab.Controls.Add(billCodeLabel);
             billingInvoiceTab.Controls.Add(billingPanel);
             billingInvoiceTab.Controls.Add(extractedBillNumberLabel);
-            billingInvoiceTab.Controls.Add(accountnoBillHistory);
             billingInvoiceTab.Font = new Font("Arial", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             billingInvoiceTab.Location = new Point(4, 24);
             billingInvoiceTab.Name = "billingInvoiceTab";
@@ -2063,7 +2063,7 @@
             tableLayoutPanel21.Controls.Add(isArrearsLabel, 2, 3);
             tableLayoutPanel21.Controls.Add(arrearsAmountLabel, 3, 3);
             tableLayoutPanel21.Controls.Add(withHoldingTaxAmountLabel, 3, 2);
-            tableLayoutPanel21.Controls.Add(TaxExemptedAmountLabel, 3, 1);
+            tableLayoutPanel21.Controls.Add(taxAmountLabel, 3, 1);
             tableLayoutPanel21.Controls.Add(isWithHoldingTaxLabel, 2, 2);
             tableLayoutPanel21.Controls.Add(taxExemptedPercentLabel, 1, 1);
             tableLayoutPanel21.Controls.Add(label69, 0, 2);
@@ -2187,16 +2187,16 @@
             withHoldingTaxAmountLabel.Text = " 0.00";
             withHoldingTaxAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // TaxExemptedAmountLabel
+            // taxAmountLabel
             // 
-            TaxExemptedAmountLabel.AutoSize = true;
-            TaxExemptedAmountLabel.Dock = DockStyle.Fill;
-            TaxExemptedAmountLabel.Location = new Point(295, 21);
-            TaxExemptedAmountLabel.Name = "TaxExemptedAmountLabel";
-            TaxExemptedAmountLabel.Size = new Size(66, 19);
-            TaxExemptedAmountLabel.TabIndex = 7;
-            TaxExemptedAmountLabel.Text = "0.00";
-            TaxExemptedAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
+            taxAmountLabel.AutoSize = true;
+            taxAmountLabel.Dock = DockStyle.Fill;
+            taxAmountLabel.Location = new Point(295, 21);
+            taxAmountLabel.Name = "taxAmountLabel";
+            taxAmountLabel.Size = new Size(66, 19);
+            taxAmountLabel.TabIndex = 7;
+            taxAmountLabel.Text = "0.00";
+            taxAmountLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // isWithHoldingTaxLabel
             // 
@@ -2525,20 +2525,9 @@
             extractedBillNumberLabel.Text = "extracted bill number";
             extractedBillNumberLabel.Visible = false;
             // 
-            // accountnoBillHistory
-            // 
-            accountnoBillHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            accountnoBillHistory.AutoSize = true;
-            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(29, 521);
-            accountnoBillHistory.Name = "accountnoBillHistory";
-            accountnoBillHistory.Size = new Size(119, 24);
-            accountnoBillHistory.TabIndex = 22;
-            accountnoBillHistory.Text = "Account ID:";
-            accountnoBillHistory.Visible = false;
-            // 
             // collectionRecieptTab
             // 
+            collectionRecieptTab.Controls.Add(changeLabel);
             collectionRecieptTab.Controls.Add(label38);
             collectionRecieptTab.Controls.Add(tableLayoutPanel50);
             collectionRecieptTab.Controls.Add(collectionTotalAmountPaidTextBox);
@@ -2559,6 +2548,18 @@
             collectionRecieptTab.Text = "Collection Reciept";
             collectionRecieptTab.UseVisualStyleBackColor = true;
             collectionRecieptTab.Click += amountPaidTextBox_Click;
+            // 
+            // changeLabel
+            // 
+            changeLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            changeLabel.AutoSize = true;
+            changeLabel.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            changeLabel.Location = new Point(480, 469);
+            changeLabel.Name = "changeLabel";
+            changeLabel.Size = new Size(70, 19);
+            changeLabel.TabIndex = 47;
+            changeLabel.Text = "Change:";
+            changeLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label38
             // 
@@ -2645,7 +2646,7 @@
             tableLayoutPanel51.Controls.Add(isArrearsLabel2, 2, 3);
             tableLayoutPanel51.Controls.Add(arrearsAmountLabel2, 3, 3);
             tableLayoutPanel51.Controls.Add(withHoldingTaxAmountLabel2, 3, 2);
-            tableLayoutPanel51.Controls.Add(TaxExemptedAmountLabel2, 3, 1);
+            tableLayoutPanel51.Controls.Add(taxAmountLabel2, 3, 1);
             tableLayoutPanel51.Controls.Add(isWithHoldingTaxLabel2, 2, 2);
             tableLayoutPanel51.Controls.Add(taxExemptedPercentLabel2, 1, 1);
             tableLayoutPanel51.Controls.Add(label131, 0, 2);
@@ -2769,16 +2770,16 @@
             withHoldingTaxAmountLabel2.Text = " 0.00";
             withHoldingTaxAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // TaxExemptedAmountLabel2
+            // taxAmountLabel2
             // 
-            TaxExemptedAmountLabel2.AutoSize = true;
-            TaxExemptedAmountLabel2.Dock = DockStyle.Fill;
-            TaxExemptedAmountLabel2.Location = new Point(295, 21);
-            TaxExemptedAmountLabel2.Name = "TaxExemptedAmountLabel2";
-            TaxExemptedAmountLabel2.Size = new Size(66, 19);
-            TaxExemptedAmountLabel2.TabIndex = 7;
-            TaxExemptedAmountLabel2.Text = "0.00";
-            TaxExemptedAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
+            taxAmountLabel2.AutoSize = true;
+            taxAmountLabel2.Dock = DockStyle.Fill;
+            taxAmountLabel2.Location = new Point(295, 21);
+            taxAmountLabel2.Name = "taxAmountLabel2";
+            taxAmountLabel2.Size = new Size(66, 19);
+            taxAmountLabel2.TabIndex = 7;
+            taxAmountLabel2.Text = "0.00";
+            taxAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // isWithHoldingTaxLabel2
             // 
@@ -4569,6 +4570,7 @@
             searchAccountNumberTextBox.Name = "searchAccountNumberTextBox";
             searchAccountNumberTextBox.Size = new Size(317, 25);
             searchAccountNumberTextBox.TabIndex = 6;
+            searchAccountNumberTextBox.TextChanged += searchAccountNumberTextBox_TextChanged;
             searchAccountNumberTextBox.KeyDown += searchAccountNumberTextBox_KeyDown;
             // 
             // label31
@@ -4609,7 +4611,6 @@
             // zoneComboBox
             // 
             zoneComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            zoneComboBox.FlatStyle = FlatStyle.Popup;
             zoneComboBox.FormattingEnabled = true;
             zoneComboBox.Location = new Point(97, 3);
             zoneComboBox.Margin = new Padding(3, 5, 3, 3);
@@ -4865,6 +4866,7 @@
             panel2.Controls.Add(currentTabLabel);
             panel2.Controls.Add(paymentsOnThisDayDataGridView);
             panel2.Controls.Add(label36);
+            panel2.Controls.Add(accountnoBillHistory);
             panel2.Controls.Add(paymentsDataGridView);
             panel2.Controls.Add(panel4);
             panel2.Controls.Add(label71);
@@ -4881,7 +4883,7 @@
             // 
             latestBillIdLabel.AutoSize = true;
             latestBillIdLabel.Font = new Font("Arial", 8.25F);
-            latestBillIdLabel.Location = new Point(412, 24);
+            latestBillIdLabel.Location = new Point(562, 2);
             latestBillIdLabel.Name = "latestBillIdLabel";
             latestBillIdLabel.Size = new Size(87, 14);
             latestBillIdLabel.TabIndex = 32;
@@ -4902,7 +4904,7 @@
             // currentTabLabel
             // 
             currentTabLabel.AutoSize = true;
-            currentTabLabel.Location = new Point(527, 24);
+            currentTabLabel.Location = new Point(655, 1);
             currentTabLabel.Name = "currentTabLabel";
             currentTabLabel.Size = new Size(74, 15);
             currentTabLabel.TabIndex = 46;
@@ -4918,13 +4920,13 @@
             paymentsOnThisDayDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             paymentsOnThisDayDataGridView.BackgroundColor = Color.White;
             paymentsOnThisDayDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            paymentsOnThisDayDataGridView.Location = new Point(773, 51);
+            paymentsOnThisDayDataGridView.Location = new Point(702, 51);
             paymentsOnThisDayDataGridView.Name = "paymentsOnThisDayDataGridView";
             paymentsOnThisDayDataGridView.ReadOnly = true;
             paymentsOnThisDayDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             paymentsOnThisDayDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle2;
-            paymentsOnThisDayDataGridView.Size = new Size(586, 264);
+            paymentsOnThisDayDataGridView.Size = new Size(657, 264);
             paymentsOnThisDayDataGridView.TabIndex = 45;
             // 
             // label36
@@ -4932,12 +4934,23 @@
             label36.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label36.AutoSize = true;
             label36.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label36.Location = new Point(773, 15);
+            label36.Location = new Point(702, 16);
             label36.Name = "label36";
             label36.Size = new Size(280, 32);
             label36.TabIndex = 38;
             label36.Text = "Payments on this Day";
             label36.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // accountnoBillHistory
+            // 
+            accountnoBillHistory.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            accountnoBillHistory.AutoSize = true;
+            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            accountnoBillHistory.Location = new Point(371, 23);
+            accountnoBillHistory.Name = "accountnoBillHistory";
+            accountnoBillHistory.Size = new Size(119, 24);
+            accountnoBillHistory.TabIndex = 22;
+            accountnoBillHistory.Text = "Account ID:";
             // 
             // paymentsDataGridView
             // 
@@ -4969,7 +4982,7 @@
             // 
             label71.AutoSize = true;
             label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label71.Location = new Point(26, 10);
+            label71.Location = new Point(26, 16);
             label71.Name = "label71";
             label71.Size = new Size(339, 32);
             label71.TabIndex = 25;
@@ -4990,7 +5003,7 @@
             billDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
             billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle4;
-            billDataGridView.Size = new Size(724, 264);
+            billDataGridView.Size = new Size(646, 264);
             billDataGridView.TabIndex = 24;
             // 
             // billdataTextBox
@@ -5254,7 +5267,7 @@
         private TableLayoutPanel tableLayoutPanel21;
         private Label subTotalAmountDueLabel;
         private Label arrearsAmountLabel;
-        private Label TaxExemptedAmountLabel;
+        private Label taxAmountLabel;
         private Label label87;
         private Label label81;
         private Label label77;
@@ -5437,7 +5450,7 @@
         private Label isArrearsLabel2;
         private Label arrearsAmountLabel2;
         private Label withHoldingTaxAmountLabel2;
-        private Label TaxExemptedAmountLabel2;
+        private Label taxAmountLabel2;
         private Label isWithHoldingTaxLabel2;
         private Label taxExemptedPercentLabel2;
         private Label label131;
@@ -5502,5 +5515,6 @@
         private TextBox collectionBillingInvoiceTextBox;
         private Label concessionaireCodeLabel;
         private TextBox invoiceTextBox;
+        private Label changeLabel;
     }
 }
