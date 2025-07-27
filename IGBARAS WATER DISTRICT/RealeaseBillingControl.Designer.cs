@@ -187,12 +187,9 @@
             label74 = new Label();
             extractedBillNumberLabel = new Label();
             collectionRecieptTab = new TabPage();
-            changeLabel = new Label();
-            label38 = new Label();
             tableLayoutPanel50 = new TableLayoutPanel();
             totalAmountDueLabel2 = new Label();
             label118 = new Label();
-            collectionTotalAmountPaidTextBox = new TextBox();
             tableLayoutPanel51 = new TableLayoutPanel();
             sfcInstallmentTextBox2 = new TextBox();
             label128 = new Label();
@@ -253,8 +250,6 @@
             label125 = new Label();
             label126 = new Label();
             label127 = new Label();
-            x = new Label();
-            billPaidButton = new Button();
             collectionRecieptPanel = new Panel();
             tableLayoutPanel35 = new TableLayoutPanel();
             tableLayoutPanel36 = new TableLayoutPanel();
@@ -332,6 +327,12 @@
             label165 = new Label();
             label164 = new Label();
             label163 = new Label();
+            panel7 = new Panel();
+            label38 = new Label();
+            collectionTotalAmountPaidTextBox = new TextBox();
+            changeLabel = new Label();
+            x = new Label();
+            billPaidButton = new Button();
             accountSearchPanel = new Panel();
             tableLayoutPanel25 = new TableLayoutPanel();
             tableLayoutPanel26 = new TableLayoutPanel();
@@ -449,6 +450,7 @@
             tableLayoutPanel64.SuspendLayout();
             tableLayoutPanel65.SuspendLayout();
             tableLayoutPanel63.SuspendLayout();
+            panel7.SuspendLayout();
             accountSearchPanel.SuspendLayout();
             tableLayoutPanel25.SuspendLayout();
             tableLayoutPanel26.SuspendLayout();
@@ -2527,18 +2529,14 @@
             // 
             // collectionRecieptTab
             // 
-            collectionRecieptTab.Controls.Add(changeLabel);
-            collectionRecieptTab.Controls.Add(label38);
             collectionRecieptTab.Controls.Add(tableLayoutPanel50);
-            collectionRecieptTab.Controls.Add(collectionTotalAmountPaidTextBox);
             collectionRecieptTab.Controls.Add(tableLayoutPanel51);
             collectionRecieptTab.Controls.Add(tableLayoutPanel52);
             collectionRecieptTab.Controls.Add(tableLayoutPanel55);
             collectionRecieptTab.Controls.Add(tableLayoutPanel53);
             collectionRecieptTab.Controls.Add(tableLayoutPanel57);
-            collectionRecieptTab.Controls.Add(x);
-            collectionRecieptTab.Controls.Add(billPaidButton);
             collectionRecieptTab.Controls.Add(collectionRecieptPanel);
+            collectionRecieptTab.Controls.Add(panel7);
             collectionRecieptTab.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             collectionRecieptTab.Location = new Point(4, 24);
             collectionRecieptTab.Name = "collectionRecieptTab";
@@ -2548,30 +2546,6 @@
             collectionRecieptTab.Text = "Collection Reciept";
             collectionRecieptTab.UseVisualStyleBackColor = true;
             collectionRecieptTab.Click += amountPaidTextBox_Click;
-            // 
-            // changeLabel
-            // 
-            changeLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            changeLabel.AutoSize = true;
-            changeLabel.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            changeLabel.Location = new Point(480, 469);
-            changeLabel.Name = "changeLabel";
-            changeLabel.Size = new Size(70, 19);
-            changeLabel.TabIndex = 47;
-            changeLabel.Text = "Change:";
-            changeLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // label38
-            // 
-            label38.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            label38.AutoSize = true;
-            label38.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label38.Location = new Point(478, 518);
-            label38.Name = "label38";
-            label38.Size = new Size(32, 32);
-            label38.TabIndex = 46;
-            label38.Text = "₱";
-            label38.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // tableLayoutPanel50
             // 
@@ -2614,20 +2588,6 @@
             label118.TabIndex = 12;
             label118.Text = "TOTAL AMOUNT DUE";
             label118.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // collectionTotalAmountPaidTextBox
-            // 
-            collectionTotalAmountPaidTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            collectionTotalAmountPaidTextBox.BackColor = Color.White;
-            collectionTotalAmountPaidTextBox.Font = new Font("Arial", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            collectionTotalAmountPaidTextBox.Location = new Point(513, 514);
-            collectionTotalAmountPaidTextBox.Margin = new Padding(0);
-            collectionTotalAmountPaidTextBox.Name = "collectionTotalAmountPaidTextBox";
-            collectionTotalAmountPaidTextBox.Size = new Size(245, 39);
-            collectionTotalAmountPaidTextBox.TabIndex = 15;
-            collectionTotalAmountPaidTextBox.Text = "0.00";
-            collectionTotalAmountPaidTextBox.TextAlign = HorizontalAlignment.Center;
-            collectionTotalAmountPaidTextBox.TextChanged += totalAmountPaidTextBox_TextChanged;
             // 
             // tableLayoutPanel51
             // 
@@ -3405,31 +3365,6 @@
             label127.TabIndex = 4;
             label127.Text = "Minimum Charge";
             label127.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // x
-            // 
-            x.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            x.AutoSize = true;
-            x.Font = new Font("Arial", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            x.Location = new Point(476, 490);
-            x.Name = "x";
-            x.Size = new Size(179, 24);
-            x.TabIndex = 39;
-            x.Text = "Recieved Amount:";
-            x.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // billPaidButton
-            // 
-            billPaidButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            billPaidButton.BackColor = Color.White;
-            billPaidButton.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billPaidButton.Location = new Point(761, 513);
-            billPaidButton.Name = "billPaidButton";
-            billPaidButton.Size = new Size(82, 40);
-            billPaidButton.TabIndex = 22;
-            billPaidButton.Text = "✔️ Bill Paid";
-            billPaidButton.UseVisualStyleBackColor = false;
-            billPaidButton.Click += billPaidButton_Click;
             // 
             // collectionRecieptPanel
             // 
@@ -4515,6 +4450,84 @@
             label163.Text = "400 Bkits. ( 50 x 3) SN 159251-179250";
             label163.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // panel7
+            // 
+            panel7.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            panel7.BackColor = Color.Gainsboro;
+            panel7.BorderStyle = BorderStyle.FixedSingle;
+            panel7.Controls.Add(label38);
+            panel7.Controls.Add(collectionTotalAmountPaidTextBox);
+            panel7.Controls.Add(changeLabel);
+            panel7.Controls.Add(x);
+            panel7.Controls.Add(billPaidButton);
+            panel7.Location = new Point(468, 465);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(409, 93);
+            panel7.TabIndex = 48;
+            // 
+            // label38
+            // 
+            label38.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            label38.AutoSize = true;
+            label38.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label38.Location = new Point(9, 51);
+            label38.Name = "label38";
+            label38.Size = new Size(32, 32);
+            label38.TabIndex = 46;
+            label38.Text = "₱";
+            label38.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // collectionTotalAmountPaidTextBox
+            // 
+            collectionTotalAmountPaidTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            collectionTotalAmountPaidTextBox.BackColor = Color.White;
+            collectionTotalAmountPaidTextBox.Font = new Font("Arial", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            collectionTotalAmountPaidTextBox.Location = new Point(43, 48);
+            collectionTotalAmountPaidTextBox.Margin = new Padding(0);
+            collectionTotalAmountPaidTextBox.Name = "collectionTotalAmountPaidTextBox";
+            collectionTotalAmountPaidTextBox.Size = new Size(245, 39);
+            collectionTotalAmountPaidTextBox.TabIndex = 15;
+            collectionTotalAmountPaidTextBox.Text = "0.00";
+            collectionTotalAmountPaidTextBox.TextAlign = HorizontalAlignment.Center;
+            collectionTotalAmountPaidTextBox.TextChanged += totalAmountPaidTextBox_TextChanged;
+            // 
+            // changeLabel
+            // 
+            changeLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            changeLabel.AutoSize = true;
+            changeLabel.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            changeLabel.Location = new Point(6, 3);
+            changeLabel.Name = "changeLabel";
+            changeLabel.Size = new Size(70, 19);
+            changeLabel.TabIndex = 47;
+            changeLabel.Text = "Change:";
+            changeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // x
+            // 
+            x.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            x.AutoSize = true;
+            x.Font = new Font("Arial", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            x.Location = new Point(8, 23);
+            x.Name = "x";
+            x.Size = new Size(179, 24);
+            x.TabIndex = 39;
+            x.Text = "Recieved Amount:";
+            x.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // billPaidButton
+            // 
+            billPaidButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            billPaidButton.BackColor = Color.White;
+            billPaidButton.Font = new Font("Arial", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            billPaidButton.Location = new Point(292, 47);
+            billPaidButton.Name = "billPaidButton";
+            billPaidButton.Size = new Size(82, 40);
+            billPaidButton.TabIndex = 22;
+            billPaidButton.Text = "✔️ Bill Paid";
+            billPaidButton.UseVisualStyleBackColor = false;
+            billPaidButton.Click += billPaidButton_Click;
+            // 
             // accountSearchPanel
             // 
             accountSearchPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
@@ -5099,7 +5112,6 @@
             tableLayoutPanel15.ResumeLayout(false);
             tableLayoutPanel15.PerformLayout();
             collectionRecieptTab.ResumeLayout(false);
-            collectionRecieptTab.PerformLayout();
             tableLayoutPanel50.ResumeLayout(false);
             tableLayoutPanel50.PerformLayout();
             tableLayoutPanel51.ResumeLayout(false);
@@ -5158,6 +5170,8 @@
             tableLayoutPanel65.PerformLayout();
             tableLayoutPanel63.ResumeLayout(false);
             tableLayoutPanel63.PerformLayout();
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
             accountSearchPanel.ResumeLayout(false);
             tableLayoutPanel25.ResumeLayout(false);
             tableLayoutPanel26.ResumeLayout(false);
@@ -5516,5 +5530,6 @@
         private Label concessionaireCodeLabel;
         private TextBox invoiceTextBox;
         private Label changeLabel;
+        private Panel panel7;
     }
 }

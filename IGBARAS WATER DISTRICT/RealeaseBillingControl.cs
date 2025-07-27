@@ -1951,7 +1951,23 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void printlangmuna_Click(object sender, EventArgs e)
         {
+            PrintDocument pd = new PrintDocument();
 
+            // Optional: set the paper size to custom 8.25" x 11.75"
+            pd.DefaultPageSettings.PaperSize = new PaperSize("CustomA4", 825, 1175); // 100 DPI units (1 inch = 100)
+
+
+            // Assign the PrintPage handler
+            pd.PrintPage += new PrintPageEventHandler(BillingMapPrintPage);
+
+            // Show a print dialog for user confirmation
+            PrintDialog dialog = new PrintDialog();
+            dialog.Document = pd;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                pd.Print(); // Start the print job
+            }
         }
 
         public void CollectionMapPrintPage(object sender, PrintPageEventArgs e)
@@ -1982,33 +1998,22 @@ namespace IGBARAS_WATER_DISTRICT
                 }
             }
 
-            string name = fullnameTextBox.Text;
+            //header information
+            string orNumber = orNumberTextBox.Text;
+            string paymentDate = paymentDateLabel.Text;
+
+            //personal information
+            string name = collectionNameLabel.Text;
             string address = addressTextBox.Text;
             string accountNo = accountNumberTextBox.Text;
-            string dateBilled = dateBilledLabel.Text;
-            string dueDate = dueDateLabel.Text;
+
 
             g.DrawString(name, font, Brushes.Black, 35, 65);
             g.DrawString(address, font, Brushes.Black, 25, 75);
             g.DrawString(accountNo, font, Brushes.Black, 25, 100);
-            g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
-            g.DrawString(dueDate, font, Brushes.Black, 200, 125);
 
-            string[] qtys = { "10", "2", "0" };
-            string[] prices = { "15.00", "20.00", "0.00" };
-            string[] amounts = { "150.00", "40.00", "0.00" };
 
-            int rowStartY = 175;
-            int rowSpacing = 25;
 
-            for (int i = 0; i < qtys.Length; i++)
-            {
-                int rowY = rowStartY + (i * rowSpacing);
-
-                g.DrawString(qtys[i], font, Brushes.Black, 200, rowY);
-                g.DrawString(prices[i], font, Brushes.Black, 250, rowY);
-                g.DrawString(amounts[i], font, Brushes.Black, 300, rowY);
-            }
 
             e.HasMorePages = false;
         }
@@ -2023,7 +2028,7 @@ namespace IGBARAS_WATER_DISTRICT
         public void BillingMapPrintPage(object sender, PrintPageEventArgs e)
         {
             Graphics g = e.Graphics;
-            Font font = new Font("Calibre", 9);
+            Font font = new Font("Calibre", 6);
             Pen gridPen = Pens.Orange;
             Brush brush = Brushes.Red;
 
@@ -2048,33 +2053,71 @@ namespace IGBARAS_WATER_DISTRICT
                 }
             }
 
+
+            //header information
+            string billCode = billCodeLabel.Text;
+            string datBilled = dateBilledLabel.Text;
+            //personal information
             string name = fullnameTextBox.Text;
             string address = addressTextBox.Text;
             string accountNo = accountNumberTextBox.Text;
             string dateBilled = dateBilledLabel.Text;
+
+            //consumption information
+            string fromReadingDate = fromReadingDateLabel.Text;
+            string toReadingDate = toReadingDateLabel.Text;
+            string previousReading = previousReadingTextBox.Text;
+            string presentReading = presentReadingTextBox.Text;
+            string meterConsumed = meterConsumedReadingTextBox.Text;
+
             string dueDate = dueDateLabel.Text;
 
-            g.DrawString(name, font, Brushes.Black, 35, 65);
-            g.DrawString(address, font, Brushes.Black, 25, 75);
-            g.DrawString(accountNo, font, Brushes.Black, 25, 100);
-            g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
-            g.DrawString(dueDate, font, Brushes.Black, 200, 125);
+            // water charges
+            string totalQuantity = totalQuantityLabel.Text;
+            string totalWaterConsumptionAmount = totalWaterConsumptionAmountLabel.Text;
 
-            string[] qtys = { "10", "2", "0" };
-            string[] prices = { "15.00", "20.00", "0.00" };
-            string[] amounts = { "150.00", "40.00", "0.00" };
+            string tenQuantity = tenQuantityLabel.Text;
+            string tenUnitPrice = tenUnitPriceLabel.Text;
+            string tenAmount = tenAmountLabel.Text;
 
-            int rowStartY = 175;
-            int rowSpacing = 25;
+            string twentyQuantity = twentyQuantityLabel.Text;
+            string twentyUnitPrice = twentyUnitPriceLabel.Text;
+            string twentyAmount = twentyAmountLabel.Text;
 
-            for (int i = 0; i < qtys.Length; i++)
-            {
-                int rowY = rowStartY + (i * rowSpacing);
+            string thirtyQuantity = thirtyQuantityLabel.Text;
+            string thirtyUnitPrice = thirtyUnitPriceLabel.Text;
+            string thirtyAmount = thirtyAmountLabel.Text;
 
-                g.DrawString(qtys[i], font, Brushes.Black, 200, rowY);
-                g.DrawString(prices[i], font, Brushes.Black, 250, rowY);
-                g.DrawString(amounts[i], font, Brushes.Black, 300, rowY);
-            }
+            string fortyQuantity = fortyQuantityLabel.Text;
+            string fortyUnitPrice = fortyUnitPriceLabel.Text;
+            string fortyAmount = fortyAmountLabel.Text;
+
+            string fortyUpQuantity = fortyUpQuantityLabel.Text;
+            string fortyUpUnitPrice = fortyUpUnitPriceLabel.Text;
+            string fortyUpAmount = fortyUpAmountLabel.Text;
+
+            // discounts and taxes
+            string discountedPercent = discountedPercentLabel.Text;
+            string discountedAmount = discountedAmountLabel.Text;
+
+            string taxPercent = taxExemptedPercentLabel.Text;
+            string taxAmount = taxAmountLabel.Text;
+
+            // arrears
+            string arrearsAmount = arrearsAmountLabel.Text;
+
+            string subTotalAmountDue = subTotalAmountDueLabel.Text;
+            string penaltyPercent = penaltyPercentLabel.Text;
+            string penaltyAmount = penaltyAmountLabel.Text;
+
+            string totalAmountDue = totalAmountDueLabel.Text;
+
+            //g.DrawString(name, font, Brushes.Black, 35, 65);
+            //g.DrawString(address, font, Brushes.Black, 25, 75);
+            //g.DrawString(accountNo, font, Brushes.Black, 25, 100);
+            //g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
+            //g.DrawString(dueDate, font, Brushes.Black, 200, 125);
+
 
             e.HasMorePages = false;
         }
