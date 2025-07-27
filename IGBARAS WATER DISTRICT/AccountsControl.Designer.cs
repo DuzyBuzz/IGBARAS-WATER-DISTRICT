@@ -432,11 +432,11 @@
             // meterno
             // 
             meterno.DataPropertyName = "meterno";
-            meterno.HeaderText = "meterno";
+            meterno.HeaderText = "Meter No.";
             meterno.Name = "meterno";
             meterno.ReadOnly = true;
             meterno.SortMode = DataGridViewColumnSortMode.NotSortable;
-            meterno.Width = 58;
+            meterno.Width = 66;
             // 
             // dueexempt
             // 
@@ -477,10 +477,10 @@
             // address
             // 
             address.DataPropertyName = "address";
-            address.HeaderText = "address";
+            address.HeaderText = "Address";
             address.Name = "address";
             address.ReadOnly = true;
-            address.Width = 72;
+            address.Width = 74;
             // 
             // routeno
             // 
@@ -672,6 +672,14 @@
         private Label label32;
         private Button clearButton;
         private DataGridView accountDataGridView;
+        private Button button1;
+        private ToolStrip toolStrip1;
+        private TableLayoutPanel tableLayoutPanel18;
+        private TableLayoutPanel tableLayoutPanel19;
+        private Button dailyCollectionExportButton;
+        private Label label6;
+        private Button dailyCollectionPrintButton;
+        public DataGridView agingOfAccountDGV;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn taxpercent;
         private DataGridViewTextBoxColumn fullname;
@@ -692,13 +700,5 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
-        private Button button1;
-        private ToolStrip toolStrip1;
-        private TableLayoutPanel tableLayoutPanel18;
-        private TableLayoutPanel tableLayoutPanel19;
-        private Button dailyCollectionExportButton;
-        private Label label6;
-        private Button dailyCollectionPrintButton;
-        public DataGridView agingOfAccountDGV;
     }
 }

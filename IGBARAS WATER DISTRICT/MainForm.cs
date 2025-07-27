@@ -13,34 +13,45 @@ namespace IGBARAS_WATER_DISTRICT
 
         // Keep track of currently displayed control
         private string currentControlName = string.Empty;
-
+        private Dictionary<string, Button> sidebarButtons;
         public MainForm()
         {
             InitializeComponent();
+
+            // Initialize the sidebar button dictionary
+            sidebarButtons = new Dictionary<string, Button>
+            {
+                { "RealeaseBilling", billingButton },
+                { "Accounts", accountsButton },
+                { "Reports", reportsButton },
+
+            };
         }
+
 
         private void LoadControl(string controlName)
         {
-            // 🔁 Avoid reloading the same control
+            // 🚫 Avoid reloading the same control
             if (currentControlName == controlName)
                 return;
 
             currentControlName = controlName;
 
-            // 🔍 Hide all currently loaded controls
+            // 🧼 Hide all currently loaded controls
             foreach (var ctrl in loadedControls.Values)
-            {
                 ctrl.Visible = false;
-            }
 
-            // ✅ If control already loaded, just show it
+            // 🖍 Highlight the corresponding sidebar button
+            HighlightActiveButton(controlName);
+
+            // ✅ If already loaded, just show it
             if (loadedControls.ContainsKey(controlName))
             {
                 loadedControls[controlName].Visible = true;
                 return;
             }
 
-            // 🔨 Dynamically create the control
+            // 🛠 Dynamically create the control
             var type = Type.GetType($"IGBARAS_WATER_DISTRICT.{controlName}Control");
 
             if (type != null && type.IsSubclassOf(typeof(UserControl)))
@@ -48,7 +59,7 @@ namespace IGBARAS_WATER_DISTRICT
                 var controlInstance = (UserControl)Activator.CreateInstance(type);
                 controlInstance.Dock = DockStyle.Fill;
 
-                // Add to cache and main panel
+                // Add to panel and dictionary
                 loadedControls[controlName] = controlInstance;
                 mainPanel.Controls.Add(controlInstance);
                 controlInstance.BringToFront();
@@ -56,6 +67,25 @@ namespace IGBARAS_WATER_DISTRICT
             else
             {
                 MessageBox.Show($"Control '{controlName}' not found.");
+            }
+        }
+
+        private void HighlightActiveButton(string controlName)
+        {
+            // Reset all buttons to default
+            foreach (var btn in sidebarButtons.Values)
+            {
+                btn.BackColor = SystemColors.Control;
+                btn.ForeColor = Color.Black;
+                btn.Font = new Font(btn.Font, FontStyle.Regular);
+            }
+
+            // Highlight current button
+            if (sidebarButtons.TryGetValue(controlName, out var activeButton))
+            {
+                activeButton.BackColor = Color.MediumSeaGreen;
+                activeButton.ForeColor = Color.White;
+                activeButton.Font = new Font(activeButton.Font, FontStyle.Bold);
             }
         }
 

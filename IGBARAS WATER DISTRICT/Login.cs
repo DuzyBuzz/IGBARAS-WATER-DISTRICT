@@ -179,5 +179,34 @@ namespace IGBARAS_WATER_DISTRICT
         {
 
         }
+
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Show confirmation only if it's a user-initiated close (not from Application.Exit)
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                DialogResult result = MessageBox.Show(
+                    "You are about to close the application.\n\nDo you want to exit now?",
+                    "Confirm Exit",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+
+                // Close all running forms safely
+                foreach (Form form in Application.OpenForms.Cast<Form>().ToList())
+                {
+                    form.FormClosing -= Login_FormClosing; // Unsubscribe to avoid second trigger
+                    form.Close();
+                }
+
+                Application.Exit(); // Exit the application
+            }
+        }
     }
 }

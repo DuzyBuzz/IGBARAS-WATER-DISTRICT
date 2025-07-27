@@ -38,7 +38,7 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel = new Panel();
             reportsButton = new Button();
             accountsButton = new Button();
-            readingButton = new Button();
+            billingButton = new Button();
             panel1 = new Panel();
             panel7 = new Panel();
             pictureBox1 = new PictureBox();
@@ -64,7 +64,7 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.BorderStyle = BorderStyle.Fixed3D;
             sidebarPanel.Controls.Add(reportsButton);
             sidebarPanel.Controls.Add(accountsButton);
-            sidebarPanel.Controls.Add(readingButton);
+            sidebarPanel.Controls.Add(billingButton);
             sidebarPanel.Controls.Add(panel1);
             sidebarPanel.Controls.Add(logoutButton);
             sidebarPanel.Dock = DockStyle.Left;
@@ -108,22 +108,22 @@ namespace IGBARAS_WATER_DISTRICT
             accountsButton.UseVisualStyleBackColor = false;
             accountsButton.Click += accountsButton_Click;
             // 
-            // readingButton
+            // billingButton
             // 
-            readingButton.BackColor = SystemColors.ControlLight;
-            readingButton.Dock = DockStyle.Top;
-            readingButton.FlatAppearance.BorderSize = 0;
-            readingButton.FlatStyle = FlatStyle.Popup;
-            readingButton.Font = new Font("Arial", 12F);
-            readingButton.Location = new Point(0, 164);
-            readingButton.Margin = new Padding(50);
-            readingButton.Name = "readingButton";
-            readingButton.Size = new Size(202, 45);
-            readingButton.TabIndex = 7;
-            readingButton.Text = "💸 Billing Invoice";
-            readingButton.TextAlign = ContentAlignment.MiddleLeft;
-            readingButton.UseVisualStyleBackColor = false;
-            readingButton.Click += billingButton_Click;
+            billingButton.BackColor = SystemColors.ControlLight;
+            billingButton.Dock = DockStyle.Top;
+            billingButton.FlatAppearance.BorderSize = 0;
+            billingButton.FlatStyle = FlatStyle.Popup;
+            billingButton.Font = new Font("Arial", 12F);
+            billingButton.Location = new Point(0, 164);
+            billingButton.Margin = new Padding(50);
+            billingButton.Name = "billingButton";
+            billingButton.Size = new Size(202, 45);
+            billingButton.TabIndex = 7;
+            billingButton.Text = "💸 Billing Invoice";
+            billingButton.TextAlign = ContentAlignment.MiddleLeft;
+            billingButton.UseVisualStyleBackColor = false;
+            billingButton.Click += billingButton_Click;
             // 
             // panel1
             // 
@@ -269,7 +269,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private Button logoutButton;
         private Button accountsButton;
-        private Button readingButton;
+        private Button billingButton;
         private Panel panel1;
         private Panel panel5;
         private Panel panel4;

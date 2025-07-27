@@ -88,7 +88,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
                     // Assign the PrintPage handler
-                    pd.PrintPage += new PrintPageEventHandler(MapPrintPage);
+                    pd.PrintPage += new PrintPageEventHandler(BillingMapPrintPage);
 
                     // Show a print dialog for user confirmation
                     PrintDialog dialog = new PrintDialog();
@@ -169,7 +169,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
                     // Assign the PrintPage handler
-                    pd.PrintPage += new PrintPageEventHandler(MapPrintPage);
+                    pd.PrintPage += new PrintPageEventHandler(CollectionMapPrintPage);
 
                     // Show a print dialog for user confirmation
                     PrintDialog dialog = new PrintDialog();
@@ -534,10 +534,11 @@ namespace IGBARAS_WATER_DISTRICT
                             ? dueDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd");
                         string formattedDateBilled = DateTime.Now.ToString("yyyy-MM-dd");
 
-                        if (fromReadingDateLabel.Tag is DateTime fromReadingDate)
+                        if (DateTime.TryParse(fromReadingDateLabel.Text, out DateTime fromReadingDate))
                             cmd.Parameters.AddWithValue("@fromreadingdate", fromReadingDate);
                         else
                             cmd.Parameters.AddWithValue("@fromreadingdate", DBNull.Value);
+
 
                         cmd.Parameters.AddWithValue("@toreadingdate", formattedToDate);
                         cmd.Parameters.AddWithValue("@duedate", formattedDueDate);
@@ -1953,6 +1954,64 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
 
+        public void CollectionMapPrintPage(object sender, PrintPageEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Font font = new Font("Calibre", 9);
+            Pen gridPen = Pens.Orange;
+            Brush brush = Brushes.Red;
+
+            int paperWidth = 825;
+            int paperHeight = 1175;
+            int cellSize = 25;
+
+            // 🔲 Draw Grid
+            for (int x = 0; x <= paperWidth; x += cellSize)
+                g.DrawLine(gridPen, x, 0, x, paperHeight);
+
+            for (int y = 0; y <= paperHeight; y += cellSize)
+                g.DrawLine(gridPen, 0, y, paperWidth, y);
+
+            // 🏷 Label Cells
+            for (int y = 0; y < paperHeight; y += cellSize)
+            {
+                for (int x = 0; x < paperWidth; x += cellSize)
+                {
+                    string label = $"{x},\n{y}";
+                    g.DrawString(label, font, brush, x + 2, y + 2);
+                }
+            }
+
+            string name = fullnameTextBox.Text;
+            string address = addressTextBox.Text;
+            string accountNo = accountNumberTextBox.Text;
+            string dateBilled = dateBilledLabel.Text;
+            string dueDate = dueDateLabel.Text;
+
+            g.DrawString(name, font, Brushes.Black, 35, 65);
+            g.DrawString(address, font, Brushes.Black, 25, 75);
+            g.DrawString(accountNo, font, Brushes.Black, 25, 100);
+            g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
+            g.DrawString(dueDate, font, Brushes.Black, 200, 125);
+
+            string[] qtys = { "10", "2", "0" };
+            string[] prices = { "15.00", "20.00", "0.00" };
+            string[] amounts = { "150.00", "40.00", "0.00" };
+
+            int rowStartY = 175;
+            int rowSpacing = 25;
+
+            for (int i = 0; i < qtys.Length; i++)
+            {
+                int rowY = rowStartY + (i * rowSpacing);
+
+                g.DrawString(qtys[i], font, Brushes.Black, 200, rowY);
+                g.DrawString(prices[i], font, Brushes.Black, 250, rowY);
+                g.DrawString(amounts[i], font, Brushes.Black, 300, rowY);
+            }
+
+            e.HasMorePages = false;
+        }
 
 
 
@@ -1961,8 +2020,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-
-        void MapPrintPage(object sender, PrintPageEventArgs e)
+        public void BillingMapPrintPage(object sender, PrintPageEventArgs e)
         {
             Graphics g = e.Graphics;
             Font font = new Font("Calibre", 9);
@@ -2131,6 +2189,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             string query = @"
                     SELECT
+                        p.ornumber AS 'OR Number',
                         b.billcode AS 'Invoice Number',
                         b.accountno AS 'Account Number',
                         b.name AS 'Customer Name',

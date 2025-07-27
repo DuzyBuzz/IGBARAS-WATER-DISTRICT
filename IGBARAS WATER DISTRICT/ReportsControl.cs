@@ -90,13 +90,22 @@ SELECT
     b.adjustdebit AS 'Adjust Debit',
     b.adjustcredit AS 'Adjust Credit',
     b.totalbillcharge AS 'Total Bill Charge',
+    b.amountpaid AS 'Amount Paid',
     b.fromreadingdate AS 'From Date',
-    b.toreadingdate AS 'To Date'
+    b.toreadingdate AS 'To Date',
+    
+    CASE 
+        WHEN b.paid = 1 THEN 'Paid'
+        WHEN b.partiallypaid = 1 THEN 'Partially Paid'
+        ELSE 'Unpaid'
+    END AS 'Status'
+
 FROM tb_payment p
 LEFT JOIN tb_bill b ON b.billcode = p.billcode
 LEFT JOIN tb_concessionaire c ON c.accountno = p.accountno
 WHERE {0}
 ORDER BY p.paymentdate DESC;
+
 ";
 
                         // Replace {0} with filter condition for daily or monthly

@@ -74,7 +74,7 @@
             statusLabel.Name = "statusLabel";
             statusLabel.Size = new Size(965, 38);
             statusLabel.TabIndex = 1;
-            statusLabel.Text = "Fetching Data";
+            statusLabel.Text = "fetching data please wait";
             statusLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // LoadingForm
@@ -94,6 +94,7 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "LoadingForm";
+            TopMost = true;
             Load += LoadingForm_Load;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();

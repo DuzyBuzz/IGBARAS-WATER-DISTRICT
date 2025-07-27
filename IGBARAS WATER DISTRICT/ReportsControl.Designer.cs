@@ -408,7 +408,7 @@
             label4.Name = "label4";
             label4.Size = new Size(225, 30);
             label4.TabIndex = 16;
-            label4.Text = "Monthly Billing Report";
+            label4.Text = "Monthly Billing";
             label4.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // monthBillDateTimePicker
@@ -528,7 +528,7 @@
             label6.Name = "label6";
             label6.Size = new Size(225, 30);
             label6.TabIndex = 16;
-            label6.Text = "Daily Collection Report";
+            label6.Text = "Daily Collection";
             label6.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // dailyCollectionDateTimePicker
@@ -635,7 +635,7 @@
             label5.Name = "label5";
             label5.Size = new Size(225, 30);
             label5.TabIndex = 16;
-            label5.Text = "Daily Collection Report";
+            label5.Text = "Monthly Collection";
             label5.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // monthlyCollectionDateTimePicker
