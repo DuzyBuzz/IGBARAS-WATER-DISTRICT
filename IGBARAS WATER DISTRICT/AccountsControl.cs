@@ -16,18 +16,18 @@ namespace IGBARAS_WATER_DISTRICT
         public AccountsControl()
         {
             InitializeComponent();
-            this.Load += AccountsControl_Load;
         }
 
         private async void AccountsControl_Load(object sender, EventArgs e)
         {
             try
             {
-                LoadZoneComboBox();
                 PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "Fullname or Account Number.");
                 AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new[] { "accountno", "name" }, searchAccountNumberTextBox);
                 FormatDataGridView(accountDataGridView);
                 await LoadAccountDataAsync();
+                LoadZoneComboBox();
+
             }
             catch (Exception ex)
             {
@@ -67,9 +67,12 @@ namespace IGBARAS_WATER_DISTRICT
 
         private void button1_Click(object sender, EventArgs e)
         {
-            bool hasText = !string.IsNullOrEmpty(searchAccountNumberTextBox.Text);
-            clearButton.ForeColor = hasText ? Color.Crimson : Color.Gray;
-            clearButton.Enabled = hasText;
+            if (accountDataGridView.DataSource is DataTable dt)
+            {
+                dt.DefaultView.RowFilter = ""; // reset filter
+            }
+
+            searchAccountNumberTextBox.Clear();
         }
 
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -83,7 +86,6 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 editForm.ShowDialog();
             }
-            _ = LoadAccountDataAsync();
         }
 
         private async Task LoadAgingOfAccountsAsync()
@@ -92,20 +94,22 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 string query = @"
 SELECT
-    b.name AS FullName,
+    b.accountno AS `Account No.`,
+    b.name AS `FullName`,
     c.address,
     c.businessname,
     c.meterno,
-    SUM(b.balance) AS TotalBalance,
-    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) <= 30 THEN b.balance ELSE 0 END) AS Days_0_30,
-    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) BETWEEN 31 AND 60 THEN b.balance ELSE 0 END) AS Days_31_60,
-    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) BETWEEN 61 AND 90 THEN b.balance ELSE 0 END) AS Days_61_90,
-    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) > 90 THEN b.balance ELSE 0 END) AS Days_91_Up
+    SUM(b.balance) AS `TotalBalance`,
+    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) <= 30 THEN b.balance ELSE 0 END) AS `Days_0_30`,
+    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) BETWEEN 31 AND 60 THEN b.balance ELSE 0 END) AS `Days_31_60`,
+    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) BETWEEN 61 AND 90 THEN b.balance ELSE 0 END) AS `Days_61_90`,
+    SUM(CASE WHEN DATEDIFF(CURDATE(), b.duedate) > 90 THEN b.balance ELSE 0 END) AS `Days_91_Up`
 FROM tb_bill b
 JOIN tb_concessionaire c ON b.accountno = c.accountno
 WHERE b.balance > 0
-GROUP BY b.name, c.address, c.businessname, c.meterno
-ORDER BY TotalBalance DESC;
+GROUP BY b.accountno, b.name, c.address, c.businessname, c.meterno
+ORDER BY `TotalBalance` DESC;
+
 
                 ";
 
@@ -211,6 +215,23 @@ ORDER BY TotalBalance DESC;
             {
                 dt.DefaultView.RowFilter = $"accountno LIKE '{zoneCode}-%'";
                 dt.DefaultView.Sort = "accountno ASC";
+            }
+        }
+
+        private async void refreshReportsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "Fullname or Account Number.");
+                AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new[] { "accountno", "name" }, searchAccountNumberTextBox);
+                FormatDataGridView(accountDataGridView);
+                await LoadAccountDataAsync();
+                LoadZoneComboBox();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Initialization error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

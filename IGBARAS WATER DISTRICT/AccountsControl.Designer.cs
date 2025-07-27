@@ -5,7 +5,7 @@
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        public System.ComponentModel.IContainer components = null;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -142,7 +142,7 @@
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 166F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 51F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 84F));
-            tableLayoutPanel9.Controls.Add(refreshReportsButton, 4, 0);
+            tableLayoutPanel9.Controls.Add(refreshReportsButton, 6, 0);
             tableLayoutPanel9.Dock = DockStyle.Fill;
             tableLayoutPanel9.Location = new Point(3, 3);
             tableLayoutPanel9.Name = "tableLayoutPanel9";
@@ -154,14 +154,14 @@
             // refreshReportsButton
             // 
             refreshReportsButton.BackColor = Color.CadetBlue;
-            refreshReportsButton.Dock = DockStyle.Fill;
             refreshReportsButton.ForeColor = Color.White;
-            refreshReportsButton.Location = new Point(1068, 3);
+            refreshReportsButton.Location = new Point(1285, 3);
             refreshReportsButton.Name = "refreshReportsButton";
-            refreshReportsButton.Size = new Size(160, 25);
+            refreshReportsButton.Size = new Size(78, 25);
             refreshReportsButton.TabIndex = 12;
-            refreshReportsButton.Text = "🔁 Refresh Reports";
+            refreshReportsButton.Text = "🔁 Refresh";
             refreshReportsButton.UseVisualStyleBackColor = false;
+            refreshReportsButton.Click += refreshReportsButton_Click;
             // 
             // tableLayoutPanel11
             // 
@@ -695,10 +695,10 @@
         private Button button1;
         private ToolStrip toolStrip1;
         private TableLayoutPanel tableLayoutPanel18;
-        private DataGridView agingOfAccountDGV;
         private TableLayoutPanel tableLayoutPanel19;
         private Button dailyCollectionExportButton;
         private Label label6;
         private Button dailyCollectionPrintButton;
+        public DataGridView agingOfAccountDGV;
     }
 }

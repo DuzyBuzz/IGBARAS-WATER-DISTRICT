@@ -34,6 +34,7 @@
             tableLayoutPanel10 = new TableLayoutPanel();
             tableLayoutPanel9 = new TableLayoutPanel();
             refreshReportsButton = new Button();
+            exportAllToExcelButton = new Button();
             tableLayoutPanel11 = new TableLayoutPanel();
             dailyTab = new TabControl();
             tabPage1 = new TabPage();
@@ -144,10 +145,11 @@
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 717F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 26F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 262F));
-            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 166F));
-            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 51F));
+            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 207F));
+            tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 10F));
             tableLayoutPanel9.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 84F));
-            tableLayoutPanel9.Controls.Add(refreshReportsButton, 4, 0);
+            tableLayoutPanel9.Controls.Add(refreshReportsButton, 6, 0);
+            tableLayoutPanel9.Controls.Add(exportAllToExcelButton, 4, 0);
             tableLayoutPanel9.Dock = DockStyle.Fill;
             tableLayoutPanel9.Location = new Point(3, 3);
             tableLayoutPanel9.Name = "tableLayoutPanel9";
@@ -159,15 +161,27 @@
             // refreshReportsButton
             // 
             refreshReportsButton.BackColor = Color.CadetBlue;
-            refreshReportsButton.Dock = DockStyle.Fill;
             refreshReportsButton.ForeColor = Color.White;
-            refreshReportsButton.Location = new Point(1068, 3);
+            refreshReportsButton.Location = new Point(1285, 3);
             refreshReportsButton.Name = "refreshReportsButton";
-            refreshReportsButton.Size = new Size(160, 25);
+            refreshReportsButton.Size = new Size(78, 25);
             refreshReportsButton.TabIndex = 12;
-            refreshReportsButton.Text = "🔁 Refresh Reports";
+            refreshReportsButton.Text = "🔁 Refresh";
             refreshReportsButton.UseVisualStyleBackColor = false;
             refreshReportsButton.Click += refreshReportsButton_Click;
+            // 
+            // exportAllToExcelButton
+            // 
+            exportAllToExcelButton.BackColor = Color.Green;
+            exportAllToExcelButton.Dock = DockStyle.Fill;
+            exportAllToExcelButton.ForeColor = Color.White;
+            exportAllToExcelButton.Location = new Point(1068, 3);
+            exportAllToExcelButton.Name = "exportAllToExcelButton";
+            exportAllToExcelButton.Size = new Size(201, 25);
+            exportAllToExcelButton.TabIndex = 19;
+            exportAllToExcelButton.Text = "📊 EXPORT ALL REPORT TO EXCEL";
+            exportAllToExcelButton.UseVisualStyleBackColor = false;
+            exportAllToExcelButton.Click += exportAllToExcelButton_Click;
             // 
             // tableLayoutPanel11
             // 
@@ -727,5 +741,6 @@
         private Button monthlyBillExportButton;
         private Button dailyCollectionExportButton;
         private Button monthlyCollectionExportButton;
+        private Button exportAllToExcelButton;
     }
 }

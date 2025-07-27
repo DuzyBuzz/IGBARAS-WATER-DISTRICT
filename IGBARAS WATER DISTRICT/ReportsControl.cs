@@ -1,4 +1,5 @@
-﻿using IGBARAS_WATER_DISTRICT.Helpers;
+﻿using ClosedXML.Excel;
+using IGBARAS_WATER_DISTRICT.Helpers;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -348,17 +349,73 @@ ORDER BY p.paymentdate DESC;
             DGVExcelExporter.ExportToExcel(monthlyCollectionDGV, $"Monthly_Collection_Report_{date}");
         }
 
-
-    }
-
-    public static class DataTableExtensions
-    {
-        public static DataTable WithName(this DataTable dt, string name)
+        private void exportAllToExcelButton_Click(object sender, EventArgs e)
         {
-            dt.TableName = name;
-            return dt;
+            using (var workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                // Format dates
+                string dailyBillDate = dailyBillDateTimePicker.Value.ToString("MMMM_d_yyyy");
+                string monthlyBillDate = monthBillDateTimePicker.Value.ToString("MMMM_yyyy");
+                string dailyCollectionDate = dailyCollectionDateTimePicker.Value.ToString("MMMM_d_yyyy");
+                string monthlyCollectionDate = monthlyCollectionDateTimePicker.Value.ToString("MMMM_yyyy");
+
+                // Add each DataGridView to a separate worksheet
+                AddDataGridViewToSheet(workbook, dailyBillingDGV, $"Daily Billing {dailyBillDate}");
+                AddDataGridViewToSheet(workbook, monthlyBillingDGV, $"Monthly Billing {monthlyBillDate}");
+                AddDataGridViewToSheet(workbook, dailyCollectionDGV, $"Daily Collection {dailyCollectionDate}");
+                AddDataGridViewToSheet(workbook, monthlyCollectionDGV, $"Monthly Collection {monthlyCollectionDate}");
+
+                // Fix: Access AccountsControl instance to retrieve agingOfAccountDGV
+                var accountsControl = this.Parent?.Controls.OfType<AccountsControl>().FirstOrDefault();
+                if (accountsControl != null)
+                {
+                    AddDataGridViewToSheet(workbook, accountsControl.agingOfAccountDGV, "Aging of Accounts");
+                }
+
+                // Save the file
+                string fileName = $"All_Reports_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Excel Workbook (*.xlsx)|*.xlsx";
+                    saveFileDialog.FileName = fileName;
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        workbook.SaveAs(saveFileDialog.FileName);
+                        MessageBox.Show("Export successful!", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
         }
+        private void AddDataGridViewToSheet(XLWorkbook workbook, DataGridView dgv, string sheetName)
+        {
+            var worksheet = workbook.Worksheets.Add(sheetName);
+
+            // Add column headers
+            for (int i = 0; i < dgv.Columns.Count; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = dgv.Columns[i].HeaderText;
+                worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+            }
+
+            // Add rows
+            for (int i = 0; i < dgv.Rows.Count; i++)
+            {
+                for (int j = 0; j < dgv.Columns.Count; j++)
+                {
+                    if (dgv.Rows[i].Cells[j].Value != null)
+                    {
+                        worksheet.Cell(i + 2, j + 1).Value = dgv.Rows[i].Cells[j].Value.ToString();
+                    }
+                }
+            }
+
+            // Auto-adjust columns
+            worksheet.Columns().AdjustToContents();
+        }
+
+
     }
-    
+
+
 
 }

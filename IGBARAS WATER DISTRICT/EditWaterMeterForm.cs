@@ -1,4 +1,5 @@
-﻿using IGBARAS_WATER_DISTRICT.Helpers;
+﻿using DocumentFormat.OpenXml.Office.Word;
+using IGBARAS_WATER_DISTRICT.Helpers;
 using MySql.Data.MySqlClient;
 using System;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace IGBARAS_WATER_DISTRICT
         private async void EditWaterMeterForm_Load(object sender, EventArgs e)
         {
             await LoadConcessionaireInfoAsync();
+            firstnameTextBox.Enabled = false;
+            lastnameTextBox.Enabled = false;
+            miTextBox.Enabled = false;
         }
 
         private async Task LoadConcessionaireInfoAsync()
@@ -77,36 +81,36 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 using var conn = new MySqlConnection(DbConfig.ConnectionString);
                 await conn.OpenAsync();
-                string updateQuery = @"
-                UPDATE tb_concessionaire SET 
-                    concessionaireno = @concessionaireno,
-                    districtno = @districtno,
-                    concessionairecode = @concessionairecode,
-                    zonecode = @zonecode,
-                    zone = @zone,
-                    servicecode = @servicecode,
-                    servicetype = @servicetype,
-                    pipesize = @pipesize,
-                    servicerate = @servicerate,
-                    dateinstalled = @dateinstalled,
-                    lastname = @lastname,
-                    firstname = @firstname,
-                    mi = @mi,
-                    businessname = @businessname,
-                    contactno = @contactno,
-                    barangay = @barangay,
-                    barangaycode = @barangaycode,
-                    address = @address,
-                    routeno = @routeno,
-                    status = @status,
-                    applybill = @applybill,
-                    meterno = @meterno,
-                    brand = @brand,
-                    watermetercode = @watermetercode
-                WHERE accountno = @accountno";
 
+                // ✅ Step 1: Update tb_concessionaire using new accountno
+                string updateQuery = @"
+            UPDATE tb_concessionaire SET 
+                accountno = @accountno,
+                concessionaireno = @concessionaireno,
+                districtno = @districtno,
+                concessionairecode = @concessionairecode,
+                zonecode = @zonecode,
+                zone = @zone,
+                servicecode = @servicecode,
+                servicetype = @servicetype,
+                pipesize = @pipesize,
+                servicerate = @servicerate,
+                dateinstalled = @dateinstalled,
+                businessname = @businessname,
+                contactno = @contactno,
+                barangay = @barangay,
+                barangaycode = @barangaycode,
+                address = @address,
+                routeno = @routeno,
+                status = @status,
+                applybill = @applybill,
+                meterno = @meterno,
+                brand = @brand,
+                watermetercode = @watermetercode
+            WHERE accountno = @original_accountno";
 
                 using var cmd = new MySqlCommand(updateQuery, conn);
+                cmd.Parameters.AddWithValue("@accountno", accountnoTextBox.Text);
                 cmd.Parameters.AddWithValue("@concessionaireno", concessionairenoTextBox.Text);
                 cmd.Parameters.AddWithValue("@districtno", districtnoTextBox.Text);
                 cmd.Parameters.AddWithValue("@concessionairecode", concessionairecodeTextBox.Text);
@@ -117,9 +121,6 @@ namespace IGBARAS_WATER_DISTRICT
                 cmd.Parameters.AddWithValue("@pipesize", pipesizeTextBox.Text);
                 cmd.Parameters.AddWithValue("@servicerate", servicerateTextBox.Text);
                 cmd.Parameters.AddWithValue("@dateinstalled", dateinstalledPicker.Value.Date);
-                cmd.Parameters.AddWithValue("@lastname", lastnameTextBox.Text);
-                cmd.Parameters.AddWithValue("@firstname", firstnameTextBox.Text);
-                cmd.Parameters.AddWithValue("@mi", miTextBox.Text);
                 cmd.Parameters.AddWithValue("@businessname", businessnameTextBox.Text);
                 cmd.Parameters.AddWithValue("@contactno", contactnoTextBox.Text);
                 cmd.Parameters.AddWithValue("@barangay", barangayTextBox.Text);
@@ -131,11 +132,39 @@ namespace IGBARAS_WATER_DISTRICT
                 cmd.Parameters.AddWithValue("@meterno", meternoTextBox.Text);
                 cmd.Parameters.AddWithValue("@brand", brandTextBox.Text);
                 cmd.Parameters.AddWithValue("@watermetercode", watermetercodeTextBox.Text);
-                cmd.Parameters.AddWithValue("@accountno", _accountno);
+                cmd.Parameters.AddWithValue("@original_accountno", _accountno); // old accountno
 
                 await cmd.ExecuteNonQueryAsync();
 
-                MessageBox.Show("Concessionaire details updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // ✅ Step 2: Get the latest id in tb_watermeter_history (no filtering by accountno)
+                string getLastIdQuery = "SELECT MAX(id) FROM tb_watermeter_history";
+                int latestId = 0;
+
+                using (var getIdCmd = new MySqlCommand(getLastIdQuery, conn))
+                {
+                    var result = await getIdCmd.ExecuteScalarAsync();
+                    if (result != DBNull.Value && result != null)
+                    {
+                        latestId = Convert.ToInt32(result);
+                    }
+                }
+
+                // ✅ Step 3: Update devicecode in the latest inserted row
+                if (latestId > 0)
+                {
+                    string updateDeviceQuery = @"
+                UPDATE tb_watermeter_history 
+                SET devicecode = @devicecode 
+                WHERE id = @id";
+
+                    using var updateCmd = new MySqlCommand(updateDeviceQuery, conn);
+                    updateCmd.Parameters.AddWithValue("@devicecode", UserCredentials.DeviceCode);
+                    updateCmd.Parameters.AddWithValue("@id", latestId);
+
+                    await updateCmd.ExecuteNonQueryAsync();
+                }
+
+                MessageBox.Show("Water meter information updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();
             }
             catch (Exception ex)
@@ -143,5 +172,8 @@ namespace IGBARAS_WATER_DISTRICT
                 MessageBox.Show($"Update failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+
     }
 }

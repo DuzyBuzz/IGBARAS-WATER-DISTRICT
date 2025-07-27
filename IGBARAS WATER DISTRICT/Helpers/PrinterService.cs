@@ -46,13 +46,13 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             "Republic of the Philippines",
             "IGBARAS WATER DISTRICT (ILOILO)",
             "Stall No. 0-1, Igbaras Bus. Complex",
-            "M. Ezpeleta St., Igbaras, Iloilo",
+            "M. Ezpeleta St., Igbaras, Iloilo",OYMENT
             "Tel No. (033)315-6264",
             "NON-VAT Reg.",
             "TIN: 006-231-718.000",
             "                       "
         });
-                printer.SubTitleFont = new Font("Arial", 9, FontStyle.Regular);
+                printer.SubTitleFont = new Font("Arial", 7, FontStyle.Regular);
                 printer.SubTitleAlignment = StringAlignment.Center;
                 printer.SubTitleSpacing = 10;
                 // Title
