@@ -248,7 +248,6 @@ namespace IGBARAS_WATER_DISTRICT
             ClientSize = new Size(1584, 961);
             Controls.Add(mainPanel);
             Controls.Add(sidebarPanel);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;

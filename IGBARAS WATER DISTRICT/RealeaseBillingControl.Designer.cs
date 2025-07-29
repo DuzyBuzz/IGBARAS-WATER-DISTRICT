@@ -340,8 +340,8 @@
             label31 = new Label();
             tableLayoutPanel27 = new TableLayoutPanel();
             panel5 = new Panel();
-            zoneComboBox = new ComboBox();
             label32 = new Label();
+            zoneComboBox = new ComboBox();
             clearButton = new Button();
             accountDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
@@ -589,6 +589,7 @@
             // 
             // billingInvoiceTab
             // 
+            billingInvoiceTab.AutoScroll = true;
             billingInvoiceTab.Controls.Add(concessionaireCodeLabel);
             billingInvoiceTab.Controls.Add(printSaveButton);
             billingInvoiceTab.Controls.Add(billCodeLabel);
@@ -2529,6 +2530,7 @@
             // 
             // collectionRecieptTab
             // 
+            collectionRecieptTab.AutoScroll = true;
             collectionRecieptTab.Controls.Add(tableLayoutPanel50);
             collectionRecieptTab.Controls.Add(tableLayoutPanel51);
             collectionRecieptTab.Controls.Add(tableLayoutPanel52);
@@ -4612,14 +4614,24 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(zoneComboBox);
             panel5.Controls.Add(label32);
+            panel5.Controls.Add(zoneComboBox);
             panel5.Controls.Add(clearButton);
             panel5.Dock = DockStyle.Fill;
             panel5.Location = new Point(326, 39);
             panel5.Name = "panel5";
             panel5.Size = new Size(140, 29);
             panel5.TabIndex = 30;
+            // 
+            // label32
+            // 
+            label32.AutoSize = true;
+            label32.Location = new Point(33, 7);
+            label32.Name = "label32";
+            label32.Size = new Size(63, 15);
+            label32.TabIndex = 29;
+            label32.Text = "Filter Zone";
+            label32.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // zoneComboBox
             // 
@@ -4632,16 +4644,6 @@
             zoneComboBox.TabIndex = 25;
             zoneComboBox.Text = "01";
             zoneComboBox.SelectedIndexChanged += zoneComboBox_SelectedIndexChanged;
-            // 
-            // label32
-            // 
-            label32.AutoSize = true;
-            label32.Location = new Point(33, 7);
-            label32.Name = "label32";
-            label32.Size = new Size(63, 15);
-            label32.TabIndex = 29;
-            label32.Text = "Filter Zone";
-            label32.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // clearButton
             // 
@@ -4695,7 +4697,7 @@
             taxpercent.Name = "taxpercent";
             taxpercent.ReadOnly = true;
             taxpercent.Visible = false;
-            taxpercent.Width = 88;
+            taxpercent.Width = 87;
             // 
             // fullname
             // 
@@ -4779,7 +4781,7 @@
             dueexempt.Name = "dueexempt";
             dueexempt.ReadOnly = true;
             dueexempt.Visible = false;
-            dueexempt.Width = 92;
+            dueexempt.Width = 91;
             // 
             // withholdingtax
             // 
@@ -4788,7 +4790,7 @@
             withholdingtax.Name = "withholdingtax";
             withholdingtax.ReadOnly = true;
             withholdingtax.Visible = false;
-            withholdingtax.Width = 112;
+            withholdingtax.Width = 111;
             // 
             // wtpercent
             // 
@@ -4838,7 +4840,7 @@
             // balancex
             // 
             balancex.DataPropertyName = "balance";
-            balancex.HeaderText = "balance";
+            balancex.HeaderText = "Balance";
             balancex.Name = "balancex";
             balancex.ReadOnly = true;
             balancex.Width = 73;
@@ -4861,7 +4863,7 @@
             taxexempt.ReadOnly = true;
             taxexempt.TrueValue = "";
             taxexempt.Visible = false;
-            taxexempt.Width = 73;
+            taxexempt.Width = 72;
             // 
             // panel6
             // 
@@ -5315,26 +5317,6 @@
         private PrintPreviewDialog printPreviewDialog;
         private Label extractedBillNumberLabel;
         private Label billCodeLabel;
-        private DataGridViewTextBoxColumn accountno;
-        private DataGridViewTextBoxColumn taxpercent;
-        private DataGridViewTextBoxColumn fullname;
-        private DataGridViewTextBoxColumn presentreaddate;
-        private DataGridViewTextBoxColumn districtno;
-        private DataGridViewTextBoxColumn concessionairecode;
-        private DataGridViewTextBoxColumn zonecode;
-        private DataGridViewTextBoxColumn servicecode;
-        private DataGridViewTextBoxColumn servicetype;
-        private DataGridViewTextBoxColumn meterno;
-        private DataGridViewTextBoxColumn dueexempt;
-        private DataGridViewTextBoxColumn withholdingtax;
-        private DataGridViewTextBoxColumn wtpercent;
-        private DataGridViewTextBoxColumn scpercent;
-        private DataGridViewTextBoxColumn address;
-        private DataGridViewTextBoxColumn routeno;
-        private DataGridViewTextBoxColumn billcodex;
-        private DataGridViewTextBoxColumn balancex;
-        private DataGridViewCheckBoxColumn seniorcitizen;
-        private DataGridViewCheckBoxColumn taxexempt;
         private Panel panel4;
         private TableLayoutPanel tableLayoutPanel26;
         private Button clearButton;
@@ -5531,5 +5513,25 @@
         private TextBox invoiceTextBox;
         private Label changeLabel;
         private Panel panel7;
+        private DataGridViewTextBoxColumn accountno;
+        private DataGridViewTextBoxColumn taxpercent;
+        private DataGridViewTextBoxColumn fullname;
+        private DataGridViewTextBoxColumn presentreaddate;
+        private DataGridViewTextBoxColumn districtno;
+        private DataGridViewTextBoxColumn concessionairecode;
+        private DataGridViewTextBoxColumn zonecode;
+        private DataGridViewTextBoxColumn servicecode;
+        private DataGridViewTextBoxColumn servicetype;
+        private DataGridViewTextBoxColumn meterno;
+        private DataGridViewTextBoxColumn dueexempt;
+        private DataGridViewTextBoxColumn withholdingtax;
+        private DataGridViewTextBoxColumn wtpercent;
+        private DataGridViewTextBoxColumn scpercent;
+        private DataGridViewTextBoxColumn address;
+        private DataGridViewTextBoxColumn routeno;
+        private DataGridViewTextBoxColumn billcodex;
+        private DataGridViewTextBoxColumn balancex;
+        private DataGridViewCheckBoxColumn seniorcitizen;
+        private DataGridViewCheckBoxColumn taxexempt;
     }
 }

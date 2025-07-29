@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1958,7 +1959,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
             // Assign the PrintPage handler
-            pd.PrintPage += new PrintPageEventHandler(BillingMapPrintPage);
+            pd.PrintPage += new PrintPageEventHandler(CollectionMapPrintPage);
 
             // Show a print dialog for user confirmation
             PrintDialog dialog = new PrintDialog();
@@ -1979,38 +1980,51 @@ namespace IGBARAS_WATER_DISTRICT
 
             int paperWidth = 825;
             int paperHeight = 1175;
-            int cellSize = 25;
+            //int cellSize = 25;
 
-            // 🔲 Draw Grid
-            for (int x = 0; x <= paperWidth; x += cellSize)
-                g.DrawLine(gridPen, x, 0, x, paperHeight);
+            //// 🔲 Draw Grid
+            //for (int x = 0; x <= paperWidth; x += cellSize)
+            //    g.DrawLine(gridPen, x, 0, x, paperHeight);
 
-            for (int y = 0; y <= paperHeight; y += cellSize)
-                g.DrawLine(gridPen, 0, y, paperWidth, y);
+            //for (int y = 0; y <= paperHeight; y += cellSize)
+            //    g.DrawLine(gridPen, 0, y, paperWidth, y);
 
-            // 🏷 Label Cells
-            for (int y = 0; y < paperHeight; y += cellSize)
-            {
-                for (int x = 0; x < paperWidth; x += cellSize)
-                {
-                    string label = $"{x},\n{y}";
-                    g.DrawString(label, font, brush, x + 2, y + 2);
-                }
-            }
+            //// 🏷 Label Cells
+            //for (int y = 0; y < paperHeight; y += cellSize)
+            //{
+            //    for (int x = 0; x < paperWidth; x += cellSize)
+            //    {
+            //        string label = $"{x},\n{y}";
+            //        g.DrawString(label, font, brush, x + 2, y + 2);
+            //    }
+            //}
 
             //header information
-            string orNumber = orNumberTextBox.Text;
             string paymentDate = paymentDateLabel.Text;
 
             //personal information
             string name = collectionNameLabel.Text;
-            string address = addressTextBox.Text;
-            string accountNo = accountNumberTextBox.Text;
+            string address = collectionAddressLabel.Text;
+            string metered = collectionTotalMeteredAmountLabel.Text;
+            string arrears = collectionArrearsAmountLabel.Text;
+            string penalty = collectionPenaltyLabel.Text;
+            string tax = collectionTaxAmountLabel.Text;
+            string totalamount = collectionTotalPaidAmointLabel.Text;
+
+            string collectingOfficer = collectingOfficerNameLabel.Text;
 
 
-            g.DrawString(name, font, Brushes.Black, 35, 65);
-            g.DrawString(address, font, Brushes.Black, 25, 75);
-            g.DrawString(accountNo, font, Brushes.Black, 25, 100);
+            g.DrawString(paymentDate, font, Brushes.Black, 340, 170);
+            g.DrawString(name, font, Brushes.Black, 110, 200);
+            g.DrawString(address, font, Brushes.Black, 110, 248);
+
+
+            g.DrawString(metered, font, Brushes.Black, 330, 310);
+            g.DrawString(arrears, font, Brushes.Black, 330, 335);
+            g.DrawString(penalty, font, Brushes.Black, 330, 360);
+            g.DrawString(tax, font, Brushes.Black, 330, 385);
+            g.DrawString(totalamount, font, Brushes.Black, 330, 455);
+
 
 
 
@@ -2028,34 +2042,37 @@ namespace IGBARAS_WATER_DISTRICT
         public void BillingMapPrintPage(object sender, PrintPageEventArgs e)
         {
             Graphics g = e.Graphics;
-            Font font = new Font("Calibre", 6);
+            Font bigFont = new Font("Calibre", 9);
+            Font smallFont = new Font("Calibre", 9);
+            Font midFont = new Font("Calibre", 9);
             Pen gridPen = Pens.Orange;
             Brush brush = Brushes.Red;
 
             int paperWidth = 825;
             int paperHeight = 1175;
-            int cellSize = 25;
+            //int cellSize = 25;
 
-            // 🔲 Draw Grid
-            for (int x = 0; x <= paperWidth; x += cellSize)
-                g.DrawLine(gridPen, x, 0, x, paperHeight);
 
-            for (int y = 0; y <= paperHeight; y += cellSize)
-                g.DrawLine(gridPen, 0, y, paperWidth, y);
+            //// 🔲 Draw Grid
+            //for (int x = 0; x <= paperWidth; x += cellSize)
+            //    g.DrawLine(gridPen, x, 0, x, paperHeight);
 
-            // 🏷 Label Cells
-            for (int y = 0; y < paperHeight; y += cellSize)
-            {
-                for (int x = 0; x < paperWidth; x += cellSize)
-                {
-                    string label = $"{x},\n{y}";
-                    g.DrawString(label, font, brush, x + 2, y + 2);
-                }
-            }
+            //for (int y = 0; y <= paperHeight; y += cellSize)
+            //    g.DrawLine(gridPen, 0, y, paperWidth, y);
+
+            //// 🏷 Label Cells
+            //for (int y = 0; y < paperHeight; y += cellSize)
+            //{
+            //    for (int x = 0; x < paperWidth; x += cellSize)
+            //    {
+            //        string label = $"{x},\n{y}";
+            //        g.DrawString(label, font, brush, x + 2, y + 2);
+            //    }
+            //}
 
 
             //header information
-            string billCode = billCodeLabel.Text;
+            string invoiceNumber = billCodeLabel.Text;
             string datBilled = dateBilledLabel.Text;
             //personal information
             string name = fullnameTextBox.Text;
@@ -2112,11 +2129,53 @@ namespace IGBARAS_WATER_DISTRICT
 
             string totalAmountDue = totalAmountDueLabel.Text;
 
-            //g.DrawString(name, font, Brushes.Black, 35, 65);
-            //g.DrawString(address, font, Brushes.Black, 25, 75);
-            //g.DrawString(accountNo, font, Brushes.Black, 25, 100);
-            //g.DrawString(dateBilled, font, Brushes.Black, 25, 125);
-            //g.DrawString(dueDate, font, Brushes.Black, 200, 125);
+            g.DrawString(dateBilled, bigFont, Brushes.Black, 300, 105);
+            g.DrawString(name, bigFont, Brushes.Black, 190, 153);
+            g.DrawString(address, bigFont, Brushes.Black, 190, 168);
+            g.DrawString(accountNo, bigFont, Brushes.Black, 190, 200);
+
+            g.DrawString(fromReadingDate, bigFont, Brushes.Black, 280, 220);
+            g.DrawString(toReadingDate, bigFont, Brushes.Black, 380, 220);
+
+            g.DrawString(previousReading, bigFont, Brushes.Black, 230, 265);
+            g.DrawString(presentReading, bigFont, Brushes.Black, 300, 265);
+            g.DrawString(meterConsumed, bigFont, Brushes.Black, 400, 265);
+
+
+
+            g.DrawString(dueDate, bigFont, Brushes.Black, 670, 40);
+
+            //
+            g.DrawString(totalQuantity, bigFont, Brushes.Black, 600, 90);
+            g.DrawString(totalWaterConsumptionAmount, bigFont, Brushes.Green, 700, 90);
+
+            g.DrawString(tenQuantity, bigFont, Brushes.Black, 600, 125);
+            g.DrawString(twentyQuantity, bigFont, Brushes.Black, 600, 140);
+            g.DrawString(thirtyQuantity, bigFont, Brushes.Black, 600, 155);
+            g.DrawString(fortyQuantity, bigFont, Brushes.Black, 600, 170);
+            g.DrawString(fortyUpQuantity, bigFont, Brushes.Black, 600, 185);
+
+
+            g.DrawString(tenUnitPrice, bigFont, Brushes.Red, 645, 125);
+            g.DrawString(twentyUnitPrice, bigFont, Brushes.Black, 645, 140);
+            g.DrawString(thirtyUnitPrice, bigFont, Brushes.Black, 645, 155);
+            g.DrawString(fortyUnitPrice, bigFont, Brushes.Black, 645, 170);
+            g.DrawString(fortyUpUnitPrice, bigFont, Brushes.Black, 645, 185);
+
+
+            g.DrawString(tenAmount, bigFont, Brushes.Black, 700, 125);
+            g.DrawString(twentyAmount, bigFont, Brushes.Black, 700, 140);
+            g.DrawString(thirtyAmount, bigFont, Brushes.Black, 700, 155);
+            g.DrawString(fortyAmount, bigFont, Brushes.Black, 700, 170);
+            g.DrawString(fortyUpAmount, bigFont, Brushes.Black, 700, 185);
+
+
+            g.DrawString(discountedAmount, bigFont, Brushes.Black, 700, 203);
+            g.DrawString(taxAmount, bigFont, Brushes.Black, 700, 218);
+
+            g.DrawString(arrearsAmount, bigFont, Brushes.Black, 700, 233);
+
+            g.DrawString(subTotalAmountDue, bigFont, Brushes.Black, 700, 248);
 
 
             e.HasMorePages = false;
@@ -2282,6 +2341,16 @@ namespace IGBARAS_WATER_DISTRICT
         }
 
         private void searchAccountNumberTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void thirtyQuantityLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void collectingOfficerNameLabel_Click(object sender, EventArgs e)
         {
 
         }

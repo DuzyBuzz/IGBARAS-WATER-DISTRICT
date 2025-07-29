@@ -96,6 +96,7 @@
             // 
             // tableLayoutPanel1
             // 
+            tableLayoutPanel1.AutoScroll = true;
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(label1, 0, 0);
