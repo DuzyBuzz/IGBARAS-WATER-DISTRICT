@@ -32,6 +32,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RealeaseBillingControl));
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
@@ -39,9 +42,6 @@
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             billingPrintDocument = new System.Drawing.Printing.PrintDocument();
             billingPrintDialog = new PrintDialog();
             button1 = new Button();
@@ -54,9 +54,6 @@
             panel3 = new Panel();
             tabControl1 = new TabControl();
             billingInvoiceTab = new TabPage();
-            clearDiscountButton = new Button();
-            discountComboBox = new ComboBox();
-            label35 = new Label();
             concessionaireCodeLabel = new Label();
             printSaveButton = new Button();
             billingPanel = new Panel();
@@ -197,10 +194,12 @@
             extractedBillNumberLabel = new Label();
             billCodeLabel = new Label();
             collectionRecieptTab = new TabPage();
+            clearDiscountButton = new Button();
             remarksTextBox = new TextBox();
             tableLayoutPanel50 = new TableLayoutPanel();
             totalAmountDueLabel2 = new Label();
             label118 = new Label();
+            discountComboBox = new ComboBox();
             tableLayoutPanel51 = new TableLayoutPanel();
             sfcInstallmentTextBox2 = new TextBox();
             label128 = new Label();
@@ -217,6 +216,7 @@
             label131 = new Label();
             label132 = new Label();
             withHoldingTaxPercentLabel2 = new Label();
+            label35 = new Label();
             tableLayoutPanel52 = new TableLayoutPanel();
             penaltyAmountLabel2 = new Label();
             penaltyPercentLabel2 = new Label();
@@ -296,7 +296,6 @@
             label59 = new Label();
             tableLayoutPanel48 = new TableLayoutPanel();
             tableLayoutPanel49 = new TableLayoutPanel();
-            label157 = new Label();
             label156 = new Label();
             collectionTotalAddtionalChargeLabel = new Label();
             label150 = new Label();
@@ -310,6 +309,7 @@
             label142 = new Label();
             label141 = new Label();
             label39 = new Label();
+            collectionOtherPaymentTextBox = new TextBox();
             tableLayoutPanel58 = new TableLayoutPanel();
             label152 = new Label();
             tableLayoutPanel59 = new TableLayoutPanel();
@@ -320,6 +320,7 @@
             collectionBillingInvoiceTextBox = new TextBox();
             label154 = new Label();
             tableLayoutPanel62 = new TableLayoutPanel();
+            label40 = new Label();
             label158 = new Label();
             label162 = new Label();
             collectingOfficerNameLabel = new Label();
@@ -353,17 +354,6 @@
             clearButton = new Button();
             label31 = new Label();
             accountDataGridView = new DataGridView();
-            accountno = new DataGridViewTextBoxColumn();
-            fullname = new DataGridViewTextBoxColumn();
-            address = new DataGridViewTextBoxColumn();
-            zoneCode = new DataGridViewTextBoxColumn();
-            serviceId = new DataGridViewTextBoxColumn();
-            meterNo = new DataGridViewTextBoxColumn();
-            firstReadingDate = new DataGridViewTextBoxColumn();
-            taxExempt = new DataGridViewCheckBoxColumn();
-            dueExempt = new DataGridViewCheckBoxColumn();
-            discount = new DataGridViewCheckBoxColumn();
-            status = new DataGridViewTextBoxColumn();
             panel6 = new Panel();
             panel2 = new Panel();
             serviceIDLabel = new Label();
@@ -380,6 +370,17 @@
             billDataGridView = new DataGridView();
             billdataTextBox = new TextBox();
             printPreviewDialog = new PrintPreviewDialog();
+            accountno = new DataGridViewTextBoxColumn();
+            fullname = new DataGridViewTextBoxColumn();
+            address = new DataGridViewTextBoxColumn();
+            zoneCode = new DataGridViewTextBoxColumn();
+            serviceId = new DataGridViewTextBoxColumn();
+            meterNo = new DataGridViewTextBoxColumn();
+            firstReadingDate = new DataGridViewTextBoxColumn();
+            taxExempt = new DataGridViewCheckBoxColumn();
+            dueExempt = new DataGridViewCheckBoxColumn();
+            discount = new DataGridViewCheckBoxColumn();
+            status = new DataGridViewTextBoxColumn();
             tableLayoutPanel14.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel24.SuspendLayout();
@@ -592,9 +593,6 @@
             // billingInvoiceTab
             // 
             billingInvoiceTab.AutoScroll = true;
-            billingInvoiceTab.Controls.Add(clearDiscountButton);
-            billingInvoiceTab.Controls.Add(discountComboBox);
-            billingInvoiceTab.Controls.Add(label35);
             billingInvoiceTab.Controls.Add(concessionaireCodeLabel);
             billingInvoiceTab.Controls.Add(printSaveButton);
             billingInvoiceTab.Controls.Add(billingPanel);
@@ -608,40 +606,6 @@
             billingInvoiceTab.TabIndex = 0;
             billingInvoiceTab.Text = "Billing Invoice";
             billingInvoiceTab.UseVisualStyleBackColor = true;
-            // 
-            // clearDiscountButton
-            // 
-            clearDiscountButton.BackColor = Color.White;
-            clearDiscountButton.FlatStyle = FlatStyle.Popup;
-            clearDiscountButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            clearDiscountButton.ForeColor = Color.Crimson;
-            clearDiscountButton.Location = new Point(315, 520);
-            clearDiscountButton.Name = "clearDiscountButton";
-            clearDiscountButton.Size = new Size(24, 25);
-            clearDiscountButton.TabIndex = 36;
-            clearDiscountButton.Text = "❌";
-            clearDiscountButton.UseVisualStyleBackColor = false;
-            clearDiscountButton.Click += clearDiscountButton_Click;
-            // 
-            // discountComboBox
-            // 
-            discountComboBox.Font = new Font("Arial", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            discountComboBox.FormattingEnabled = true;
-            discountComboBox.Location = new Point(113, 520);
-            discountComboBox.Name = "discountComboBox";
-            discountComboBox.Size = new Size(196, 25);
-            discountComboBox.TabIndex = 35;
-            discountComboBox.SelectedIndexChanged += discountComboBox_SelectedIndexChanged;
-            // 
-            // label35
-            // 
-            label35.AutoSize = true;
-            label35.Font = new Font("Arial", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label35.Location = new Point(32, 527);
-            label35.Name = "label35";
-            label35.Size = new Size(75, 18);
-            label35.TabIndex = 34;
-            label35.Text = "Discount:";
             // 
             // concessionaireCodeLabel
             // 
@@ -672,7 +636,7 @@
             billingPanel.BackColor = Color.White;
             billingPanel.Controls.Add(tableLayoutPanel20);
             billingPanel.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            billingPanel.Location = new Point(11, 3);
+            billingPanel.Location = new Point(11, 14);
             billingPanel.Margin = new Padding(0);
             billingPanel.Name = "billingPanel";
             billingPanel.Size = new Size(860, 491);
@@ -2573,9 +2537,12 @@
             // collectionRecieptTab
             // 
             collectionRecieptTab.AutoScroll = true;
+            collectionRecieptTab.Controls.Add(clearDiscountButton);
             collectionRecieptTab.Controls.Add(remarksTextBox);
             collectionRecieptTab.Controls.Add(tableLayoutPanel50);
+            collectionRecieptTab.Controls.Add(discountComboBox);
             collectionRecieptTab.Controls.Add(tableLayoutPanel51);
+            collectionRecieptTab.Controls.Add(label35);
             collectionRecieptTab.Controls.Add(tableLayoutPanel52);
             collectionRecieptTab.Controls.Add(tableLayoutPanel55);
             collectionRecieptTab.Controls.Add(tableLayoutPanel53);
@@ -2591,6 +2558,20 @@
             collectionRecieptTab.Text = "Collection Reciept";
             collectionRecieptTab.UseVisualStyleBackColor = true;
             collectionRecieptTab.Click += amountPaidTextBox_Click;
+            // 
+            // clearDiscountButton
+            // 
+            clearDiscountButton.BackColor = Color.White;
+            clearDiscountButton.FlatStyle = FlatStyle.Popup;
+            clearDiscountButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            clearDiscountButton.ForeColor = Color.Crimson;
+            clearDiscountButton.Location = new Point(403, 524);
+            clearDiscountButton.Name = "clearDiscountButton";
+            clearDiscountButton.Size = new Size(24, 25);
+            clearDiscountButton.TabIndex = 36;
+            clearDiscountButton.Text = "❌";
+            clearDiscountButton.UseVisualStyleBackColor = false;
+            clearDiscountButton.Click += clearDiscountButton_Click;
             // 
             // remarksTextBox
             // 
@@ -2612,12 +2593,12 @@
             tableLayoutPanel50.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tableLayoutPanel50.Controls.Add(totalAmountDueLabel2, 3, 0);
             tableLayoutPanel50.Controls.Add(label118, 0, 0);
-            tableLayoutPanel50.Location = new Point(497, 411);
+            tableLayoutPanel50.Location = new Point(460, 411);
             tableLayoutPanel50.Margin = new Padding(0);
             tableLayoutPanel50.Name = "tableLayoutPanel50";
             tableLayoutPanel50.RowCount = 1;
             tableLayoutPanel50.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel50.Size = new Size(365, 23);
+            tableLayoutPanel50.Size = new Size(409, 23);
             tableLayoutPanel50.TabIndex = 45;
             // 
             // totalAmountDueLabel2
@@ -2625,9 +2606,9 @@
             totalAmountDueLabel2.AutoSize = true;
             totalAmountDueLabel2.Dock = DockStyle.Fill;
             totalAmountDueLabel2.Font = new Font("Calibri", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            totalAmountDueLabel2.Location = new Point(295, 1);
+            totalAmountDueLabel2.Location = new Point(328, 1);
             totalAmountDueLabel2.Name = "totalAmountDueLabel2";
-            totalAmountDueLabel2.Size = new Size(66, 21);
+            totalAmountDueLabel2.Size = new Size(77, 21);
             totalAmountDueLabel2.TabIndex = 34;
             totalAmountDueLabel2.Text = "0.00";
             totalAmountDueLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2643,6 +2624,16 @@
             label118.TabIndex = 12;
             label118.Text = "TOTAL AMOUNT DUE";
             label118.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // discountComboBox
+            // 
+            discountComboBox.Font = new Font("Arial", 11.25F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            discountComboBox.FormattingEnabled = true;
+            discountComboBox.Location = new Point(109, 524);
+            discountComboBox.Name = "discountComboBox";
+            discountComboBox.Size = new Size(284, 25);
+            discountComboBox.TabIndex = 35;
+            discountComboBox.SelectedIndexChanged += discountComboBox_SelectedIndexChanged;
             // 
             // tableLayoutPanel51
             // 
@@ -2667,7 +2658,7 @@
             tableLayoutPanel51.Controls.Add(label131, 0, 2);
             tableLayoutPanel51.Controls.Add(label132, 0, 1);
             tableLayoutPanel51.Controls.Add(withHoldingTaxPercentLabel2, 1, 2);
-            tableLayoutPanel51.Location = new Point(497, 266);
+            tableLayoutPanel51.Location = new Point(460, 266);
             tableLayoutPanel51.Margin = new Padding(0);
             tableLayoutPanel51.Name = "tableLayoutPanel51";
             tableLayoutPanel51.RowCount = 5;
@@ -2676,7 +2667,7 @@
             tableLayoutPanel51.RowStyles.Add(new RowStyle(SizeType.Percent, 33.3333321F));
             tableLayoutPanel51.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel51.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel51.Size = new Size(365, 106);
+            tableLayoutPanel51.Size = new Size(409, 106);
             tableLayoutPanel51.TabIndex = 40;
             tableLayoutPanel51.Paint += tableLayoutPanel51_Paint;
             // 
@@ -2686,14 +2677,15 @@
             sfcInstallmentTextBox2.BorderStyle = BorderStyle.None;
             sfcInstallmentTextBox2.Dock = DockStyle.Fill;
             sfcInstallmentTextBox2.Font = new Font("Calibri", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            sfcInstallmentTextBox2.Location = new Point(292, 82);
+            sfcInstallmentTextBox2.Location = new Point(325, 82);
             sfcInstallmentTextBox2.Margin = new Padding(0);
             sfcInstallmentTextBox2.Name = "sfcInstallmentTextBox2";
             sfcInstallmentTextBox2.ReadOnly = true;
-            sfcInstallmentTextBox2.Size = new Size(72, 15);
+            sfcInstallmentTextBox2.Size = new Size(83, 15);
             sfcInstallmentTextBox2.TabIndex = 36;
             sfcInstallmentTextBox2.Text = " 0.00";
             sfcInstallmentTextBox2.TextAlign = HorizontalAlignment.Center;
+            sfcInstallmentTextBox2.TextChanged += sfcInstallmentTextBox2_TextChanged;
             // 
             // label128
             // 
@@ -2711,9 +2703,9 @@
             // 
             discountedAmountLabel2.AutoSize = true;
             discountedAmountLabel2.Dock = DockStyle.Fill;
-            discountedAmountLabel2.Location = new Point(295, 1);
+            discountedAmountLabel2.Location = new Point(328, 1);
             discountedAmountLabel2.Name = "discountedAmountLabel2";
-            discountedAmountLabel2.Size = new Size(66, 19);
+            discountedAmountLabel2.Size = new Size(77, 19);
             discountedAmountLabel2.TabIndex = 3;
             discountedAmountLabel2.Text = "0.00";
             discountedAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2722,9 +2714,9 @@
             // 
             discountedPercentLabel2.AutoSize = true;
             discountedPercentLabel2.Dock = DockStyle.Fill;
-            discountedPercentLabel2.Location = new Point(149, 1);
+            discountedPercentLabel2.Location = new Point(166, 1);
             discountedPercentLabel2.Name = "discountedPercentLabel2";
-            discountedPercentLabel2.Size = new Size(66, 19);
+            discountedPercentLabel2.Size = new Size(74, 19);
             discountedPercentLabel2.TabIndex = 1;
             discountedPercentLabel2.Text = "0%";
             discountedPercentLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2755,9 +2747,9 @@
             // 
             isArrearsLabel2.AutoSize = true;
             isArrearsLabel2.Dock = DockStyle.Fill;
-            isArrearsLabel2.Location = new Point(222, 61);
+            isArrearsLabel2.Location = new Point(247, 61);
             isArrearsLabel2.Name = "isArrearsLabel2";
-            isArrearsLabel2.Size = new Size(66, 20);
+            isArrearsLabel2.Size = new Size(74, 20);
             isArrearsLabel2.TabIndex = 32;
             isArrearsLabel2.Text = "0";
             isArrearsLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2767,9 +2759,9 @@
             // 
             arrearsAmountLabel2.AutoSize = true;
             arrearsAmountLabel2.Dock = DockStyle.Fill;
-            arrearsAmountLabel2.Location = new Point(295, 61);
+            arrearsAmountLabel2.Location = new Point(328, 61);
             arrearsAmountLabel2.Name = "arrearsAmountLabel2";
-            arrearsAmountLabel2.Size = new Size(66, 20);
+            arrearsAmountLabel2.Size = new Size(77, 20);
             arrearsAmountLabel2.TabIndex = 15;
             arrearsAmountLabel2.Text = "0.00";
             arrearsAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2778,9 +2770,9 @@
             // 
             withHoldingTaxAmountLabel2.AutoSize = true;
             withHoldingTaxAmountLabel2.Dock = DockStyle.Fill;
-            withHoldingTaxAmountLabel2.Location = new Point(295, 41);
+            withHoldingTaxAmountLabel2.Location = new Point(328, 41);
             withHoldingTaxAmountLabel2.Name = "withHoldingTaxAmountLabel2";
-            withHoldingTaxAmountLabel2.Size = new Size(66, 19);
+            withHoldingTaxAmountLabel2.Size = new Size(77, 19);
             withHoldingTaxAmountLabel2.TabIndex = 34;
             withHoldingTaxAmountLabel2.Text = " 0.00";
             withHoldingTaxAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2789,9 +2781,9 @@
             // 
             taxAmountLabel2.AutoSize = true;
             taxAmountLabel2.Dock = DockStyle.Fill;
-            taxAmountLabel2.Location = new Point(295, 21);
+            taxAmountLabel2.Location = new Point(328, 21);
             taxAmountLabel2.Name = "taxAmountLabel2";
-            taxAmountLabel2.Size = new Size(66, 19);
+            taxAmountLabel2.Size = new Size(77, 19);
             taxAmountLabel2.TabIndex = 7;
             taxAmountLabel2.Text = "0.00";
             taxAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2800,9 +2792,9 @@
             // 
             isWithHoldingTaxLabel2.AutoSize = true;
             isWithHoldingTaxLabel2.Dock = DockStyle.Fill;
-            isWithHoldingTaxLabel2.Location = new Point(222, 41);
+            isWithHoldingTaxLabel2.Location = new Point(247, 41);
             isWithHoldingTaxLabel2.Name = "isWithHoldingTaxLabel2";
-            isWithHoldingTaxLabel2.Size = new Size(66, 19);
+            isWithHoldingTaxLabel2.Size = new Size(74, 19);
             isWithHoldingTaxLabel2.TabIndex = 33;
             isWithHoldingTaxLabel2.Text = "0";
             isWithHoldingTaxLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2812,9 +2804,9 @@
             // 
             taxExemptedPercentLabel2.AutoSize = true;
             taxExemptedPercentLabel2.Dock = DockStyle.Fill;
-            taxExemptedPercentLabel2.Location = new Point(149, 21);
+            taxExemptedPercentLabel2.Location = new Point(166, 21);
             taxExemptedPercentLabel2.Name = "taxExemptedPercentLabel2";
-            taxExemptedPercentLabel2.Size = new Size(66, 19);
+            taxExemptedPercentLabel2.Size = new Size(74, 19);
             taxExemptedPercentLabel2.TabIndex = 23;
             taxExemptedPercentLabel2.Text = "2%";
             taxExemptedPercentLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2845,12 +2837,22 @@
             // 
             withHoldingTaxPercentLabel2.AutoSize = true;
             withHoldingTaxPercentLabel2.Dock = DockStyle.Fill;
-            withHoldingTaxPercentLabel2.Location = new Point(149, 41);
+            withHoldingTaxPercentLabel2.Location = new Point(166, 41);
             withHoldingTaxPercentLabel2.Name = "withHoldingTaxPercentLabel2";
-            withHoldingTaxPercentLabel2.Size = new Size(66, 19);
+            withHoldingTaxPercentLabel2.Size = new Size(74, 19);
             withHoldingTaxPercentLabel2.TabIndex = 37;
             withHoldingTaxPercentLabel2.Text = " 0%";
             withHoldingTaxPercentLabel2.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label35
+            // 
+            label35.AutoSize = true;
+            label35.Font = new Font("Arial Narrow", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            label35.Location = new Point(31, 529);
+            label35.Name = "label35";
+            label35.Size = new Size(67, 20);
+            label35.TabIndex = 34;
+            label35.Text = "Discount:";
             // 
             // tableLayoutPanel52
             // 
@@ -2864,21 +2866,21 @@
             tableLayoutPanel52.Controls.Add(penaltyPercentLabel2, 1, 0);
             tableLayoutPanel52.Controls.Add(label119, 0, 0);
             tableLayoutPanel52.Controls.Add(dueExemptLabel2, 2, 0);
-            tableLayoutPanel52.Location = new Point(497, 391);
+            tableLayoutPanel52.Location = new Point(460, 391);
             tableLayoutPanel52.Margin = new Padding(0);
             tableLayoutPanel52.Name = "tableLayoutPanel52";
             tableLayoutPanel52.RowCount = 1;
             tableLayoutPanel52.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel52.Size = new Size(365, 20);
+            tableLayoutPanel52.Size = new Size(409, 20);
             tableLayoutPanel52.TabIndex = 44;
             // 
             // penaltyAmountLabel2
             // 
             penaltyAmountLabel2.AutoSize = true;
             penaltyAmountLabel2.Dock = DockStyle.Fill;
-            penaltyAmountLabel2.Location = new Point(295, 1);
+            penaltyAmountLabel2.Location = new Point(328, 1);
             penaltyAmountLabel2.Name = "penaltyAmountLabel2";
-            penaltyAmountLabel2.Size = new Size(66, 18);
+            penaltyAmountLabel2.Size = new Size(77, 18);
             penaltyAmountLabel2.TabIndex = 33;
             penaltyAmountLabel2.Text = "0.00";
             penaltyAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2887,9 +2889,9 @@
             // 
             penaltyPercentLabel2.AutoSize = true;
             penaltyPercentLabel2.Dock = DockStyle.Fill;
-            penaltyPercentLabel2.Location = new Point(149, 1);
+            penaltyPercentLabel2.Location = new Point(166, 1);
             penaltyPercentLabel2.Name = "penaltyPercentLabel2";
-            penaltyPercentLabel2.Size = new Size(66, 18);
+            penaltyPercentLabel2.Size = new Size(74, 18);
             penaltyPercentLabel2.TabIndex = 35;
             penaltyPercentLabel2.Text = "0%";
             penaltyPercentLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2909,9 +2911,9 @@
             // 
             dueExemptLabel2.AutoSize = true;
             dueExemptLabel2.Dock = DockStyle.Fill;
-            dueExemptLabel2.Location = new Point(222, 1);
+            dueExemptLabel2.Location = new Point(247, 1);
             dueExemptLabel2.Name = "dueExemptLabel2";
-            dueExemptLabel2.Size = new Size(66, 18);
+            dueExemptLabel2.Size = new Size(74, 18);
             dueExemptLabel2.TabIndex = 36;
             dueExemptLabel2.Text = "0";
             dueExemptLabel2.Visible = false;
@@ -2926,12 +2928,12 @@
             tableLayoutPanel55.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
             tableLayoutPanel55.Controls.Add(subTotalAmountDueLabel2, 3, 0);
             tableLayoutPanel55.Controls.Add(label185, 0, 0);
-            tableLayoutPanel55.Location = new Point(497, 372);
+            tableLayoutPanel55.Location = new Point(460, 372);
             tableLayoutPanel55.Margin = new Padding(0);
             tableLayoutPanel55.Name = "tableLayoutPanel55";
             tableLayoutPanel55.RowCount = 1;
             tableLayoutPanel55.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel55.Size = new Size(365, 19);
+            tableLayoutPanel55.Size = new Size(409, 19);
             tableLayoutPanel55.TabIndex = 43;
             // 
             // subTotalAmountDueLabel2
@@ -2939,9 +2941,9 @@
             subTotalAmountDueLabel2.AutoSize = true;
             subTotalAmountDueLabel2.Dock = DockStyle.Fill;
             subTotalAmountDueLabel2.Font = new Font("Calibri", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            subTotalAmountDueLabel2.Location = new Point(295, 1);
+            subTotalAmountDueLabel2.Location = new Point(328, 1);
             subTotalAmountDueLabel2.Name = "subTotalAmountDueLabel2";
-            subTotalAmountDueLabel2.Size = new Size(66, 17);
+            subTotalAmountDueLabel2.Size = new Size(77, 17);
             subTotalAmountDueLabel2.TabIndex = 19;
             subTotalAmountDueLabel2.Text = "0.00";
             subTotalAmountDueLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -2966,14 +2968,14 @@
             tableLayoutPanel53.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel53.Controls.Add(tableLayoutPanel54, 0, 0);
             tableLayoutPanel53.Controls.Add(tableLayoutPanel56, 0, 1);
-            tableLayoutPanel53.Location = new Point(496, 12);
+            tableLayoutPanel53.Location = new Point(459, 12);
             tableLayoutPanel53.Margin = new Padding(0);
             tableLayoutPanel53.Name = "tableLayoutPanel53";
             tableLayoutPanel53.RowCount = 2;
             tableLayoutPanel53.RowStyles.Add(new RowStyle(SizeType.Percent, 32.2916641F));
             tableLayoutPanel53.RowStyles.Add(new RowStyle(SizeType.Percent, 67.70833F));
             tableLayoutPanel53.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel53.Size = new Size(367, 78);
+            tableLayoutPanel53.Size = new Size(411, 78);
             tableLayoutPanel53.TabIndex = 41;
             // 
             // tableLayoutPanel54
@@ -2990,7 +2992,7 @@
             tableLayoutPanel54.Name = "tableLayoutPanel54";
             tableLayoutPanel54.RowCount = 1;
             tableLayoutPanel54.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel54.Size = new Size(365, 24);
+            tableLayoutPanel54.Size = new Size(409, 24);
             tableLayoutPanel54.TabIndex = 0;
             // 
             // label58
@@ -3000,7 +3002,7 @@
             label58.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label58.Location = new Point(4, 1);
             label58.Name = "label58";
-            label58.Size = new Size(137, 22);
+            label58.Size = new Size(155, 22);
             label58.TabIndex = 2;
             label58.Text = "DUE DATE:";
             label58.TextAlign = ContentAlignment.MiddleRight;
@@ -3010,9 +3012,9 @@
             dueDateLabel2.AutoSize = true;
             dueDateLabel2.Dock = DockStyle.Fill;
             dueDateLabel2.Font = new Font("Calibri", 12F, FontStyle.Bold | FontStyle.Underline);
-            dueDateLabel2.Location = new Point(148, 1);
+            dueDateLabel2.Location = new Point(166, 1);
             dueDateLabel2.Name = "dueDateLabel2";
-            dueDateLabel2.Size = new Size(213, 22);
+            dueDateLabel2.Size = new Size(239, 22);
             dueDateLabel2.TabIndex = 1;
             dueDateLabel2.Text = "June 16, 2025";
             dueDateLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3036,7 +3038,7 @@
             tableLayoutPanel56.RowCount = 1;
             tableLayoutPanel56.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel56.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel56.Size = new Size(365, 51);
+            tableLayoutPanel56.Size = new Size(409, 51);
             tableLayoutPanel56.TabIndex = 1;
             // 
             // label86
@@ -3046,7 +3048,7 @@
             label86.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label86.Location = new Point(4, 1);
             label86.Name = "label86";
-            label86.Size = new Size(138, 49);
+            label86.Size = new Size(155, 49);
             label86.TabIndex = 0;
             label86.Text = "Item Description/\r\nNature of Service";
             label86.TextAlign = ContentAlignment.MiddleCenter;
@@ -3055,9 +3057,9 @@
             // 
             label90.AutoSize = true;
             label90.Dock = DockStyle.Fill;
-            label90.Location = new Point(149, 1);
+            label90.Location = new Point(166, 1);
             label90.Name = "label90";
-            label90.Size = new Size(66, 49);
+            label90.Size = new Size(74, 49);
             label90.TabIndex = 1;
             label90.Text = "Qty";
             label90.TextAlign = ContentAlignment.MiddleCenter;
@@ -3066,9 +3068,9 @@
             // 
             label91.AutoSize = true;
             label91.Dock = DockStyle.Fill;
-            label91.Location = new Point(222, 1);
+            label91.Location = new Point(247, 1);
             label91.Name = "label91";
-            label91.Size = new Size(66, 49);
+            label91.Size = new Size(74, 49);
             label91.TabIndex = 2;
             label91.Text = "Unit\r\nPrice";
             label91.TextAlign = ContentAlignment.MiddleCenter;
@@ -3077,9 +3079,9 @@
             // 
             label95.AutoSize = true;
             label95.Dock = DockStyle.Fill;
-            label95.Location = new Point(295, 1);
+            label95.Location = new Point(328, 1);
             label95.Name = "label95";
-            label95.Size = new Size(66, 49);
+            label95.Size = new Size(77, 49);
             label95.TabIndex = 3;
             label95.Text = "Amount";
             label95.TextAlign = ContentAlignment.MiddleCenter;
@@ -3118,7 +3120,7 @@
             tableLayoutPanel57.Controls.Add(label125, 0, 3);
             tableLayoutPanel57.Controls.Add(label126, 0, 2);
             tableLayoutPanel57.Controls.Add(label127, 0, 1);
-            tableLayoutPanel57.Location = new Point(497, 90);
+            tableLayoutPanel57.Location = new Point(460, 90);
             tableLayoutPanel57.Margin = new Padding(0);
             tableLayoutPanel57.Name = "tableLayoutPanel57";
             tableLayoutPanel57.RowCount = 7;
@@ -3129,7 +3131,7 @@
             tableLayoutPanel57.RowStyles.Add(new RowStyle(SizeType.Percent, 16.32653F));
             tableLayoutPanel57.RowStyles.Add(new RowStyle(SizeType.Percent, 14.2857141F));
             tableLayoutPanel57.RowStyles.Add(new RowStyle(SizeType.Percent, 13.605442F));
-            tableLayoutPanel57.Size = new Size(365, 176);
+            tableLayoutPanel57.Size = new Size(409, 176);
             tableLayoutPanel57.TabIndex = 42;
             // 
             // label120
@@ -3139,7 +3141,7 @@
             label120.Font = new Font("Calibri", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label120.Location = new Point(4, 1);
             label120.Name = "label120";
-            label120.Size = new Size(138, 29);
+            label120.Size = new Size(155, 29);
             label120.TabIndex = 31;
             label120.Text = "WATER CONSUMPTION";
             label120.TextAlign = ContentAlignment.MiddleLeft;
@@ -3148,9 +3150,9 @@
             // 
             totalWaterConsumptionAmountLabel2.AutoSize = true;
             totalWaterConsumptionAmountLabel2.Dock = DockStyle.Fill;
-            totalWaterConsumptionAmountLabel2.Location = new Point(295, 1);
+            totalWaterConsumptionAmountLabel2.Location = new Point(328, 1);
             totalWaterConsumptionAmountLabel2.Name = "totalWaterConsumptionAmountLabel2";
-            totalWaterConsumptionAmountLabel2.Size = new Size(66, 29);
+            totalWaterConsumptionAmountLabel2.Size = new Size(77, 29);
             totalWaterConsumptionAmountLabel2.TabIndex = 3;
             totalWaterConsumptionAmountLabel2.Text = "0.00";
             totalWaterConsumptionAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3159,9 +3161,9 @@
             // 
             totalQuantityLabel2.AutoSize = true;
             totalQuantityLabel2.Dock = DockStyle.Fill;
-            totalQuantityLabel2.Location = new Point(149, 1);
+            totalQuantityLabel2.Location = new Point(166, 1);
             totalQuantityLabel2.Name = "totalQuantityLabel2";
-            totalQuantityLabel2.Size = new Size(66, 29);
+            totalQuantityLabel2.Size = new Size(74, 29);
             totalQuantityLabel2.TabIndex = 6;
             totalQuantityLabel2.Text = "0";
             totalQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3170,9 +3172,9 @@
             // 
             fortyUpUnitPriceLabel2.AutoSize = true;
             fortyUpUnitPriceLabel2.Dock = DockStyle.Fill;
-            fortyUpUnitPriceLabel2.Location = new Point(222, 150);
+            fortyUpUnitPriceLabel2.Location = new Point(247, 150);
             fortyUpUnitPriceLabel2.Name = "fortyUpUnitPriceLabel2";
-            fortyUpUnitPriceLabel2.Size = new Size(66, 25);
+            fortyUpUnitPriceLabel2.Size = new Size(74, 25);
             fortyUpUnitPriceLabel2.TabIndex = 26;
             fortyUpUnitPriceLabel2.Text = "0.00";
             fortyUpUnitPriceLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3181,9 +3183,9 @@
             // 
             fortyUpQuantityLabel2.AutoSize = true;
             fortyUpQuantityLabel2.Dock = DockStyle.Fill;
-            fortyUpQuantityLabel2.Location = new Point(149, 150);
+            fortyUpQuantityLabel2.Location = new Point(166, 150);
             fortyUpQuantityLabel2.Name = "fortyUpQuantityLabel2";
-            fortyUpQuantityLabel2.Size = new Size(66, 25);
+            fortyUpQuantityLabel2.Size = new Size(74, 25);
             fortyUpQuantityLabel2.TabIndex = 25;
             fortyUpQuantityLabel2.Text = "0";
             fortyUpQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3192,9 +3194,9 @@
             // 
             fortyUpAmountLabel2.AutoSize = true;
             fortyUpAmountLabel2.Dock = DockStyle.Fill;
-            fortyUpAmountLabel2.Location = new Point(295, 150);
+            fortyUpAmountLabel2.Location = new Point(328, 150);
             fortyUpAmountLabel2.Name = "fortyUpAmountLabel2";
-            fortyUpAmountLabel2.Size = new Size(66, 25);
+            fortyUpAmountLabel2.Size = new Size(77, 25);
             fortyUpAmountLabel2.TabIndex = 27;
             fortyUpAmountLabel2.Text = "0.00";
             fortyUpAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3203,9 +3205,9 @@
             // 
             fortyAmountLabel2.AutoSize = true;
             fortyAmountLabel2.Dock = DockStyle.Fill;
-            fortyAmountLabel2.Location = new Point(295, 125);
+            fortyAmountLabel2.Location = new Point(328, 125);
             fortyAmountLabel2.Name = "fortyAmountLabel2";
-            fortyAmountLabel2.Size = new Size(66, 24);
+            fortyAmountLabel2.Size = new Size(77, 24);
             fortyAmountLabel2.TabIndex = 23;
             fortyAmountLabel2.Text = "0.00";
             fortyAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3214,9 +3216,9 @@
             // 
             fortyUnitPriceLabel2.AutoSize = true;
             fortyUnitPriceLabel2.Dock = DockStyle.Fill;
-            fortyUnitPriceLabel2.Location = new Point(222, 125);
+            fortyUnitPriceLabel2.Location = new Point(247, 125);
             fortyUnitPriceLabel2.Name = "fortyUnitPriceLabel2";
-            fortyUnitPriceLabel2.Size = new Size(66, 24);
+            fortyUnitPriceLabel2.Size = new Size(74, 24);
             fortyUnitPriceLabel2.TabIndex = 22;
             fortyUnitPriceLabel2.Text = "0.00";
             fortyUnitPriceLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3225,9 +3227,9 @@
             // 
             fortyQuantityLabel2.AutoSize = true;
             fortyQuantityLabel2.Dock = DockStyle.Fill;
-            fortyQuantityLabel2.Location = new Point(149, 125);
+            fortyQuantityLabel2.Location = new Point(166, 125);
             fortyQuantityLabel2.Name = "fortyQuantityLabel2";
-            fortyQuantityLabel2.Size = new Size(66, 24);
+            fortyQuantityLabel2.Size = new Size(74, 24);
             fortyQuantityLabel2.TabIndex = 30;
             fortyQuantityLabel2.Text = "0";
             fortyQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3236,9 +3238,9 @@
             // 
             thirtyQuantityLabel2.AutoSize = true;
             thirtyQuantityLabel2.Dock = DockStyle.Fill;
-            thirtyQuantityLabel2.Location = new Point(149, 96);
+            thirtyQuantityLabel2.Location = new Point(166, 96);
             thirtyQuantityLabel2.Name = "thirtyQuantityLabel2";
-            thirtyQuantityLabel2.Size = new Size(66, 28);
+            thirtyQuantityLabel2.Size = new Size(74, 28);
             thirtyQuantityLabel2.TabIndex = 29;
             thirtyQuantityLabel2.Text = "0";
             thirtyQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3247,9 +3249,9 @@
             // 
             thirtyUnitPriceLabel2.AutoSize = true;
             thirtyUnitPriceLabel2.Dock = DockStyle.Fill;
-            thirtyUnitPriceLabel2.Location = new Point(222, 96);
+            thirtyUnitPriceLabel2.Location = new Point(247, 96);
             thirtyUnitPriceLabel2.Name = "thirtyUnitPriceLabel2";
-            thirtyUnitPriceLabel2.Size = new Size(66, 28);
+            thirtyUnitPriceLabel2.Size = new Size(74, 28);
             thirtyUnitPriceLabel2.TabIndex = 18;
             thirtyUnitPriceLabel2.Text = "0.00";
             thirtyUnitPriceLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3258,9 +3260,9 @@
             // 
             thirtyAmountLabel2.AutoSize = true;
             thirtyAmountLabel2.Dock = DockStyle.Fill;
-            thirtyAmountLabel2.Location = new Point(295, 96);
+            thirtyAmountLabel2.Location = new Point(328, 96);
             thirtyAmountLabel2.Name = "thirtyAmountLabel2";
-            thirtyAmountLabel2.Size = new Size(66, 28);
+            thirtyAmountLabel2.Size = new Size(77, 28);
             thirtyAmountLabel2.TabIndex = 19;
             thirtyAmountLabel2.Text = "0.00";
             thirtyAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3269,9 +3271,9 @@
             // 
             twentyAmountLabel2.AutoSize = true;
             twentyAmountLabel2.Dock = DockStyle.Fill;
-            twentyAmountLabel2.Location = new Point(295, 74);
+            twentyAmountLabel2.Location = new Point(328, 74);
             twentyAmountLabel2.Name = "twentyAmountLabel2";
-            twentyAmountLabel2.Size = new Size(66, 21);
+            twentyAmountLabel2.Size = new Size(77, 21);
             twentyAmountLabel2.TabIndex = 15;
             twentyAmountLabel2.Text = "0.00";
             twentyAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3280,9 +3282,9 @@
             // 
             twentyUnitPriceLabel2.AutoSize = true;
             twentyUnitPriceLabel2.Dock = DockStyle.Fill;
-            twentyUnitPriceLabel2.Location = new Point(222, 74);
+            twentyUnitPriceLabel2.Location = new Point(247, 74);
             twentyUnitPriceLabel2.Name = "twentyUnitPriceLabel2";
-            twentyUnitPriceLabel2.Size = new Size(66, 21);
+            twentyUnitPriceLabel2.Size = new Size(74, 21);
             twentyUnitPriceLabel2.TabIndex = 14;
             twentyUnitPriceLabel2.Text = "0.00";
             twentyUnitPriceLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3291,9 +3293,9 @@
             // 
             twentyQuantityLabel2.AutoSize = true;
             twentyQuantityLabel2.Dock = DockStyle.Fill;
-            twentyQuantityLabel2.Location = new Point(149, 74);
+            twentyQuantityLabel2.Location = new Point(166, 74);
             twentyQuantityLabel2.Name = "twentyQuantityLabel2";
-            twentyQuantityLabel2.Size = new Size(66, 21);
+            twentyQuantityLabel2.Size = new Size(74, 21);
             twentyQuantityLabel2.TabIndex = 28;
             twentyQuantityLabel2.Text = "0";
             twentyQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3302,9 +3304,9 @@
             // 
             tenQuantityLabel2.AutoSize = true;
             tenQuantityLabel2.Dock = DockStyle.Fill;
-            tenQuantityLabel2.Location = new Point(149, 55);
+            tenQuantityLabel2.Location = new Point(166, 55);
             tenQuantityLabel2.Name = "tenQuantityLabel2";
-            tenQuantityLabel2.Size = new Size(66, 18);
+            tenQuantityLabel2.Size = new Size(74, 18);
             tenQuantityLabel2.TabIndex = 9;
             tenQuantityLabel2.Text = "0";
             tenQuantityLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3313,9 +3315,9 @@
             // 
             tenUnitPriceLabel2.AutoSize = true;
             tenUnitPriceLabel2.Dock = DockStyle.Fill;
-            tenUnitPriceLabel2.Location = new Point(222, 55);
+            tenUnitPriceLabel2.Location = new Point(247, 55);
             tenUnitPriceLabel2.Name = "tenUnitPriceLabel2";
-            tenUnitPriceLabel2.Size = new Size(66, 18);
+            tenUnitPriceLabel2.Size = new Size(74, 18);
             tenUnitPriceLabel2.TabIndex = 10;
             tenUnitPriceLabel2.Text = "0.00";
             tenUnitPriceLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3324,9 +3326,9 @@
             // 
             tenAmountLabel2.AutoSize = true;
             tenAmountLabel2.Dock = DockStyle.Fill;
-            tenAmountLabel2.Location = new Point(295, 55);
+            tenAmountLabel2.Location = new Point(328, 55);
             tenAmountLabel2.Name = "tenAmountLabel2";
-            tenAmountLabel2.Size = new Size(66, 18);
+            tenAmountLabel2.Size = new Size(77, 18);
             tenAmountLabel2.TabIndex = 11;
             tenAmountLabel2.Text = "0.00";
             tenAmountLabel2.TextAlign = ContentAlignment.MiddleCenter;
@@ -3335,9 +3337,9 @@
             // 
             label121.AutoSize = true;
             label121.Dock = DockStyle.Fill;
-            label121.Location = new Point(222, 31);
+            label121.Location = new Point(247, 31);
             label121.Name = "label121";
-            label121.Size = new Size(66, 23);
+            label121.Size = new Size(74, 23);
             label121.TabIndex = 2;
             label121.Text = "352";
             label121.TextAlign = ContentAlignment.MiddleCenter;
@@ -3348,7 +3350,7 @@
             label122.Dock = DockStyle.Fill;
             label122.Location = new Point(4, 150);
             label122.Name = "label122";
-            label122.Size = new Size(138, 25);
+            label122.Size = new Size(155, 25);
             label122.TabIndex = 24;
             label122.Text = "41 & UP mᵌ";
             label122.TextAlign = ContentAlignment.MiddleCenter;
@@ -3359,7 +3361,7 @@
             label123.Dock = DockStyle.Fill;
             label123.Location = new Point(4, 125);
             label123.Name = "label123";
-            label123.Size = new Size(138, 24);
+            label123.Size = new Size(155, 24);
             label123.TabIndex = 20;
             label123.Text = "31-40 mᵌ";
             label123.TextAlign = ContentAlignment.MiddleCenter;
@@ -3370,7 +3372,7 @@
             label124.Dock = DockStyle.Fill;
             label124.Location = new Point(4, 96);
             label124.Name = "label124";
-            label124.Size = new Size(138, 28);
+            label124.Size = new Size(155, 28);
             label124.TabIndex = 16;
             label124.Text = "21-30 mᵌ";
             label124.TextAlign = ContentAlignment.MiddleCenter;
@@ -3381,7 +3383,7 @@
             label125.Dock = DockStyle.Fill;
             label125.Location = new Point(4, 74);
             label125.Name = "label125";
-            label125.Size = new Size(138, 21);
+            label125.Size = new Size(155, 21);
             label125.TabIndex = 12;
             label125.Text = "11-20 mᵌ";
             label125.TextAlign = ContentAlignment.MiddleCenter;
@@ -3392,7 +3394,7 @@
             label126.Dock = DockStyle.Fill;
             label126.Location = new Point(4, 55);
             label126.Name = "label126";
-            label126.Size = new Size(138, 18);
+            label126.Size = new Size(155, 18);
             label126.TabIndex = 8;
             label126.Text = "0-10 mᵌ";
             label126.TextAlign = ContentAlignment.MiddleCenter;
@@ -3403,7 +3405,7 @@
             label127.Dock = DockStyle.Fill;
             label127.Location = new Point(4, 31);
             label127.Name = "label127";
-            label127.Size = new Size(138, 23);
+            label127.Size = new Size(155, 23);
             label127.TabIndex = 4;
             label127.Text = "Minimum Charge";
             label127.TextAlign = ContentAlignment.MiddleCenter;
@@ -3412,9 +3414,9 @@
             // 
             collectionRecieptPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             collectionRecieptPanel.Controls.Add(tableLayoutPanel35);
-            collectionRecieptPanel.Location = new Point(9, 9);
+            collectionRecieptPanel.Location = new Point(30, 9);
             collectionRecieptPanel.Name = "collectionRecieptPanel";
-            collectionRecieptPanel.Size = new Size(399, 537);
+            collectionRecieptPanel.Size = new Size(399, 501);
             collectionRecieptPanel.TabIndex = 1;
             // 
             // tableLayoutPanel35
@@ -3440,7 +3442,7 @@
             tableLayoutPanel35.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
             tableLayoutPanel35.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
             tableLayoutPanel35.RowStyles.Add(new RowStyle(SizeType.Absolute, 71F));
-            tableLayoutPanel35.Size = new Size(399, 537);
+            tableLayoutPanel35.Size = new Size(399, 501);
             tableLayoutPanel35.TabIndex = 0;
             // 
             // tableLayoutPanel36
@@ -3460,7 +3462,7 @@
             tableLayoutPanel36.RowStyles.Add(new RowStyle(SizeType.Percent, 41.26984F));
             tableLayoutPanel36.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel36.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            tableLayoutPanel36.Size = new Size(397, 134);
+            tableLayoutPanel36.Size = new Size(397, 111);
             tableLayoutPanel36.TabIndex = 0;
             // 
             // tableLayoutPanel37
@@ -3478,7 +3480,7 @@
             tableLayoutPanel37.Name = "tableLayoutPanel37";
             tableLayoutPanel37.RowCount = 1;
             tableLayoutPanel37.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel37.Size = new Size(397, 58);
+            tableLayoutPanel37.Size = new Size(397, 44);
             tableLayoutPanel37.TabIndex = 0;
             // 
             // pictureBox3
@@ -3489,7 +3491,7 @@
             pictureBox3.Location = new Point(0, 0);
             pictureBox3.Margin = new Padding(0);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(65, 58);
+            pictureBox3.Size = new Size(65, 44);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 2;
             pictureBox3.TabStop = false;
@@ -3510,7 +3512,7 @@
             tableLayoutPanel38.RowStyles.Add(new RowStyle(SizeType.Percent, 47.826088F));
             tableLayoutPanel38.RowStyles.Add(new RowStyle(SizeType.Percent, 52.173912F));
             tableLayoutPanel38.RowStyles.Add(new RowStyle(SizeType.Absolute, 8F));
-            tableLayoutPanel38.Size = new Size(244, 58);
+            tableLayoutPanel38.Size = new Size(244, 44);
             tableLayoutPanel38.TabIndex = 4;
             tableLayoutPanel38.Paint += tableLayoutPanel38_Paint;
             // 
@@ -3519,7 +3521,7 @@
             label44.AutoSize = true;
             label44.Dock = DockStyle.Left;
             label44.Font = new Font("Arial", 6.75F);
-            label44.Location = new Point(3, 49);
+            label44.Location = new Point(3, 35);
             label44.Name = "label44";
             label44.Size = new Size(156, 9);
             label44.TabIndex = 2;
@@ -3531,9 +3533,9 @@
             label43.AutoSize = true;
             label43.Dock = DockStyle.Left;
             label43.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label43.Location = new Point(3, 23);
+            label43.Location = new Point(3, 17);
             label43.Name = "label43";
-            label43.Size = new Size(214, 26);
+            label43.Size = new Size(214, 18);
             label43.TabIndex = 1;
             label43.Text = "IGBARAS  WATER  DISTRICT  (ILOILO)";
             label43.TextAlign = ContentAlignment.MiddleLeft;
@@ -3545,7 +3547,7 @@
             label42.Font = new Font("Arial", 6.75F);
             label42.Location = new Point(3, 0);
             label42.Name = "label42";
-            label42.Size = new Size(116, 23);
+            label42.Size = new Size(116, 17);
             label42.TabIndex = 0;
             label42.Text = "Republic of the Philippines";
             label42.TextAlign = ContentAlignment.MiddleLeft;
@@ -3558,7 +3560,7 @@
             pictureBox4.Location = new Point(323, 0);
             pictureBox4.Margin = new Padding(0);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(50, 58);
+            pictureBox4.Size = new Size(50, 44);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 3;
             pictureBox4.TabStop = false;
@@ -3570,12 +3572,12 @@
             tableLayoutPanel39.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80.0595245F));
             tableLayoutPanel39.Controls.Add(tableLayoutPanel40, 1, 0);
             tableLayoutPanel39.Dock = DockStyle.Fill;
-            tableLayoutPanel39.Location = new Point(0, 58);
+            tableLayoutPanel39.Location = new Point(0, 44);
             tableLayoutPanel39.Margin = new Padding(0);
             tableLayoutPanel39.Name = "tableLayoutPanel39";
             tableLayoutPanel39.RowCount = 1;
             tableLayoutPanel39.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel39.Size = new Size(397, 40);
+            tableLayoutPanel39.Size = new Size(397, 31);
             tableLayoutPanel39.TabIndex = 1;
             // 
             // tableLayoutPanel40
@@ -3594,7 +3596,7 @@
             tableLayoutPanel40.RowCount = 2;
             tableLayoutPanel40.RowStyles.Add(new RowStyle(SizeType.Percent, 55.1724129F));
             tableLayoutPanel40.RowStyles.Add(new RowStyle(SizeType.Percent, 44.8275871F));
-            tableLayoutPanel40.Size = new Size(318, 40);
+            tableLayoutPanel40.Size = new Size(318, 31);
             tableLayoutPanel40.TabIndex = 0;
             // 
             // label47
@@ -3604,7 +3606,7 @@
             label47.Font = new Font("Arial", 6.75F);
             label47.Location = new Point(188, 0);
             label47.Name = "label47";
-            label47.Size = new Size(127, 22);
+            label47.Size = new Size(127, 17);
             label47.TabIndex = 4;
             label47.Text = "NON-VAT Reg.";
             // 
@@ -3613,9 +3615,9 @@
             label50.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label50.AutoSize = true;
             label50.Font = new Font("Arial", 6.75F);
-            label50.Location = new Point(188, 22);
+            label50.Location = new Point(188, 17);
             label50.Name = "label50";
-            label50.Size = new Size(127, 18);
+            label50.Size = new Size(127, 14);
             label50.TabIndex = 6;
             label50.Text = "TIN: 006-231-718-00";
             // 
@@ -3624,9 +3626,9 @@
             label48.AutoSize = true;
             label48.Dock = DockStyle.Left;
             label48.Font = new Font("Arial", 6.75F);
-            label48.Location = new Point(3, 22);
+            label48.Location = new Point(3, 17);
             label48.Name = "label48";
-            label48.Size = new Size(96, 18);
+            label48.Size = new Size(96, 14);
             label48.TabIndex = 5;
             label48.Text = "Tel No. (033)315-6264";
             label48.TextAlign = ContentAlignment.BottomLeft;
@@ -3638,7 +3640,7 @@
             label46.Font = new Font("Arial", 6.75F);
             label46.Location = new Point(3, 0);
             label46.Name = "label46";
-            label46.Size = new Size(135, 22);
+            label46.Size = new Size(135, 17);
             label46.TabIndex = 3;
             label46.Text = "M. Ezpelata St., Igbaraas, Iloilo";
             label46.TextAlign = ContentAlignment.BottomLeft;
@@ -3653,7 +3655,7 @@
             tableLayoutPanel41.Controls.Add(label52, 1, 0);
             tableLayoutPanel41.Controls.Add(label51, 0, 0);
             tableLayoutPanel41.Dock = DockStyle.Fill;
-            tableLayoutPanel41.Location = new Point(0, 98);
+            tableLayoutPanel41.Location = new Point(0, 75);
             tableLayoutPanel41.Margin = new Padding(0);
             tableLayoutPanel41.Name = "tableLayoutPanel41";
             tableLayoutPanel41.RowCount = 1;
@@ -3708,7 +3710,7 @@
             tableLayoutPanel42.Controls.Add(label56, 1, 0);
             tableLayoutPanel42.Controls.Add(paymentDateLabel, 2, 0);
             tableLayoutPanel42.Dock = DockStyle.Fill;
-            tableLayoutPanel42.Location = new Point(0, 118);
+            tableLayoutPanel42.Location = new Point(0, 95);
             tableLayoutPanel42.Margin = new Padding(0);
             tableLayoutPanel42.Name = "tableLayoutPanel42";
             tableLayoutPanel42.RowCount = 1;
@@ -3750,7 +3752,7 @@
             tableLayoutPanel43.Controls.Add(tableLayoutPanel45, 0, 1);
             tableLayoutPanel43.Controls.Add(tableLayoutPanel44, 0, 0);
             tableLayoutPanel43.Dock = DockStyle.Fill;
-            tableLayoutPanel43.Location = new Point(1, 136);
+            tableLayoutPanel43.Location = new Point(1, 113);
             tableLayoutPanel43.Margin = new Padding(0);
             tableLayoutPanel43.Name = "tableLayoutPanel43";
             tableLayoutPanel43.RowCount = 4;
@@ -3758,7 +3760,7 @@
             tableLayoutPanel43.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutPanel43.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
             tableLayoutPanel43.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
-            tableLayoutPanel43.Size = new Size(397, 79);
+            tableLayoutPanel43.Size = new Size(397, 66);
             tableLayoutPanel43.TabIndex = 1;
             // 
             // tableLayoutPanel47
@@ -3769,12 +3771,12 @@
             tableLayoutPanel47.Controls.Add(collectionAddressLabel, 1, 0);
             tableLayoutPanel47.Controls.Add(label80, 0, 0);
             tableLayoutPanel47.Dock = DockStyle.Fill;
-            tableLayoutPanel47.Location = new Point(1, 58);
+            tableLayoutPanel47.Location = new Point(1, 49);
             tableLayoutPanel47.Margin = new Padding(0);
             tableLayoutPanel47.Name = "tableLayoutPanel47";
             tableLayoutPanel47.RowCount = 1;
             tableLayoutPanel47.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel47.Size = new Size(395, 20);
+            tableLayoutPanel47.Size = new Size(395, 16);
             tableLayoutPanel47.TabIndex = 3;
             // 
             // collectionAddressLabel
@@ -3784,7 +3786,7 @@
             collectionAddressLabel.Font = new Font("Arial", 9F);
             collectionAddressLabel.Location = new Point(141, 0);
             collectionAddressLabel.Name = "collectionAddressLabel";
-            collectionAddressLabel.Size = new Size(251, 20);
+            collectionAddressLabel.Size = new Size(251, 16);
             collectionAddressLabel.TabIndex = 12;
             collectionAddressLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
@@ -3795,7 +3797,7 @@
             label80.Font = new Font("Arial", 9F);
             label80.Location = new Point(3, 0);
             label80.Name = "label80";
-            label80.Size = new Size(132, 20);
+            label80.Size = new Size(132, 16);
             label80.TabIndex = 11;
             label80.Text = "Business Address:";
             label80.TextAlign = ContentAlignment.MiddleLeft;
@@ -3807,12 +3809,12 @@
             tableLayoutPanel46.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 65F));
             tableLayoutPanel46.Controls.Add(label70, 0, 0);
             tableLayoutPanel46.Dock = DockStyle.Fill;
-            tableLayoutPanel46.Location = new Point(1, 39);
+            tableLayoutPanel46.Location = new Point(1, 33);
             tableLayoutPanel46.Margin = new Padding(0);
             tableLayoutPanel46.Name = "tableLayoutPanel46";
             tableLayoutPanel46.RowCount = 1;
             tableLayoutPanel46.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel46.Size = new Size(395, 18);
+            tableLayoutPanel46.Size = new Size(395, 15);
             tableLayoutPanel46.TabIndex = 2;
             // 
             // label70
@@ -3822,7 +3824,7 @@
             label70.Font = new Font("Arial", 9F);
             label70.Location = new Point(3, 0);
             label70.Name = "label70";
-            label70.Size = new Size(132, 18);
+            label70.Size = new Size(132, 15);
             label70.TabIndex = 9;
             label70.Text = "TIN:";
             label70.TextAlign = ContentAlignment.MiddleLeft;
@@ -3835,12 +3837,12 @@
             tableLayoutPanel45.Controls.Add(label66, 0, 0);
             tableLayoutPanel45.Controls.Add(collectionNameLabel, 1, 0);
             tableLayoutPanel45.Dock = DockStyle.Fill;
-            tableLayoutPanel45.Location = new Point(1, 20);
+            tableLayoutPanel45.Location = new Point(1, 17);
             tableLayoutPanel45.Margin = new Padding(0);
             tableLayoutPanel45.Name = "tableLayoutPanel45";
             tableLayoutPanel45.RowCount = 1;
             tableLayoutPanel45.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel45.Size = new Size(395, 18);
+            tableLayoutPanel45.Size = new Size(395, 15);
             tableLayoutPanel45.TabIndex = 1;
             // 
             // label66
@@ -3850,7 +3852,7 @@
             label66.Font = new Font("Arial", 9F);
             label66.Location = new Point(3, 0);
             label66.Name = "label66";
-            label66.Size = new Size(132, 18);
+            label66.Size = new Size(132, 15);
             label66.TabIndex = 7;
             label66.Text = "Registered Name:";
             label66.TextAlign = ContentAlignment.MiddleLeft;
@@ -3877,7 +3879,7 @@
             tableLayoutPanel44.Name = "tableLayoutPanel44";
             tableLayoutPanel44.RowCount = 1;
             tableLayoutPanel44.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel44.Size = new Size(395, 18);
+            tableLayoutPanel44.Size = new Size(395, 15);
             tableLayoutPanel44.TabIndex = 0;
             // 
             // label59
@@ -3887,7 +3889,7 @@
             label59.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label59.Location = new Point(3, 0);
             label59.Name = "label59";
-            label59.Size = new Size(132, 18);
+            label59.Size = new Size(132, 15);
             label59.TabIndex = 5;
             label59.Text = "RECEIVED FROM:";
             label59.TextAlign = ContentAlignment.MiddleLeft;
@@ -3898,7 +3900,7 @@
             tableLayoutPanel48.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel48.Controls.Add(tableLayoutPanel49, 0, 1);
             tableLayoutPanel48.Dock = DockStyle.Fill;
-            tableLayoutPanel48.Location = new Point(1, 216);
+            tableLayoutPanel48.Location = new Point(1, 180);
             tableLayoutPanel48.Margin = new Padding(0);
             tableLayoutPanel48.Name = "tableLayoutPanel48";
             tableLayoutPanel48.RowCount = 2;
@@ -3913,7 +3915,6 @@
             tableLayoutPanel49.ColumnCount = 2;
             tableLayoutPanel49.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 79.891304F));
             tableLayoutPanel49.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.108696F));
-            tableLayoutPanel49.Controls.Add(label157, 1, 6);
             tableLayoutPanel49.Controls.Add(label156, 0, 6);
             tableLayoutPanel49.Controls.Add(collectionTotalAddtionalChargeLabel, 1, 5);
             tableLayoutPanel49.Controls.Add(label150, 0, 5);
@@ -3927,6 +3928,7 @@
             tableLayoutPanel49.Controls.Add(label142, 0, 1);
             tableLayoutPanel49.Controls.Add(label141, 1, 0);
             tableLayoutPanel49.Controls.Add(label39, 0, 0);
+            tableLayoutPanel49.Controls.Add(collectionOtherPaymentTextBox, 1, 6);
             tableLayoutPanel49.Dock = DockStyle.Fill;
             tableLayoutPanel49.Location = new Point(0, 2);
             tableLayoutPanel49.Margin = new Padding(0);
@@ -3941,18 +3943,6 @@
             tableLayoutPanel49.RowStyles.Add(new RowStyle(SizeType.Absolute, 17F));
             tableLayoutPanel49.Size = new Size(397, 146);
             tableLayoutPanel49.TabIndex = 0;
-            // 
-            // label157
-            // 
-            label157.AutoSize = true;
-            label157.Dock = DockStyle.Fill;
-            label157.Font = new Font("Arial", 9F);
-            label157.Location = new Point(319, 127);
-            label157.Name = "label157";
-            label157.Size = new Size(74, 18);
-            label157.TabIndex = 25;
-            label157.Text = "0.00";
-            label157.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label156
             // 
@@ -4115,6 +4105,18 @@
             label39.Text = "Discription of Transaction/Nature of Service";
             label39.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // collectionOtherPaymentTextBox
+            // 
+            collectionOtherPaymentTextBox.BorderStyle = BorderStyle.None;
+            collectionOtherPaymentTextBox.Dock = DockStyle.Fill;
+            collectionOtherPaymentTextBox.Location = new Point(316, 127);
+            collectionOtherPaymentTextBox.Margin = new Padding(0);
+            collectionOtherPaymentTextBox.Name = "collectionOtherPaymentTextBox";
+            collectionOtherPaymentTextBox.Size = new Size(80, 14);
+            collectionOtherPaymentTextBox.TabIndex = 25;
+            collectionOtherPaymentTextBox.Text = "0.00";
+            collectionOtherPaymentTextBox.TextAlign = HorizontalAlignment.Center;
+            // 
             // tableLayoutPanel58
             // 
             tableLayoutPanel58.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
@@ -4124,7 +4126,7 @@
             tableLayoutPanel58.Controls.Add(label152, 0, 0);
             tableLayoutPanel58.Controls.Add(tableLayoutPanel59, 1, 0);
             tableLayoutPanel58.Dock = DockStyle.Fill;
-            tableLayoutPanel58.Location = new Point(1, 365);
+            tableLayoutPanel58.Location = new Point(1, 329);
             tableLayoutPanel58.Margin = new Padding(0);
             tableLayoutPanel58.Name = "tableLayoutPanel58";
             tableLayoutPanel58.RowCount = 1;
@@ -4250,6 +4252,7 @@
             tableLayoutPanel62.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 93.5897446F));
             tableLayoutPanel62.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 136F));
             tableLayoutPanel62.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 129F));
+            tableLayoutPanel62.Controls.Add(label40, 0, 0);
             tableLayoutPanel62.Controls.Add(label158, 1, 0);
             tableLayoutPanel62.Controls.Add(label162, 3, 2);
             tableLayoutPanel62.Controls.Add(collectingOfficerNameLabel, 3, 1);
@@ -4258,7 +4261,7 @@
             tableLayoutPanel62.Controls.Add(tableLayoutPanel64, 1, 1);
             tableLayoutPanel62.Controls.Add(tableLayoutPanel65, 1, 2);
             tableLayoutPanel62.Dock = DockStyle.Fill;
-            tableLayoutPanel62.Location = new Point(1, 411);
+            tableLayoutPanel62.Location = new Point(1, 375);
             tableLayoutPanel62.Margin = new Padding(0);
             tableLayoutPanel62.Name = "tableLayoutPanel62";
             tableLayoutPanel62.RowCount = 3;
@@ -4267,6 +4270,18 @@
             tableLayoutPanel62.RowStyles.Add(new RowStyle(SizeType.Absolute, 19F));
             tableLayoutPanel62.Size = new Size(397, 52);
             tableLayoutPanel62.TabIndex = 4;
+            // 
+            // label40
+            // 
+            label40.AutoSize = true;
+            label40.Dock = DockStyle.Fill;
+            label40.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label40.Location = new Point(3, 0);
+            label40.Name = "label40";
+            label40.Size = new Size(2, 12);
+            label40.TabIndex = 33;
+            label40.Text = "Bank / No.";
+            label40.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label158
             // 
@@ -4421,7 +4436,7 @@
             tableLayoutPanel63.Controls.Add(label164, 0, 1);
             tableLayoutPanel63.Controls.Add(label163, 0, 0);
             tableLayoutPanel63.Dock = DockStyle.Fill;
-            tableLayoutPanel63.Location = new Point(1, 464);
+            tableLayoutPanel63.Location = new Point(1, 428);
             tableLayoutPanel63.Margin = new Padding(0);
             tableLayoutPanel63.Name = "tableLayoutPanel63";
             tableLayoutPanel63.RowCount = 5;
@@ -4714,6 +4729,200 @@
             accountDataGridView.CellContentClick += accountDataGridView_CellContentClick_1;
             accountDataGridView.CellFormatting += accountDataGridView_CellFormatting;
             // 
+            // panel6
+            // 
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(1377, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(10, 599);
+            panel6.TabIndex = 23;
+            // 
+            // panel2
+            // 
+            panel2.AutoScroll = true;
+            panel2.Controls.Add(serviceIDLabel);
+            panel2.Controls.Add(latestBillNoLabel);
+            panel2.Controls.Add(changeLabel);
+            panel2.Controls.Add(printlangmuna);
+            panel2.Controls.Add(currentTabLabel);
+            panel2.Controls.Add(paymentsOnThisDayDataGridView);
+            panel2.Controls.Add(label36);
+            panel2.Controls.Add(accountnoBillHistory);
+            panel2.Controls.Add(paymentsDataGridView);
+            panel2.Controls.Add(panel4);
+            panel2.Controls.Add(label71);
+            panel2.Controls.Add(billDataGridView);
+            panel2.Controls.Add(billdataTextBox);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(4, 610);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1387, 334);
+            panel2.TabIndex = 1;
+            panel2.Paint += panel2_Paint;
+            // 
+            // serviceIDLabel
+            // 
+            serviceIDLabel.AutoSize = true;
+            serviceIDLabel.Location = new Point(509, 13);
+            serviceIDLabel.Name = "serviceIDLabel";
+            serviceIDLabel.Size = new Size(44, 15);
+            serviceIDLabel.TabIndex = 48;
+            serviceIDLabel.Text = "label40";
+            // 
+            // latestBillNoLabel
+            // 
+            latestBillNoLabel.AutoSize = true;
+            latestBillNoLabel.Font = new Font("Arial", 8.25F);
+            latestBillNoLabel.Location = new Point(562, 2);
+            latestBillNoLabel.Name = "latestBillNoLabel";
+            latestBillNoLabel.Size = new Size(87, 14);
+            latestBillNoLabel.TabIndex = 32;
+            latestBillNoLabel.Text = "latest bill number";
+            // 
+            // changeLabel
+            // 
+            changeLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            changeLabel.AutoSize = true;
+            changeLabel.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            changeLabel.Location = new Point(1012, 26);
+            changeLabel.Name = "changeLabel";
+            changeLabel.Size = new Size(70, 19);
+            changeLabel.TabIndex = 47;
+            changeLabel.Text = "Change:";
+            changeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            changeLabel.Visible = false;
+            // 
+            // printlangmuna
+            // 
+            printlangmuna.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            printlangmuna.Location = new Point(1257, 13);
+            printlangmuna.Name = "printlangmuna";
+            printlangmuna.Size = new Size(98, 28);
+            printlangmuna.TabIndex = 47;
+            printlangmuna.Text = "Debuging Print";
+            printlangmuna.UseVisualStyleBackColor = true;
+            printlangmuna.Click += printlangmuna_Click;
+            // 
+            // currentTabLabel
+            // 
+            currentTabLabel.AutoSize = true;
+            currentTabLabel.Location = new Point(655, 1);
+            currentTabLabel.Name = "currentTabLabel";
+            currentTabLabel.Size = new Size(74, 15);
+            currentTabLabel.TabIndex = 46;
+            currentTabLabel.Text = "current table";
+            currentTabLabel.Visible = false;
+            // 
+            // paymentsOnThisDayDataGridView
+            // 
+            paymentsOnThisDayDataGridView.AllowUserToAddRows = false;
+            paymentsOnThisDayDataGridView.AllowUserToDeleteRows = false;
+            paymentsOnThisDayDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            paymentsOnThisDayDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            paymentsOnThisDayDataGridView.BackgroundColor = Color.White;
+            paymentsOnThisDayDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            paymentsOnThisDayDataGridView.Location = new Point(701, 51);
+            paymentsOnThisDayDataGridView.Name = "paymentsOnThisDayDataGridView";
+            paymentsOnThisDayDataGridView.ReadOnly = true;
+            paymentsOnThisDayDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
+            paymentsOnThisDayDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
+            paymentsOnThisDayDataGridView.Size = new Size(657, 264);
+            paymentsOnThisDayDataGridView.TabIndex = 45;
+            // 
+            // label36
+            // 
+            label36.AutoSize = true;
+            label36.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label36.Location = new Point(701, 16);
+            label36.Name = "label36";
+            label36.Size = new Size(280, 32);
+            label36.TabIndex = 38;
+            label36.Text = "Payments on this Day";
+            label36.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // accountnoBillHistory
+            // 
+            accountnoBillHistory.AutoSize = true;
+            accountnoBillHistory.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            accountnoBillHistory.Location = new Point(348, 29);
+            accountnoBillHistory.Name = "accountnoBillHistory";
+            accountnoBillHistory.Size = new Size(91, 19);
+            accountnoBillHistory.TabIndex = 22;
+            accountnoBillHistory.Text = "Account ID:";
+            // 
+            // paymentsDataGridView
+            // 
+            paymentsDataGridView.AllowUserToAddRows = false;
+            paymentsDataGridView.AllowUserToDeleteRows = false;
+            paymentsDataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            paymentsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            paymentsDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            paymentsDataGridView.BackgroundColor = Color.White;
+            paymentsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            paymentsDataGridView.Location = new Point(570, 903);
+            paymentsDataGridView.Name = "paymentsDataGridView";
+            paymentsDataGridView.ReadOnly = true;
+            paymentsDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
+            paymentsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle10;
+            paymentsDataGridView.Size = new Size(512, 304);
+            paymentsDataGridView.TabIndex = 36;
+            // 
+            // panel4
+            // 
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(1377, 0);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(10, 334);
+            panel4.TabIndex = 30;
+            // 
+            // label71
+            // 
+            label71.AutoSize = true;
+            label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label71.Location = new Point(3, 13);
+            label71.Name = "label71";
+            label71.Size = new Size(339, 32);
+            label71.TabIndex = 25;
+            label71.Text = "Concessionaire Bill History";
+            // 
+            // billDataGridView
+            // 
+            billDataGridView.AllowUserToAddRows = false;
+            billDataGridView.AllowUserToDeleteRows = false;
+            billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            billDataGridView.BackgroundColor = Color.White;
+            billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            billDataGridView.Location = new Point(4, 51);
+            billDataGridView.Name = "billDataGridView";
+            billDataGridView.ReadOnly = true;
+            billDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.True;
+            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle11;
+            billDataGridView.Size = new Size(646, 264);
+            billDataGridView.TabIndex = 24;
+            // 
+            // billdataTextBox
+            // 
+            billdataTextBox.Location = new Point(445, 111);
+            billdataTextBox.Multiline = true;
+            billdataTextBox.Name = "billdataTextBox";
+            billdataTextBox.Size = new Size(225, 173);
+            billdataTextBox.TabIndex = 27;
+            billdataTextBox.Visible = false;
+            // 
+            // printPreviewDialog
+            // 
+            printPreviewDialog.AutoScrollMargin = new Size(0, 0);
+            printPreviewDialog.AutoScrollMinSize = new Size(0, 0);
+            printPreviewDialog.ClientSize = new Size(400, 300);
+            printPreviewDialog.Enabled = true;
+            printPreviewDialog.Icon = (Icon)resources.GetObject("printPreviewDialog.Icon");
+            printPreviewDialog.Name = "printPreviewDialog1";
+            printPreviewDialog.Visible = false;
+            // 
             // accountno
             // 
             accountno.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -4739,7 +4948,7 @@
             fullname.Name = "fullname";
             fullname.ReadOnly = true;
             fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
-            fullname.Width = 250;
+            fullname.Width = 350;
             // 
             // address
             // 
@@ -4843,199 +5052,6 @@
             status.HeaderText = "Status";
             status.Name = "status";
             status.ReadOnly = true;
-            // 
-            // panel6
-            // 
-            panel6.Dock = DockStyle.Right;
-            panel6.Location = new Point(1377, 0);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(10, 599);
-            panel6.TabIndex = 23;
-            // 
-            // panel2
-            // 
-            panel2.AutoScroll = true;
-            panel2.Controls.Add(serviceIDLabel);
-            panel2.Controls.Add(latestBillNoLabel);
-            panel2.Controls.Add(changeLabel);
-            panel2.Controls.Add(printlangmuna);
-            panel2.Controls.Add(currentTabLabel);
-            panel2.Controls.Add(paymentsOnThisDayDataGridView);
-            panel2.Controls.Add(label36);
-            panel2.Controls.Add(accountnoBillHistory);
-            panel2.Controls.Add(paymentsDataGridView);
-            panel2.Controls.Add(panel4);
-            panel2.Controls.Add(label71);
-            panel2.Controls.Add(billDataGridView);
-            panel2.Controls.Add(billdataTextBox);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(4, 610);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(1387, 334);
-            panel2.TabIndex = 1;
-            panel2.Paint += panel2_Paint;
-            // 
-            // serviceIDLabel
-            // 
-            serviceIDLabel.AutoSize = true;
-            serviceIDLabel.Location = new Point(509, 13);
-            serviceIDLabel.Name = "serviceIDLabel";
-            serviceIDLabel.Size = new Size(44, 15);
-            serviceIDLabel.TabIndex = 48;
-            serviceIDLabel.Text = "label40";
-            // 
-            // latestBillNoLabel
-            // 
-            latestBillNoLabel.AutoSize = true;
-            latestBillNoLabel.Font = new Font("Arial", 8.25F);
-            latestBillNoLabel.Location = new Point(562, 2);
-            latestBillNoLabel.Name = "latestBillNoLabel";
-            latestBillNoLabel.Size = new Size(87, 14);
-            latestBillNoLabel.TabIndex = 32;
-            latestBillNoLabel.Text = "latest bill number";
-            // 
-            // changeLabel
-            // 
-            changeLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            changeLabel.AutoSize = true;
-            changeLabel.Font = new Font("Arial", 12F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            changeLabel.Location = new Point(1012, 26);
-            changeLabel.Name = "changeLabel";
-            changeLabel.Size = new Size(70, 19);
-            changeLabel.TabIndex = 47;
-            changeLabel.Text = "Change:";
-            changeLabel.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // printlangmuna
-            // 
-            printlangmuna.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            printlangmuna.Location = new Point(1257, 13);
-            printlangmuna.Name = "printlangmuna";
-            printlangmuna.Size = new Size(98, 28);
-            printlangmuna.TabIndex = 47;
-            printlangmuna.Text = "Debuging Print";
-            printlangmuna.UseVisualStyleBackColor = true;
-            printlangmuna.Click += printlangmuna_Click;
-            // 
-            // currentTabLabel
-            // 
-            currentTabLabel.AutoSize = true;
-            currentTabLabel.Location = new Point(655, 1);
-            currentTabLabel.Name = "currentTabLabel";
-            currentTabLabel.Size = new Size(74, 15);
-            currentTabLabel.TabIndex = 46;
-            currentTabLabel.Text = "current table";
-            currentTabLabel.Visible = false;
-            // 
-            // paymentsOnThisDayDataGridView
-            // 
-            paymentsOnThisDayDataGridView.AllowUserToAddRows = false;
-            paymentsOnThisDayDataGridView.AllowUserToDeleteRows = false;
-            paymentsOnThisDayDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            paymentsOnThisDayDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            paymentsOnThisDayDataGridView.BackgroundColor = Color.White;
-            paymentsOnThisDayDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            paymentsOnThisDayDataGridView.Location = new Point(701, 51);
-            paymentsOnThisDayDataGridView.Name = "paymentsOnThisDayDataGridView";
-            paymentsOnThisDayDataGridView.ReadOnly = true;
-            paymentsOnThisDayDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            paymentsOnThisDayDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
-            paymentsOnThisDayDataGridView.Size = new Size(657, 264);
-            paymentsOnThisDayDataGridView.TabIndex = 45;
-            // 
-            // label36
-            // 
-            label36.AutoSize = true;
-            label36.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label36.Location = new Point(701, 16);
-            label36.Name = "label36";
-            label36.Size = new Size(280, 32);
-            label36.TabIndex = 38;
-            label36.Text = "Payments on this Day";
-            label36.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // accountnoBillHistory
-            // 
-            accountnoBillHistory.AutoSize = true;
-            accountnoBillHistory.Font = new Font("Arial", 15.75F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            accountnoBillHistory.Location = new Point(349, 23);
-            accountnoBillHistory.Name = "accountnoBillHistory";
-            accountnoBillHistory.Size = new Size(119, 24);
-            accountnoBillHistory.TabIndex = 22;
-            accountnoBillHistory.Text = "Account ID:";
-            // 
-            // paymentsDataGridView
-            // 
-            paymentsDataGridView.AllowUserToAddRows = false;
-            paymentsDataGridView.AllowUserToDeleteRows = false;
-            paymentsDataGridView.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            paymentsDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            paymentsDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            paymentsDataGridView.BackgroundColor = Color.White;
-            paymentsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            paymentsDataGridView.Location = new Point(570, 903);
-            paymentsDataGridView.Name = "paymentsDataGridView";
-            paymentsDataGridView.ReadOnly = true;
-            paymentsDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
-            paymentsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle10;
-            paymentsDataGridView.Size = new Size(512, 304);
-            paymentsDataGridView.TabIndex = 36;
-            // 
-            // panel4
-            // 
-            panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(1377, 0);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(10, 334);
-            panel4.TabIndex = 30;
-            // 
-            // label71
-            // 
-            label71.AutoSize = true;
-            label71.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label71.Location = new Point(3, 13);
-            label71.Name = "label71";
-            label71.Size = new Size(339, 32);
-            label71.TabIndex = 25;
-            label71.Text = "Concessionaire Bill History";
-            // 
-            // billDataGridView
-            // 
-            billDataGridView.AllowUserToAddRows = false;
-            billDataGridView.AllowUserToDeleteRows = false;
-            billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            billDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            billDataGridView.BackgroundColor = Color.White;
-            billDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            billDataGridView.Location = new Point(4, 51);
-            billDataGridView.Name = "billDataGridView";
-            billDataGridView.ReadOnly = true;
-            billDataGridView.RowHeadersVisible = false;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.True;
-            billDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle11;
-            billDataGridView.Size = new Size(646, 264);
-            billDataGridView.TabIndex = 24;
-            // 
-            // billdataTextBox
-            // 
-            billdataTextBox.Location = new Point(445, 111);
-            billdataTextBox.Multiline = true;
-            billdataTextBox.Name = "billdataTextBox";
-            billdataTextBox.Size = new Size(225, 173);
-            billdataTextBox.TabIndex = 27;
-            billdataTextBox.Visible = false;
-            // 
-            // printPreviewDialog
-            // 
-            printPreviewDialog.AutoScrollMargin = new Size(0, 0);
-            printPreviewDialog.AutoScrollMinSize = new Size(0, 0);
-            printPreviewDialog.ClientSize = new Size(400, 300);
-            printPreviewDialog.Enabled = true;
-            printPreviewDialog.Icon = (Icon)resources.GetObject("printPreviewDialog.Icon");
-            printPreviewDialog.Name = "printPreviewDialog1";
-            printPreviewDialog.Visible = false;
             // 
             // RealeaseBillingControl
             // 
@@ -5351,10 +5367,8 @@
         private TextBox collectionTotalAmountPaidTextBox;
         private Label label154;
         private TableLayoutPanel tableLayoutPanel62;
-        private Label label157;
         private Label label156;
         private Label label158;
-        private Label label161;
         private Label label162;
         private TableLayoutPanel tableLayoutPanel63;
         private Label collectingOfficerNameLabel;
@@ -5443,17 +5457,6 @@
         private Label concessionaireCodeLabel;
         private TextBox invoiceTextBox;
         private Panel panel7;
-        private DataGridViewTextBoxColumn accountno;
-        private DataGridViewTextBoxColumn fullname;
-        private DataGridViewTextBoxColumn address;
-        private DataGridViewTextBoxColumn zoneCode;
-        private DataGridViewTextBoxColumn serviceId;
-        private DataGridViewTextBoxColumn meterNo;
-        private DataGridViewTextBoxColumn firstReadingDate;
-        private DataGridViewCheckBoxColumn taxExempt;
-        private DataGridViewCheckBoxColumn dueExempt;
-        private DataGridViewCheckBoxColumn discount;
-        private DataGridViewTextBoxColumn status;
         private Label label35;
         private ComboBox discountComboBox;
         private Button clearDiscountButton;
@@ -5525,5 +5528,19 @@
         private Label serviceIDLabel;
         private TextBox remarksTextBox;
         private Label changeLabel;
+        private TextBox collectionOtherPaymentTextBox;
+        private Label label40;
+        private Label label161;
+        private DataGridViewTextBoxColumn accountno;
+        private DataGridViewTextBoxColumn fullname;
+        private DataGridViewTextBoxColumn address;
+        private DataGridViewTextBoxColumn zoneCode;
+        private DataGridViewTextBoxColumn serviceId;
+        private DataGridViewTextBoxColumn meterNo;
+        private DataGridViewTextBoxColumn firstReadingDate;
+        private DataGridViewCheckBoxColumn taxExempt;
+        private DataGridViewCheckBoxColumn dueExempt;
+        private DataGridViewCheckBoxColumn discount;
+        private DataGridViewTextBoxColumn status;
     }
 }

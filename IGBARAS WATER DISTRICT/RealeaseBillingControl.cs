@@ -577,6 +577,8 @@ namespace IGBARAS_WATER_DISTRICT
 
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             PlaceholderHelper.AddPlaceholder(remarksTextBox, "📝 Remarks (Optional)");
+            PlaceholderHelper.AddPlaceholder(bankNumberTextBox, "────────────────────");
+
             ClearButtonDisable();
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm())
@@ -1507,11 +1509,12 @@ namespace IGBARAS_WATER_DISTRICT
                         decimal totalPenalty = SettingsHelper.CalculatePenaltyOnArrears(arrearsAmount);
 
                         penaltyAmountLabel.Text = totalPenalty.ToString("N2");
-                        penaltyPercentLabel.Text = arrearsAmount > 0 ? 
+                        penaltyPercentLabel.Text = arrearsAmount > 0 ?
                             $"{Math.Round((totalPenalty / arrearsAmount) * 100)}%" : "0%";
 
+                        decimal scf = decimal.Parse(sfcInstallmentTextBox.Text.Trim());
                         // Display total amount due
-                        decimal totalAmountDue = chargeSubTotal + totalPenalty;
+                        decimal totalAmountDue = chargeSubTotal + totalPenalty + scf;
 
                         totalAmountDueLabel.Text = totalAmountDue.ToString("N2");
                         // You can now add this penalty to your total calculation
@@ -2292,6 +2295,9 @@ namespace IGBARAS_WATER_DISTRICT
 
                     // Set cursor at end (you can improve to restore exact position if needed)
                     textBox.SelectionStart = textBox.Text.Length;
+
+
+
                 }
             }
             else
@@ -2299,6 +2305,30 @@ namespace IGBARAS_WATER_DISTRICT
                 // Invalid input, clear or handle as needed
                 textBox.Text = "";
             }
+            // Parse amountDue safely
+            if (!decimal.TryParse(subTotalAmountDueLabel.Text.Trim(), out decimal amountDue))
+            {
+                amountDue = 0.00m;
+            }
+
+            // Parse penalty safely
+            if (!decimal.TryParse(penaltyAmountLabel.Text.Trim(), out decimal penalty))
+            {
+                penalty = 0.00m;
+            }
+
+            // Parse SCF (Service Connection Fee / SFC Installment)
+            if (!decimal.TryParse(sfcInstallmentTextBox.Text.Trim(), out decimal scf))
+            {
+                scf = 0.00m;
+            }
+
+            // Compute total amount due
+            decimal totalAmountDue = amountDue + penalty + scf;
+
+            // Format as currency
+            totalAmountDueLabel.Text = totalAmountDue.ToString("N2");
+
         }
 
         private void tableLayoutPanel51_Paint(object sender, PaintEventArgs e)
@@ -2481,6 +2511,11 @@ namespace IGBARAS_WATER_DISTRICT
         private void clearDiscountButton_Click(object sender, EventArgs e)
         {
             discountComboBox.SelectedIndex = -1; // Clear selection
+        }
+
+        private void sfcInstallmentTextBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
