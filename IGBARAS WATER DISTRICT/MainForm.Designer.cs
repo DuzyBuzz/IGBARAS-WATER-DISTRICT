@@ -242,6 +242,9 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // mainPanel
             // 
+            mainPanel.AutoScroll = true;
+            mainPanel.AutoSize = true;
+            mainPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             mainPanel.Dock = DockStyle.Fill;
             mainPanel.Location = new Point(206, 0);
             mainPanel.Name = "mainPanel";
@@ -252,10 +255,12 @@ namespace IGBARAS_WATER_DISTRICT
             // MainForm
             // 
             AutoScroll = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ClientSize = new Size(1584, 961);
             Controls.Add(mainPanel);
             Controls.Add(sidebarPanel);
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "IGBARAS Water District Billing";
@@ -268,6 +273,7 @@ namespace IGBARAS_WATER_DISTRICT
             panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

@@ -64,5 +64,32 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
 
             return 0; // default if not found or error
         }
+
+        /// <summary>
+        /// Penalty if billing has arrears > 0.
+        /// </summary>
+        public static decimal CalculatePenaltyOnArrears(decimal arrears)
+        {
+            if (arrears <= 0) return 0;
+
+            var settings = GetSettings();
+            var penalty = arrears * (decimal)(settings.PenaltyPercent / 100.0);
+            return penalty;
+        }
+
+        /// <summary>
+        /// Penalty if current date is past the allowed due date period.
+        /// </summary>
+        public static decimal CalculateLatePaymentPenalty(decimal totalDue, DateTime dueDate)
+        {
+            var settings = GetSettings();
+            DateTime penaltyThresholdDate = dueDate.AddDays(settings.PenaltyDuration);
+
+            if (DateTime.Now.Date <= penaltyThresholdDate)
+                return 0;
+
+            var penalty = totalDue * (decimal)(settings.PenaltyPercent / 100.0);
+            return penalty;
+        }
     }
 }

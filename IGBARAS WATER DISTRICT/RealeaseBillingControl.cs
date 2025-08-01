@@ -566,6 +566,7 @@ namespace IGBARAS_WATER_DISTRICT
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
+
             collectingOfficerNameLabel.Text = UserCredentials.Fullname;
             billPaidButton.Enabled = false;
             SetDateNow();
@@ -575,6 +576,7 @@ namespace IGBARAS_WATER_DISTRICT
             DiscountHelper.PopulateDiscounts(discountComboBox);
 
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
+            PlaceholderHelper.AddPlaceholder(remarksTextBox, "📝 Remarks (Optional)");
             ClearButtonDisable();
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm())
@@ -615,6 +617,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             ClearWaterChargeLabels();
             ClearWaterChargeLabels2();
+            arrearsAmountLabel.Text = "0.00";
             collectionTotalAmountPaidTextBox.Text = "0";
             fromReadingDateLabel.Text = "";
             previousReadingTextBox.Text = "0";
@@ -623,6 +626,12 @@ namespace IGBARAS_WATER_DISTRICT
             totalQuantityLabel.Text = "0";
             totalWaterConsumptionAmountLabel.Text = "0.00";
             totalAmountDueLabel.Text = "0.00";
+            sfcInstallmentTextBox.Text = "0.00";
+            minimumChargeLabel.Text = "0.00";
+            penaltyAmountLabel.Text = "0.00";
+            penaltyPercentLabel.Text = "0%";
+
+
 
             isWithHoldingTaxLabel.Text = "0";
             isArrearsLabel.Text = "0";
@@ -633,7 +642,7 @@ namespace IGBARAS_WATER_DISTRICT
             collectionPenaltyLabel.Text = "0.00";
             collectionArrearsAmountLabel.Text = "0.00";
             collectionTotalPaidAmointLabel.Text = "0.00";
-            taxExemptedPercentLabel2.Text = "2%";
+            taxExemptedPercentLabel2.Text = "asdasd%";
             arrearsAmountLabel2.Text = "0.00";
             totalAmountDueLabel2.Text = "0.00";
             penaltyPercentLabel2.Text = "0%";
@@ -709,7 +718,6 @@ namespace IGBARAS_WATER_DISTRICT
                 }
                 else
                 {
-                    MessageBox.Show("No billing record found with the given Bill No.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
 
@@ -1437,7 +1445,78 @@ namespace IGBARAS_WATER_DISTRICT
 
                             minimumChargeLabel.Text = minRate.ToString("N2");
                             totalWaterConsumptionAmountLabel.Text = total.ToString("N2");
+                            totalQuantityLabel.Text = totalConsumption.ToString();
+
+
                         }
+
+                        decimal discounted = 0;
+                        decimal taxAdded = 0;
+                        decimal arrears = 0;
+
+                        // Clean up input texts
+                        string discountText = discountedPercentLabel.Text.Replace("%", "").Trim();
+                        string taxAddedText = taxExemptedPercentLabel.Text.Replace("%", "").Trim();
+
+                        if (!decimal.TryParse(totalWaterConsumptionAmountLabel.Text.Trim(), out decimal totalAmount))
+                        {
+                            totalAmount = 0;
+                        }
+
+                        // Parse Discount
+                        if (decimal.TryParse(discountText, out decimal percent1))
+                        {
+                            discounted = totalAmount * (percent1 / 100);
+                            discountedAmountLabel.Text = discounted.ToString("N2");
+                        }
+                        else
+                        {
+                            discountedAmountLabel.Text = "0.00";
+                        }
+
+                        // Step 1: Subtract discount from total
+                        decimal discountedTotal = totalAmount - discounted;
+
+                        // Parse Tax
+                        if (decimal.TryParse(taxAddedText, out decimal percent2))
+                        {
+                            taxAdded = discountedTotal * (percent2 / 100);
+                            taxAmountLabel.Text = taxAdded.ToString("N2");
+                        }
+                        else
+                        {
+                            taxAmountLabel.Text = "0.00";
+                        }
+
+                        // Parse Arrears
+                        if (!decimal.TryParse(arrearsAmountLabel.Text.Replace(",", "").Trim(), out arrears))
+                        {
+                            arrears = 0;
+                        }
+
+                        // Step 2: Final Charge Calculation
+                        decimal chargeSubTotal = discountedTotal + taxAdded + arrears;
+
+                        // Display Final Total
+                        subTotalAmountDueLabel.Text = chargeSubTotal.ToString("N2");
+
+                        // Calculate penalty
+                        decimal arrearsAmount = decimal.Parse(arrearsAmountLabel.Text.Trim()); // from billing record
+                        DateTime dueDate = DateTime.Now.Date.AddDays(14);
+
+                        decimal totalPenalty = SettingsHelper.CalculatePenaltyOnArrears(arrearsAmount);
+
+                        penaltyAmountLabel.Text = totalPenalty.ToString("N2");
+                        penaltyPercentLabel.Text = arrearsAmount > 0 ? 
+                            $"{Math.Round((totalPenalty / arrearsAmount) * 100)}%" : "0%";
+
+                        // Display total amount due
+                        decimal totalAmountDue = chargeSubTotal + totalPenalty;
+
+                        totalAmountDueLabel.Text = totalAmountDue.ToString("N2");
+                        // You can now add this penalty to your total calculation
+
+
                     }
                 }
             }
@@ -1802,8 +1881,12 @@ namespace IGBARAS_WATER_DISTRICT
             // Subtract to get the change
             decimal change = totalPaid - totalDue;
 
-            // Optional: Format the result as text if displaying in a label
-            changeLabel.Text = "Change: ₱" + change.ToString("N2");
+            // Ensure negative values are shown as 0.00
+            change = Math.Max(change, 0);
+
+            // Format and display
+            changeLabel.Text = change.ToString("N2");
+
 
         }
 
@@ -2380,8 +2463,14 @@ namespace IGBARAS_WATER_DISTRICT
             {
 
                 discountedPercentLabel.Text = $"{selectedDiscount.DiscountPercent}%";
-                CalculateWaterCharges(totalConsumption);
 
+                // ✅ Calculate meter consumed
+                int meterConsumed = int.Parse(meterConsumedReadingTextBox.Text.Trim());
+                meterConsumedReadingTextBox.Text = meterConsumed.ToString();
+                if (int.TryParse(serviceIDLabel.Text.Trim(), out int serviceId))
+                {
+                    PopulateServiceRateLabels(serviceId, meterConsumed);
+                }
             }
             else
             {
