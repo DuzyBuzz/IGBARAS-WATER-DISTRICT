@@ -1,10 +1,10 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.OleDb;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace IGBARAS_WATER_DISTRICT.Helpers
 {
@@ -19,37 +19,31 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
         {
             try
             {
-                if (loadingForm != null)
-                {
-                    loadingForm.Show();
-                    loadingForm.Refresh();
-                }
+                loadingForm?.Show();
+                loadingForm?.Refresh();
 
-                // 🔵 Start stopwatch to measure query time
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                Stopwatch sw = Stopwatch.StartNew();
 
-                // 🔄 Run DB logic on background thread
                 DataTable dt = await Task.Run(() =>
                 {
-                    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                    using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
                     {
                         conn.Open();
 
-                        string query = $"SELECT * FROM `{tableName}`";
+                        string query = $"SELECT * FROM [{tableName}]";
 
                         if (filterColumns != null && filterValues != null && filterColumns.Length == filterValues.Length)
                         {
                             List<string> conditions = new List<string>();
                             for (int i = 0; i < filterColumns.Length; i++)
                             {
-                                conditions.Add($"`{filterColumns[i]}` LIKE @val{i}");
+                                conditions.Add($"[{filterColumns[i]}] LIKE ?");
                             }
 
                             query += " WHERE " + string.Join(" OR ", conditions);
                         }
 
-                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                        using (OleDbCommand cmd = new OleDbCommand(query, conn))
                         {
                             if (filterColumns != null && filterValues != null && filterColumns.Length == filterValues.Length)
                             {
@@ -59,22 +53,19 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                                 }
                             }
 
-                            using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                            using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
                             {
                                 DataTable dataTable = new DataTable();
                                 adapter.Fill(dataTable);
 
-                                // 🔵 Log raw query time
                                 sw.Stop();
                                 Debug.WriteLine($"[SQL Query Time] Fetched {dataTable.Rows.Count} rows from `{tableName}` in {sw.ElapsedMilliseconds} ms.");
-
                                 return dataTable;
                             }
                         }
                     }
                 });
 
-                // 🔴 Start stopwatch for UI binding
                 sw.Restart();
 
                 if (dgv.IsHandleCreated)
@@ -82,9 +73,8 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                     dgv.Invoke((MethodInvoker)(() =>
                     {
                         dgv.DataSource = dt;
-                        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                        dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-                        // 🔴 Log UI binding time
                         sw.Stop();
                         Debug.WriteLine($"[UI Bind Time] Data bound to DataGridView in {sw.ElapsedMilliseconds} ms.");
                     }));
@@ -96,36 +86,30 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             }
             finally
             {
-                if (loadingForm != null)
-                {
-                    loadingForm.Close();
-                }
+                loadingForm?.Close();
             }
         }
+
         public static async Task<DataTable> LoadDataToDataTableAsync(string tableName, Form loadingForm = null)
         {
             DataTable resultTable = new DataTable();
 
             try
             {
-                if (loadingForm != null)
-                {
-                    loadingForm.Show();
-                    loadingForm.Refresh();
-                }
+                loadingForm?.Show();
+                loadingForm?.Refresh();
 
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
+                Stopwatch sw = Stopwatch.StartNew();
 
                 resultTable = await Task.Run(() =>
                 {
-                    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                    using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
                     {
                         conn.Open();
-                        string query = $"SELECT * FROM `{tableName}`";
+                        string query = $"SELECT * FROM [{tableName}]";
 
-                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        using (OleDbCommand cmd = new OleDbCommand(query, conn))
+                        using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
                             adapter.Fill(dt);
@@ -148,7 +132,5 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
 
             return resultTable;
         }
-
-
     }
 }

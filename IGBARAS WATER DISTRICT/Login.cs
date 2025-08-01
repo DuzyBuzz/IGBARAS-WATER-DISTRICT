@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -34,15 +36,12 @@ namespace IGBARAS_WATER_DISTRICT
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
 
-            // ✅ Check MySQL connection
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
                 {
                     conn.Open();
-                    // Optional: Display success message (debug mode)
-                    Console.WriteLine("✅ Connected to MySQL database.");
-                    // Or show status label
+                    Debug.WriteLine("✅ Connected to Access database.");
                     // statusLabel.Text = "Connected";
                     // statusLabel.ForeColor = Color.Green;
                 }
@@ -50,6 +49,7 @@ namespace IGBARAS_WATER_DISTRICT
             catch (Exception ex)
             {
                 MessageBox.Show("❌ Cannot connect to database.\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.WriteLine("❌ Connection error: " + ex.Message);
                 // statusLabel.Text = "Disconnected";
                 // statusLabel.ForeColor = Color.Red;
             }
@@ -71,7 +71,6 @@ namespace IGBARAS_WATER_DISTRICT
                 isPlaceholderActive = false;
             }
         }
-
         private void loginButton_Click(object sender, EventArgs e)
         {
             if (userNameTextBox.Text == "🔑 Username" || passwordTextBox.Text == "🔐 Password")
@@ -83,35 +82,28 @@ namespace IGBARAS_WATER_DISTRICT
             string username = userNameTextBox.Text.Trim();
             string password = passwordTextBox.Text.Trim();
 
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            using (var conn = new OleDbConnection(DbConfig.ConnectionString))
             {
                 try
                 {
                     conn.Open();
 
-                    string query = "SELECT * FROM tb_tabletuser WHERE username = @username AND password = @password";
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    string query = "SELECT user_id, user_name, full_name FROM users WHERE user_name = ? AND password = ?";
+                    using (var cmd = new OleDbCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@username", username);
-                        cmd.Parameters.AddWithValue("@password", password);
+                        cmd.Parameters.AddWithValue("?", username);
+                        cmd.Parameters.AddWithValue("?", password);
 
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                // Store all relevant fields in UserCredentials
-                                UserCredentials.UserId = reader["deviceuserid"].ToString();
-                                UserCredentials.DeviceCode = reader["devicecode"].ToString();
-                                UserCredentials.DistrictNo = reader["districtno"] != DBNull.Value ? Convert.ToInt32(reader["districtno"]) : 0;
-                                UserCredentials.Username = reader["username"].ToString();
-                                UserCredentials.LastName = reader["lastname"].ToString();
-                                UserCredentials.FirstName = reader["firstname"].ToString();
-                                UserCredentials.MiddleName = reader["middlename"].ToString();
-                                UserCredentials.Name = reader["name"].ToString();
-                                UserCredentials.ContactNo = reader["contactno"].ToString();
-                                UserCredentials.Gender = reader["gender"].ToString();
+                                // Save credentials
+                                UserCredentials.UserId = Convert.ToInt32(reader["user_id"]);
+                                UserCredentials.Username = reader["user_name"].ToString();
+                                UserCredentials.Fullname = reader["full_name"].ToString();
 
-                                // Launch MainForm
+                                // Proceed to main form
                                 var dashboard = new MainForm();
                                 dashboard.Show();
                                 this.Hide();
@@ -127,11 +119,10 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
-
-
         }
-
+        
 
         private void userNameTextBox_TextChanged(object sender, EventArgs e)
         {

@@ -1,5 +1,6 @@
-﻿using MySql.Data.MySqlClient;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.OleDb;
 
 namespace IGBARAS_WATER_DISTRICT.Helpers
 {
@@ -16,33 +17,32 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
     internal static class ZoneHelper
     {
         /// <summary>
-        /// Returns formatted 2-digit zone numbers for a given district.
+        /// Returns formatted 2-digit zone numbers for a given district from Access database.
         /// </summary>
         public static List<ZoneItem> GetZoneCodeHelper(int districtNo)
         {
             List<ZoneItem> zoneList = new List<ZoneItem>();
 
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+            using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
             {
                 conn.Open();
 
                 string query = @"
-                    SELECT zoneno 
-                    FROM tb_zone 
-                    WHERE districtno = @districtno 
-                    ORDER BY zoneno ASC";
+                    SELECT ZoneCode 
+                    FROM Tb_Zone 
+                    ORDER BY ZoneCode ASC";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (OleDbCommand cmd = new OleDbCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@districtno", districtNo);
+                    // NOTE: OleDb uses positional parameters with `?`, not named ones.
+                    cmd.Parameters.AddWithValue("ZoneCode", districtNo);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    using (OleDbDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            int zoneno = Convert.ToInt32(reader["zoneno"]);
+                            int zoneno = Convert.ToInt32(reader["ZoneCode"]);
 
-                            // Pad to 2 digits: 1 → "01", 11 → "11"
                             string formattedZoneCode = zoneno.ToString().PadLeft(2, '0');
 
                             zoneList.Add(new ZoneItem

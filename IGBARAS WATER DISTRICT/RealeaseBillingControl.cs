@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.OleDb;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
@@ -16,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static IGBARAS_WATER_DISTRICT.Helpers.RecentBillDetailsHelper;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IGBARAS_WATER_DISTRICT
@@ -154,7 +156,7 @@ namespace IGBARAS_WATER_DISTRICT
                     InsertCheque(chequeNo, chequeAmount);
                 }
 
-                LoadPayments();
+                //LoadPayments();
 
                 // Third confirmation message
                 string printConfirmationMessage = "The billing record has been saved successfully.\n\nDo you want to print the billing invoice now?";
@@ -260,46 +262,22 @@ namespace IGBARAS_WATER_DISTRICT
 
         private bool CheckBillingDate()
         {
-            // Get the account number from textbox
             string accountNo = accountNumberTextBox.Text.Trim();
-
-            // Get current month and year
             int currentMonth = DateTime.Now.Month;
             int currentYear = DateTime.Now.Year;
-
-            // SQL query to check if a bill already exists for this account in the current month and year
-            string query = @"
-        SELECT COUNT(*) FROM tb_bill 
-        WHERE accountno = @accountno 
-          AND month = @month 
-          AND year = @year";
-
+            string query = "SELECT COUNT(*) FROM tb_bill WHERE accountno = @accountno AND month = @month AND year = @year";
             try
             {
-                // Create and open the MySQL connection
                 using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
                 {
                     conn.Open();
-
-                    // Create command object with query and connection
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
-                        // Pass parameters to prevent SQL injection
                         cmd.Parameters.AddWithValue("@accountno", accountNo);
                         cmd.Parameters.AddWithValue("@month", currentMonth);
                         cmd.Parameters.AddWithValue("@year", currentYear);
-
-                        // Execute query and get the result
                         int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-                        // If a bill exists, show message and return false (don't save)
-                        if (count > 0)
-                        {
-                            return false;
-                        }
-
-                        // No existing bill, proceed with saving
-                        return true;
+                        return count == 0;
                     }
                 }
             }
@@ -407,7 +385,7 @@ namespace IGBARAS_WATER_DISTRICT
                         cmd.Parameters.AddWithValue("@adjustcredit", adjustCredit);
                         cmd.Parameters.AddWithValue("@uploaded", 0); // 0 = not yet synced to cloud
                         cmd.Parameters.AddWithValue("@arrears", arrears);
-                        cmd.Parameters.AddWithValue("@bill_id", latestBillIdLabel.Text);
+                        cmd.Parameters.AddWithValue("@bill_id", latestBillNoLabel.Text);
 
                         // Execute the update
                         int rowsAffected = cmd.ExecuteNonQuery();
@@ -434,7 +412,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             dueDateLabel.Text = DateTime.Now.AddDays(14).ToString("MMMM dd, yyyy");
             dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-            toReadingDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
+            toReadingDateLabel.Text = DateTime.Now.ToString("MMM-dd-yyyy");
             paymentDateLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
         }
 
@@ -562,35 +540,58 @@ namespace IGBARAS_WATER_DISTRICT
             }
         }
 
+        private void SetNextBillNo()
+        {
+            string query = "SELECT MAX(Val(BillNo)) FROM Tb_Billing";
+
+            using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
+            using (OleDbCommand cmd = new OleDbCommand(query, conn))
+            {
+                conn.Open();
+                object result = cmd.ExecuteScalar();
+                conn.Close();
+
+                int latestBillNo = 0;
+
+                if (result != DBNull.Value && int.TryParse(result.ToString(), out int parsedNo))
+                {
+                    latestBillNo = parsedNo;
+                }
+
+                invoiceTextBox.Text = (latestBillNo + 1).ToString();
+            }
+        }
 
 
 
         private async void BillingControl_Load(object sender, EventArgs e)
         {
-            collectingOfficerNameLabel.Text = UserCredentials.Name;
+            collectingOfficerNameLabel.Text = UserCredentials.Fullname;
             billPaidButton.Enabled = false;
             SetDateNow();
-            LoadZoneComboBox();
+            SetNextBillNo();
             ClearWaterChargeLabels();
             ClearWaterChargeLabels2();
+            DiscountHelper.PopulateDiscounts(discountComboBox);
 
             PlaceholderHelper.AddPlaceholder(searchAccountNumberTextBox, "🔎 Fullname or Account Number.");
             ClearButtonDisable();
             // 🟡 Load data from DB to billingDataGridView
             using (var loadingForm = new LoadingForm())
             {
-                var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "v_concessionaire_detail", loadingForm);
+                var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "Tb_Concessionaire", loadingForm);
 
                 await Task.WhenAll(task1);
             }
             // 🟢 Optional: Setup autocomplete after data loaded
-            AutoCompleteHelper.FillTextBoxWithColumns("v_concessionaire_detail", new string[] { "accountno", "name" }, searchAccountNumberTextBox);
+            AutoCompleteHelper.FillTextBoxWithColumns("Tb_Concessionaire", new string[] { "AccountNo", "ConcessionaireName" }, searchAccountNumberTextBox);
             cashCheckBox.Checked = true; // Default to cash payment
-            LoadPayments();
+            //LoadPayments();
 
             FormatDataGridView(accountDataGridView);
             FormatDataGridView(billDataGridView);
             FormatDataGridView(paymentsOnThisDayDataGridView);
+            LoadZoneComboBox();
         }
 
         private void LoadZoneComboBox()
@@ -609,6 +610,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
+
         private void accountDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             ClearWaterChargeLabels();
@@ -618,8 +620,8 @@ namespace IGBARAS_WATER_DISTRICT
             previousReadingTextBox.Text = "0";
             meterConsumedReadingTextBox.Text = "0";
             presentReadingTextBox.Text = "";
-            totalQuantityLabel.Text = "0.00";
-            totalWaterConsumptionAmountLabel.Text = "0";
+            totalQuantityLabel.Text = "0";
+            totalWaterConsumptionAmountLabel.Text = "0.00";
             totalAmountDueLabel.Text = "0.00";
 
             isWithHoldingTaxLabel.Text = "0";
@@ -628,7 +630,6 @@ namespace IGBARAS_WATER_DISTRICT
             collectionTotalMeteredAmountLabel.Text = "0.00";
             totalWaterConsumptionAmountLabel2.Text = "0.00";
             collectionTaxAmountLabel.Text = "0.00";
-            collectionTotalMeteredAmountLabel.Text = "0.00";
             collectionPenaltyLabel.Text = "0.00";
             collectionArrearsAmountLabel.Text = "0.00";
             collectionTotalPaidAmointLabel.Text = "0.00";
@@ -649,86 +650,71 @@ namespace IGBARAS_WATER_DISTRICT
             string accountNo = selectedRow.Cells["accountno"].Value?.ToString();
             string fullname = selectedRow.Cells["fullname"].Value?.ToString();
             string address = selectedRow.Cells["address"].Value?.ToString();
-            string concessionCode = selectedRow.Cells["concessionairecode"].Value?.ToString();
-            string zoneCode = selectedRow.Cells["zonecode"].Value?.ToString();
-            string serviceCode = selectedRow.Cells["servicecode"].Value?.ToString();
-            string serviceType = selectedRow.Cells["servicetype"].Value?.ToString();
-            string meterNo = selectedRow.Cells["meterno"].Value?.ToString();
-            string dueExempt = selectedRow.Cells["dueexempt"].Value?.ToString();
-            string withholdingTax = selectedRow.Cells["withholdingtax"].Value?.ToString();
-            string wtPercent = selectedRow.Cells["wtpercent"].Value?.ToString();
-            string scPercent = selectedRow.Cells["scpercent"].Value?.ToString();
-            string routeNo = selectedRow.Cells["routeno"].Value?.ToString();
-            string taxExempted = selectedRow.Cells["taxexempt"].Value?.ToString();
-            string discounted = selectedRow.Cells["seniorcitizen"].Value?.ToString();
-            string billCode = selectedRow.Cells["billcodex"].Value?.ToString();
-            string balance = selectedRow.Cells["balancex"].Value?.ToString();
-            string districtno = selectedRow.Cells["districtno"].Value?.ToString();
-            string concessionaireCode = selectedRow.Cells["concessionairecode"].Value?.ToString();
+            string zoneCode = selectedRow.Cells["zoneCode"].Value?.ToString();
+            string serviceID = selectedRow.Cells["serviceId"].Value?.ToString();
+            string meterNo = selectedRow.Cells["meterNo"].Value?.ToString();
+            string frd = selectedRow.Cells["firstReadingDate"].Value?.ToString();
+            int taxExempt = Convert.ToInt32(selectedRow.Cells["taxExempt"].Value);
+            string dueExempted = selectedRow.Cells["dueExempt"].Value?.ToString();
+            string status = selectedRow.Cells["status"].Value?.ToString();
 
             selectedBillingData = new string[]
             {
-            accountNo,
-            fullname,
-            address,
-            concessionCode,
-            zoneCode,
-            serviceCode,
-            serviceType,
-            meterNo,
-            dueExempt,
-            withholdingTax,
-                wtPercent,
-                scPercent,
-                routeNo,
-                taxExempted,
-                discounted,
-                billCode,
-                districtno,
-                balance,
+                accountNo,
+                fullname,
+                address,
+                zoneCode,
+                serviceID,
+                meterNo,
+                frd,
+                dueExempted,
+                status,
             };
-            dueExemptLabel.Text = dueExempt;
-            // 🟦 Step 1: Make sure accountNo is not empty
+            serviceIDLabel.Text = serviceID;
+            dueExemptLabel.Text = dueExempted;
+            double taxPercent = SettingsHelper.GetTaxPercent(taxExempt);
+            taxExemptedPercentLabel.Text = $"{taxPercent:0.##}%";
             if (!string.IsNullOrWhiteSpace(accountNo))
             {
-                // Step 2: Load billing history from database (based on accountNo)
+                // Load billing history
                 LoadAccountBillHistory(accountNo);
 
-                // Step 3: Extract zone prefix from the account number (e.g., "01" → "001")
-                string zonePrefix = GetZonePrefixFromAccountNo(accountNo);
+                // 🟦 Get latest bill number
+                string latestBillNo = GetLatestBillNoHelper.GetLatestBillNo(accountNo);
+                Debug.WriteLine(!string.IsNullOrEmpty(latestBillNo)
+                    ? $"✅ Latest bill_id: {latestBillNo}"
+                    : $"⚠️ No bill found for account number: {accountNo}");
+                // Convert latestBillNo to string if it's not already
+                string billNo = latestBillNoLabel.Text;
 
-                // Step 4: Generate the next bill code using zone and current month
-                string nextBillCode = GenerateNextBillCode_Advanced(zonePrefix, DateTime.Now);
+                // Create an instance of RecentBillDetailsHelper
+                var recentBillDetailsHelper = new RecentBillDetailsHelper();
+                var bill = recentBillDetailsHelper.GetBillByBillNo(latestBillNo);
 
-                // Step 5: Split the billcode and display only the number part (e.g., "0000401")
-                string[] parts = nextBillCode.Split('-');
-                if (parts.Length == 2)
+                if (bill != null)
                 {
-                    invoiceTextBox.Text = parts[1]; // e.g., "0000401"
+                    string message =
+                        $"Account No: {bill.AccountNo}\n" +
+                        $"Billing Period: {bill.DateFrom:MMMM dd, yyyy} to {bill.DateTo:MMMM dd, yyyy}\n" +
+                        $"Previous Reading: {bill.PrevReading:N0} cu.m\n" +
+                        $"Present Reading: {bill.PresentReading:N0} cu.m\n" +
+                        $"Penalty: {bill.Penalty:C}\n" +
+                        $"Tax: {bill.Tax:C}\n" +
+                        $"Total Paid: {bill.AmountPaid:C}\n" +
+                        $"Due Date: {bill.DueDate:MMMM dd, yyyy}";
+                    fromReadingDateLabel.Text = $"{bill.DateTo:MMM-dd-yyyy}";
+                    previousReadingTextBox.Text = $"{bill.PresentReading}";
+                    arrearsAmountLabel.Text = $"{bill.Balance}";
+
                 }
-
-                // Step 6: Display full billcode (e.g., "001-0000401")
-                billCodeLabel.Text = nextBillCode;
-                string[] billNumberParts = nextBillCode.Split('-');
-                string output = int.Parse(billNumberParts[1]).ToString();
-
-                Debug.WriteLine(output); // Output: 1
-                extractedBillNumberLabel.Text = output;
+                else
+                {
+                    MessageBox.Show("No billing record found with the given Bill No.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
 
-            discountedPercentLabel.Text = scPercent + '%';
-            discountedPercentLabel2.Text = scPercent + '%';
             // Tax Exempt
-            if (taxExempted == "0")
-            {
-                taxExemptedPercentLabel.Visible = true;
-                taxExemptedPercentLabel.Text = "2%";
 
-            }
-            else
-            {
-                taxExemptedPercentLabel.Text = "0%";
-            }
 
             // 🟦 Update UI fields
             accountNumberTextBox.Text = accountNo;
@@ -736,99 +722,6 @@ namespace IGBARAS_WATER_DISTRICT
             fullnameTextBox.Text = fullname;
             addressTextBox.Text = address;
             accountnoBillHistory.Text = $"Account ID: {accountNo}";
-
-            //// Declare output variables
-            //DateTime? usedDueDate;
-            //int usedBill_id;
-            //string usedBillCode;
-
-            //// Call the helper method
-            //decimal penalty = GetPenaltyHelper.GetPenalty(
-            //    accountNo,
-            //    billCharge,
-            //    dueExempt,
-            //    existingPenalty,
-            //    isPaid,
-            //    out usedDueDate,
-            //    out usedBill_id,
-            //    out usedBillCode
-            //);
-
-            concessionaireCodeLabel.Text = concessionaireCode + "-000001";
-            // 🟦 Get the latest bill_id for this account
-            string latestBillID = GetLatestBillIDHelper.GetLatestBillId(accountNo);
-            Debug.WriteLine(!string.IsNullOrEmpty(latestBillID)
-                ? $"✅ Latest bill_id: {latestBillID}"
-                : $"⚠️ No bill found for account number: {accountNo}");
-            latestBillIdLabel.Text = latestBillID;
-            // 🟦 Load reading info if available
-            var readingInfo = RecentBillDetailsHelper.GetReadingInfoByBillId(latestBillID);
-            if (readingInfo != null)
-            {
-                // to reading date of the recent bill is the from reading date of the next bill which is today
-                dateBilledLabel.Text = DateTime.Now.ToString("MMMM dd, yyyy");
-
-                // 🟦 Show user-friendly date
-                fromReadingDateLabel.Text = readingInfo.ToReadingDate.ToString("MMMM dd, yyyy");
-
-
-
-
-                //READINGS LATEST BILL
-                previousReadingTextBox.Text = readingInfo.PresentReading.ToString();
-
-
-                //percentage label
-                arrearsAmountLabel.Text = readingInfo.Balance.ToString("N2");
-
-
-
-
-
-
-
-
-                if (currentTabLabel.Text == "Collection Reciept")
-                {
-                    int totalConsumption = readingInfo.MeterConsumed;
-
-                    {
-
-                        // FOR THE COLLECTION TAB 
-                        collectionNameLabel.Text = readingInfo.Name;
-                        collectionAddressLabel.Text = readingInfo.Address;
-                        collectionArrearsAmountLabel.Text = readingInfo.ArrearsAmount.ToString("N2");
-                        arrearsAmountLabel2.Text = readingInfo.ArrearsAmount.ToString("N2");
-                        dueDateLabel2.Text = readingInfo.DueDate.ToString("MMMM dd, yyyy");
-
-
-
-                        collectionTaxAmountLabel.Text = readingInfo.TaxAmount.ToString("N2");
-                        collectionTotalAddtionalChargeLabel.Text = readingInfo.TotalAditionalCharge.ToString("N2");
-                        collectionBillingInvoiceTextBox.Text = readingInfo.BillCode.ToString();
-                        ClearWaterChargeLabels2(); // clear values first
-
-
-                        CalculateWaterCharges2(totalConsumption); // calculate new values
-                        collectionPenaltyLabel.Text = penaltyAmountLabel2.Text;
-                        collectionTotalMeteredAmountLabel.Text = totalWaterConsumptionAmountLabel2.Text; // update collection label
-                    }
-                }
-                else
-                {
-                    ClearWaterChargeLabels();
-                }
-
-
-                Debug.WriteLine($"Previous Reading: {readingInfo.PreviousReading}");
-                Debug.WriteLine($"Reading Date: {readingInfo.FromReadingDate.ToShortDateString()}");
-            }
-            else
-            {
-                Debug.WriteLine($"⚠️ No data found for bill_id: {latestBillID}");
-            }
-
-
         }
 
         private void InsertIntoPayments()
@@ -994,57 +887,57 @@ namespace IGBARAS_WATER_DISTRICT
             return (0, ""); // fallback if not found
         }
 
-        private string GenerateNextBillCode_Advanced(string zoneCode, DateTime billingDate)
-        {
-            string formattedBillCode = "";
-            int nextBillNumber = 0;
+        //private string GenerateNextBillCode_Advanced(string zoneCode, DateTime billingDate)
+        //{
+        //    string formattedBillCode = "";
+        //    int nextBillNumber = 0;
 
-            // 🟦 Step 1: Load dynamic zone order
-            List<string> zoneOrder = LoadZoneCodesFromDatabase();
-            int rangeSize = 100;
+        //    // 🟦 Step 1: Load dynamic zone order
+        //    List<string> zoneOrder = LoadZoneCodesFromDatabase();
+        //    int rangeSize = 100;
 
-            int zoneIndex = zoneOrder.IndexOf(zoneCode);
-            if (zoneIndex == -1)
-                zoneIndex = 0;
+        //    int zoneIndex = zoneOrder.IndexOf(zoneCode);
+        //    if (zoneIndex == -1)
+        //        zoneIndex = 0;
 
-            int zoneStart = (zoneIndex * rangeSize) + 1;
-            int zoneEnd = zoneStart + rangeSize - 1;
+        //    int zoneStart = (zoneIndex * rangeSize) + 1;
+        //    int zoneEnd = zoneStart + rangeSize - 1;
 
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-            {
-                conn.Open();
+        //    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+        //    {
+        //        conn.Open();
 
-                // 🟦 Step 2: Get the max billcode used for this zone in current month range
-                string query = @"
-            SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED)) AS maxnum
-            FROM tb_bill
-            WHERE CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED) BETWEEN @start AND @end
-            AND DATE_FORMAT(datebilled, '%Y%m') = @currentMonth";
+        //        // 🟦 Step 2: Get the max billcode used for this zone in current month range
+        //        string query = @"
+        //    SELECT MAX(CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED)) AS maxnum
+        //    FROM tb_bill
+        //    WHERE CAST(SUBSTRING_INDEX(billcode, '-', -1) AS UNSIGNED) BETWEEN @start AND @end
+        //    AND DATE_FORMAT(datebilled, '%Y%m') = @currentMonth";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@start", zoneStart);
-                    cmd.Parameters.AddWithValue("@end", zoneEnd);
-                    cmd.Parameters.AddWithValue("@currentMonth", billingDate.ToString("yyyyMM"));
+        //        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+        //        {
+        //            cmd.Parameters.AddWithValue("@start", zoneStart);
+        //            cmd.Parameters.AddWithValue("@end", zoneEnd);
+        //            cmd.Parameters.AddWithValue("@currentMonth", billingDate.ToString("yyyyMM"));
 
-                    object result = cmd.ExecuteScalar();
-                    if (result != DBNull.Value && int.TryParse(result.ToString(), out int lastNum))
-                    {
-                        nextBillNumber = lastNum + 1;
-                    }
-                    else
-                    {
-                        nextBillNumber = zoneStart;
-                    }
-                }
-            }
+        //            object result = cmd.ExecuteScalar();
+        //            if (result != DBNull.Value && int.TryParse(result.ToString(), out int lastNum))
+        //            {
+        //                nextBillNumber = lastNum + 1;
+        //            }
+        //            else
+        //            {
+        //                nextBillNumber = zoneStart;
+        //            }
+        //        }
+        //    }
 
-            formattedBillCode = $"{zoneCode}-{nextBillNumber.ToString("D7")}";
-            invoiceTextBox.Text = nextBillNumber.ToString("D7");
-            billCodeLabel.Text = formattedBillCode;
+        //    formattedBillCode = $"{zoneCode}-{nextBillNumber.ToString("D7")}";
+        //    invoiceTextBox.Text = nextBillNumber.ToString("D7");
+        //    billCodeLabel.Text = formattedBillCode;
 
-            return formattedBillCode;
-        }
+        //    return formattedBillCode;
+        //}
 
 
 
@@ -1064,81 +957,76 @@ namespace IGBARAS_WATER_DISTRICT
 
             return "001"; // Fallback if parsing fails
         }
-        private List<string> LoadZoneCodesFromDatabase()
-        {
-            List<string> zoneCodes = new List<string>();
+        //private List<string> LoadZoneCodesFromDatabase()
+        //{
+        //    List<string> zoneCodes = new List<string>();
 
-            using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
-            {
-                conn.Open();
+        //    using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+        //    {
+        //        conn.Open();
 
-                string query = "SELECT zonecode FROM tb_zone ORDER BY CAST(zonecode AS UNSIGNED) ASC";
+        //        string query = "SELECT zonecode FROM tb_zone ORDER BY CAST(zonecode AS UNSIGNED) ASC";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        // Add zonecode to the list (e.g., "001", "002", etc.)
-                        zoneCodes.Add(reader["zonecode"].ToString());
-                    }
-                }
-            }
+        //        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+        //        using (MySqlDataReader reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                // Add zonecode to the list (e.g., "001", "002", etc.)
+        //                zoneCodes.Add(reader["zonecode"].ToString());
+        //            }
+        //        }
+        //    }
 
-            return zoneCodes;
-        }
+        //    return zoneCodes;
+        //}
+
+
 
         private void LoadAccountBillHistory(string accountNo)
         {
-            // 1. Define your SQL query
             string query = @"
-                    SELECT
-                        billcode AS 'Bill Code',
-                        fromreadingdate AS 'Reading From',
-                        toreadingdate AS 'Reading To',
-                        previousreading AS 'Previous Reading',
-                        presentreading AS 'Present Reading',
-                        meterconsumed AS 'Consumption (m3)',
-                        duedate AS 'Due Date',
-                        CASE
-                            WHEN partiallypaid = 1 THEN 'Partially Paid'
-                            WHEN paid = 1 THEN 'Fully Paid'
-                            ELSE 'Unpaid'
-                        END AS 'Status'
-                    FROM tb_bill
-                    WHERE accountno = @accountno
-                    ORDER BY datebilled DESC;
-
-
-
-
-                    ";
+                SELECT
+                    BillNo AS [Bill No],
+                    DateCreated AS [Date Billed],
+                    DateFrom AS [Period From],
+                    DateTo AS [Period To],
+                    PrevReading AS [Previous Reading],
+                    PresentReading AS [Present Reading],
+                    (PresentReading - PrevReading) AS [Consumption (m³)],
+                    DueDate AS [Due Date],
+                    AmountPaid AS [Amount Paid],
+                    IIF(Is_PartiallyPaid = True, 'Partially Paid',
+                        IIF(Is_FullyPaid = True, 'Fully Paid', 'Unpaid')) AS [Status]
+                FROM Tb_Billing
+                WHERE AccountNo = ?
+                ORDER BY BillNo DESC;
+            ";
 
             try
             {
-                // 2. Create the connection (use your actual connection string)
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                using (OleDbConnection conn = new OleDbConnection(DbConfig.ConnectionString))
                 {
                     conn.Open();
 
-                    // 3. Create the command and add the parameter
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (OleDbCommand cmd = new OleDbCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@accountno", accountNo);
+                        cmd.Parameters.AddWithValue("?", accountNo);
 
-                        // 4. Fill the DataTable with results
-                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        using (OleDbDataAdapter adapter = new OleDbDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
                             adapter.Fill(dt);
-
-                            // 5. Bind to the DataGridView
                             billDataGridView.DataSource = dt;
 
-                            // Optional: Auto resize and format
                             billDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                            billDataGridView.Columns["status"].DefaultCellStyle.ForeColor = Color.Red;
-                            billDataGridView.Columns["status"].DefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+
+                            if (billDataGridView.Columns.Contains("Status"))
+                            {
+                                var col = billDataGridView.Columns["Status"];
+                                col.DefaultCellStyle.ForeColor = Color.Red;
+                                col.DefaultCellStyle.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+                            }
                         }
                     }
                 }
@@ -1148,6 +1036,10 @@ namespace IGBARAS_WATER_DISTRICT
                 MessageBox.Show("Failed to load bill history: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+
+
 
         private void searchButton_Click(object sender, EventArgs e)
         {
@@ -1178,7 +1070,6 @@ namespace IGBARAS_WATER_DISTRICT
 
 
         }
-
 
         private string GenerateNextBillCode(string zonePrefix, DateTime billingDate)
         {
@@ -1228,13 +1119,13 @@ namespace IGBARAS_WATER_DISTRICT
             var brackets = new[]
             {
         new { Limit = 10, Label = "ten", Price = 35.20m },
-        new { Limit = 10, Label = "twenty", Price = 37.71m },
+        new { Limit = 10, Label = "twenty", Price = 37.15m },
         new { Limit = 10, Label = "thirty", Price = 39.15m },
         new { Limit = 10, Label = "forty", Price = 41.15m },
         new { Limit = int.MaxValue, Label = "fortyUp", Price = 43.15m }
     };
 
-            int remaining = totalConsumption;
+            int remaining = Math.Max(totalConsumption, 10); // Ensure minimum of 10 cubic meters
             decimal totalAmount = 0;
             int totalQty = 0;
 
@@ -1282,7 +1173,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             // Display total quantity and base water charge
-            totalQuantityLabel2.Text = totalQty.ToString();
+            totalQuantityLabel2.Text = Math.Max(totalConsumption, 10).ToString();
             totalWaterConsumptionAmountLabel2.Text = totalAmount.ToString("N2");
 
             // Handle discounts
@@ -1373,13 +1264,13 @@ namespace IGBARAS_WATER_DISTRICT
             var brackets = new[]
             {
         new { Limit = 10, Label = "ten", Price = 35.20m },
-        new { Limit = 10, Label = "twenty", Price = 37.71m },
+        new { Limit = 10, Label = "twenty", Price = 37.15m },
         new { Limit = 10, Label = "thirty", Price = 39.15m },
         new { Limit = 10, Label = "forty", Price = 41.15m },
         new { Limit = int.MaxValue, Label = "fortyUp", Price = 43.15m }
     };
 
-            int remaining = totalConsumption;
+            int remaining = Math.Max(totalConsumption, 10); // Ensure minimum of 10 cubic meters
             decimal totalAmount = 0;
             int totalQty = 0;
 
@@ -1427,7 +1318,8 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             // Show total consumption and base amount
-            totalQuantityLabel.Text = totalQty.ToString();
+            totalQuantityLabel.Text = totalConsumption.ToString();
+
             totalWaterConsumptionAmountLabel.Text = totalAmount.ToString("N2");
 
             decimal scDiscounted = 0;
@@ -1483,6 +1375,73 @@ namespace IGBARAS_WATER_DISTRICT
 
         }
 
+
+        public void PopulateServiceRateLabels(int serviceId, int totalConsumption)
+        {
+            using (var conn = new OleDbConnection(DbConfig.ConnectionString))
+            {
+                string query = @"
+                    SELECT MinRate, [Rate11-20], [Rate21-30], [Rate31-40], [Rate41-Above]
+                    FROM Tb_Service
+                    WHERE ServiceID = ?";
+                using (var cmd = new OleDbCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("?", serviceId);
+                    conn.Open();
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Get service rates
+                            decimal minRate = Convert.ToDecimal(reader["MinRate"]);
+                            decimal rate11_20 = Convert.ToDecimal(reader["Rate11-20"]);
+                            decimal rate21_30 = Convert.ToDecimal(reader["Rate21-30"]);
+                            decimal rate31_40 = Convert.ToDecimal(reader["Rate31-40"]);
+                            decimal rate41_above = Convert.ToDecimal(reader["Rate41-Above"]);
+
+                            int q10 = Math.Min(totalConsumption, 10);
+                            int q20 = Math.Min(Math.Max(totalConsumption - 10, 0), 10);
+                            int q30 = Math.Min(Math.Max(totalConsumption - 20, 0), 10);
+                            int q40 = Math.Min(Math.Max(totalConsumption - 30, 0), 10);
+                            int q41 = Math.Max(totalConsumption - 40, 0);
+
+                            decimal a10 = q10 > 0 ? minRate : 0; // Minimum charge
+                            decimal a20 = q20 * rate11_20;
+                            decimal a30 = q30 * rate21_30;
+                            decimal a40 = q40 * rate31_40;
+                            decimal a41 = q41 * rate41_above;
+
+                            decimal total = a10 + a20 + a30 + a40 + a41;
+
+                            // Populate labels
+                            tenQuantityLabel.Text = q10.ToString();
+                            tenUnitPriceLabel.Text = (minRate / 10).ToString("N2");
+                            tenAmountLabel.Text = a10.ToString("N2");
+
+                            twentyQuantityLabel.Text = q20.ToString();
+                            twentyUnitPriceLabel.Text = rate11_20.ToString("N2");
+                            twentyAmountLabel.Text = a20.ToString("N2");
+
+                            thirtyQuantityLabel.Text = q30.ToString();
+                            thirtyUnitPriceLabel.Text = rate21_30.ToString("N2");
+                            thirtyAmountLabel.Text = a30.ToString("N2");
+
+                            fortyQuantityLabel.Text = q40.ToString();
+                            fortyUnitPriceLabel.Text = rate31_40.ToString("N2");
+                            fortyAmountLabel.Text = a40.ToString("N2");
+
+                            fortyUpQuantityLabel.Text = q41.ToString();
+                            fortyUpUnitPriceLabel.Text = rate41_above.ToString("N2");
+                            fortyUpAmountLabel.Text = a41.ToString("N2");
+
+                            minimumChargeLabel.Text = minRate.ToString("N2");
+                            totalWaterConsumptionAmountLabel.Text = total.ToString("N2");
+                        }
+                    }
+                }
+            }
+        }
 
 
         private void meterConsumedReadingTextBox_TextChanged(object sender, EventArgs e)
@@ -1612,6 +1571,9 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 ClearWaterChargeLabels();
                 totalAmountDueLabel.Text = "0.00";
+                totalQuantityLabel.Text = "0";
+                totalWaterConsumptionAmountLabel.Text = "0.00";
+                subTotalAmountDueLabel.Text = "0.00";
             }
             // 🟡 Disable button if input is empty or zero
             if (string.IsNullOrEmpty(input) || input == "0")
@@ -1634,12 +1596,11 @@ namespace IGBARAS_WATER_DISTRICT
                     {
                         // ✅ Calculate meter consumed
                         int meterConsumed = presentReading - previousReading;
-
-                        // ✅ Display meter consumed
                         meterConsumedReadingTextBox.Text = meterConsumed.ToString();
-
-                        // ✅ Calculate water charges based on consumption
-                        CalculateWaterCharges(meterConsumed);
+                        if (int.TryParse(serviceIDLabel.Text.Trim(), out int serviceId))
+                        {
+                            PopulateServiceRateLabels(serviceId, meterConsumed);
+                        }
 
                     }
                     else
@@ -1723,17 +1684,31 @@ namespace IGBARAS_WATER_DISTRICT
         {
             if (e.KeyCode == Keys.Enter)
             {
-                // Code to be executed when Enter is pressed
-                string keyword = searchAccountNumberTextBox.Text.Trim().Replace("'", "''"); // prevent errors with single quotes
+                e.SuppressKeyPress = true;
+
+                string keyword = searchAccountNumberTextBox.Text.Trim();
+
+                if (string.IsNullOrEmpty(keyword)) return;
+
+                // Prevent special character issues
+                keyword = keyword.Replace("'", "''").Replace("[", "[[]").Replace("%", "[%]").Replace("*", "[*]");
 
                 if (accountDataGridView.DataSource is DataTable dt)
                 {
-                    // Filter on both 'accountno' and 'fullname' columns
-                    dt.DefaultView.RowFilter = $"accountno LIKE '%{keyword}%' OR name LIKE '%{keyword}%'";
+                    // Ensure exact column names are used from your MDB table
+                    if (dt.Columns.Contains("AccountNo") && dt.Columns.Contains("ConcessionaireName"))
+                    {
+                        dt.DefaultView.RowFilter =
+                            $"Convert(AccountNo, 'System.String') LIKE '%{keyword}%' OR Convert(ConcessionaireName, 'System.String') LIKE '%{keyword}%'";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ensure your MDB columns are named exactly 'AccountNo' and 'ConcessionaireName'.", "Column Name Error");
+                    }
                 }
-                e.Handled = true; // Optional, to prevent the Enter key from being processed further
             }
         }
+
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1849,7 +1824,7 @@ namespace IGBARAS_WATER_DISTRICT
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        string bill_id = latestBillIdLabel.Text.Trim();
+                        string bill_id = latestBillNoLabel.Text.Trim();
                         cmd.Parameters.AddWithValue("@bill_id", bill_id);
                         Debug.WriteLine($"🔍 Using bill ID: {bill_id}");
 
@@ -1937,7 +1912,7 @@ namespace IGBARAS_WATER_DISTRICT
         //375  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
         //400  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
         //425  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
-        //450  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+        //450  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
         //475  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
         //500  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
         //525  |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
@@ -1959,7 +1934,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
             // Assign the PrintPage handler
-            pd.PrintPage += new PrintPageEventHandler(CollectionMapPrintPage);
+            pd.PrintPage += new PrintPageEventHandler(BillingMapPrintPage);
 
             // Show a print dialog for user confirmation
             PrintDialog dialog = new PrintDialog();
@@ -2353,6 +2328,70 @@ namespace IGBARAS_WATER_DISTRICT
         private void collectingOfficerNameLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void accountDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Only format once per row (check if you're on the first column, or skip if you like)
+            if (e.RowIndex >= 0 && accountDataGridView.Rows[e.RowIndex].Cells["status"].Value != null)
+            {
+                string status = accountDataGridView.Rows[e.RowIndex].Cells["status"].Value.ToString().Trim().ToLower();
+
+                if (status == "disconnected")
+                {
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 204, 204);
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black; // Optional
+                }
+                else if (status == "active")
+                {
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(255, 204, 255, 204);
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black; // Optional
+                }
+                else
+                {
+                    // Reset for other statuses
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
+                    accountDataGridView.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
+                }
+            }
+        }
+
+        private void accountDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void accountDataGridView_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void discountCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void discountComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int totalConsumption = int.Parse(totalQuantityLabel.Text.Trim());
+
+
+            if (discountComboBox.SelectedItem is DiscountItem selectedDiscount)
+            {
+
+                discountedPercentLabel.Text = $"{selectedDiscount.DiscountPercent}%";
+                CalculateWaterCharges(totalConsumption);
+
+            }
+            else
+            {
+                discountedPercentLabel.Text = "0%";
+            }
+        }
+
+        private void clearDiscountButton_Click(object sender, EventArgs e)
+        {
+            discountComboBox.SelectedIndex = -1; // Clear selection
         }
     }
 }

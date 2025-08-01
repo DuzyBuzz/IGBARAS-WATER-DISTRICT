@@ -98,7 +98,7 @@ namespace IGBARAS_WATER_DISTRICT
         private void MainForm_Load(object sender, EventArgs e)
         {
             LoadControl("RealeaseBilling");
-            usernameLabel.Text = $"{UserCredentials.Username}";
+            usernameLabel.Text = $"{UserCredentials.Fullname}";
         }
         private void reloadButton_Click(object sender, EventArgs e)
         {

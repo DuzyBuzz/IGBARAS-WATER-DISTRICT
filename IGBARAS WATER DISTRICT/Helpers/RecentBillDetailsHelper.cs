@@ -1,127 +1,98 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
+using System.Data;
+using System.Data.OleDb;
 
 namespace IGBARAS_WATER_DISTRICT.Helpers
 {
     internal class RecentBillDetailsHelper
     {
-        // Data class to return billing details
-        public class BillReadingInfo
+        public class BillingInfo
         {
-
-            public DateTime FromReadingDate { get; set; }
-            public DateTime ToReadingDate { get; set; }
-            public int PreviousReading { get; set; }
-            public int PresentReading { get; set; }
-            public int MeterConsumed { get; set; }
-
+            public string BillNo { get; set; }
+            public string AccountNo { get; set; }
+            public DateTime DateFrom { get; set; }
+            public DateTime DateTo { get; set; }
+            public double PrevReading { get; set; }
+            public double PresentReading { get; set; }
             public DateTime DueDate { get; set; }
-            public DateTime DateBilled { get; set; }
-            public decimal ArrearsAmount { get; set; }
-            public int Paid { get; set; }
-
-            public string BillCode { get; set; }
-            public string Name { get; set; }
-            public string Address { get; set; }
-            public int WithHoldingTaxPercent { get; set; }
-            public decimal PenaltyAmount { get; set; }
-            public decimal TotalAditionalCharge { get; set; }
-            public decimal WithHoldingTaxAmount { get; set; }
-            public decimal TaxAmount { get; set; }
-            public decimal AditionalBillChargeAmount { get; set; }
-            public int Arrears { get; set; }
-            public decimal Balance { get; set; }
-
+            public DateTime DateCreated { get; set; }
+            public double Penalty { get; set; }
+            public double Tax { get; set; }
+            public string DiscountName { get; set; }
+            public double Discount { get; set; }
+            public double OtherDiscount { get; set; }
+            public double DiscountAmount { get; set; }
+            public double Balance { get; set; }
+            public double ServiceConnectionFee { get; set; }
+            public string Others1 { get; set; }
+            public double OthersAmount1 { get; set; }
+            public string Others2 { get; set; }
+            public double OthersAmount2 { get; set; }
+            public double AmountPaid { get; set; }
+            public bool IsArrears { get; set; }
+            public bool IsFullyPaid { get; set; }
         }
 
-        /// <summary>
-        /// Retrieves present reading, to reading date, and billing info from tb_bill for a specific bill_id.
-        /// </summary>
-        /// <param name="billId">The bill_id to look up.</param>
-        /// <returns>A BillReadingInfo object if found; otherwise, null.</returns>
-        public static BillReadingInfo GetReadingInfoByBillId(string billId)
+        public BillingInfo GetBillByBillNo(string billNo)
         {
-            BillReadingInfo readingInfo = null;
+            if (string.IsNullOrWhiteSpace(billNo))
+                return null;
 
-            string query = @"
-                SELECT 
-                    name,
-                    address,
-                    billcode, 
-                    fromreadingdate,
-                    toreadingdate, 
-                    previousreading, 
-                    presentreading, 
-                    meterconsumed,
-                    duedate,
-                    datebilled, 
-                    arrearsamount,
-                    paid,
-                    penaltyamount,
-                    wtamount,
-                    taxamount,
-                    totaladditionalcharge,
-                    wtpercent,
-                    arrears,
-                    balance
-                FROM tb_bill 
-                WHERE bill_id = @bill_id 
-                LIMIT 1";
-
-            try
+            using (var connection = new OleDbConnection(DbConfig.ConnectionString))
             {
-                using (MySqlConnection conn = new MySqlConnection(DbConfig.ConnectionString))
+                const string query = @"
+                    SELECT 
+                        b.*, 
+                        p.Balance
+                    FROM 
+                        Tb_Billing AS b
+                    LEFT JOIN 
+                        Tb_Payments AS p 
+                        ON b.BillNo = p.CurrentBillNo
+                    WHERE 
+                        b.BillNo = ?
+                ";
+
+                using (var command = new OleDbCommand(query, connection))
                 {
-                    conn.Open();
+                    command.Parameters.AddWithValue("?", billNo);
 
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    connection.Open();
+                    using (var reader = command.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@bill_id", billId);
-
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        if (reader.Read())
                         {
-                            if (reader.Read())
+                            return new BillingInfo
                             {
-                                readingInfo = new BillReadingInfo
-                                {
-                                    Name = reader["name"] != DBNull.Value ? reader["name"].ToString() : string.Empty,
-                                    Address = reader["address"] != DBNull.Value ? reader["address"].ToString() : string.Empty,
-                                    BillCode = reader["billcode"] != DBNull.Value ? reader["billcode"].ToString() : string.Empty,
-
-                                    FromReadingDate = reader["fromreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["fromreadingdate"]) : DateTime.MinValue,
-                                    ToReadingDate = reader["toreadingdate"] != DBNull.Value ? Convert.ToDateTime(reader["toreadingdate"]) : DateTime.MinValue,
-
-                                    PreviousReading = reader["previousreading"] != DBNull.Value ? Convert.ToInt32(reader["previousreading"]) : 0,
-                                    PresentReading = reader["presentreading"] != DBNull.Value ? Convert.ToInt32(reader["presentreading"]) : 0,
-                                    MeterConsumed = reader["meterconsumed"] != DBNull.Value ? Convert.ToInt32(Math.Floor(Convert.ToDouble(reader["meterconsumed"]))) : 0,
-
-                                    DueDate = reader["duedate"] != DBNull.Value ? Convert.ToDateTime(reader["duedate"]) : DateTime.MinValue,
-                                    DateBilled = reader["datebilled"] != DBNull.Value ? Convert.ToDateTime(reader["datebilled"]) : DateTime.MinValue,
-
-                                    ArrearsAmount = reader["arrearsamount"] != DBNull.Value ? Convert.ToDecimal(reader["arrearsamount"]) : 0m,
-                                    Paid = reader["paid"] != DBNull.Value ? Convert.ToInt32(reader["paid"]) : 0,
-                                    WithHoldingTaxPercent = reader["wtpercent"] != DBNull.Value ? Convert.ToInt32(reader["wtpercent"]) : 0,
-                                    TotalAditionalCharge = reader["totaladditionalcharge"] != DBNull.Value ? Convert.ToDecimal(reader["totaladditionalcharge"]) : 0m,
-
-                                    TaxAmount = reader["taxamount"] != DBNull.Value ? Convert.ToDecimal(reader["taxamount"]) : 0m,
-                                    PenaltyAmount = reader["penaltyamount"] != DBNull.Value ? Convert.ToDecimal(reader["penaltyamount"]) : 0m,
-                                    Arrears = reader["arrears"] != DBNull.Value ? Convert.ToInt32(reader["arrears"]) : 0,
-                                    Balance = reader["balance"] != DBNull.Value ? Convert.ToDecimal(reader["balance"]) : 0m,
-
-                                    WithHoldingTaxAmount = reader["wtamount"] != DBNull.Value ? Convert.ToDecimal(reader["wtamount"]) : 0m,
-                                    // If you need AditionalBillChargeAmount, add it to the query and assign here
-                                };
-                            }
+                                BillNo = reader["BillNo"]?.ToString(),
+                                AccountNo = reader["AccountNo"]?.ToString(),
+                                DateFrom = reader["DateFrom"] != DBNull.Value ? Convert.ToDateTime(reader["DateFrom"]) : DateTime.MinValue,
+                                DateTo = reader["DateTo"] != DBNull.Value ? Convert.ToDateTime(reader["DateTo"]) : DateTime.MinValue,
+                                PrevReading = reader["PrevReading"] != DBNull.Value ? Convert.ToDouble(reader["PrevReading"]) : 0,
+                                PresentReading = reader["PresentReading"] != DBNull.Value ? Convert.ToDouble(reader["PresentReading"]) : 0,
+                                DueDate = reader["DueDate"] != DBNull.Value ? Convert.ToDateTime(reader["DueDate"]) : DateTime.MinValue,
+                                DateCreated = reader["DateCreated"] != DBNull.Value ? Convert.ToDateTime(reader["DateCreated"]) : DateTime.MinValue,
+                                Penalty = reader["Penalty"] != DBNull.Value ? Convert.ToDouble(reader["Penalty"]) : 0,
+                                Tax = reader["Tax"] != DBNull.Value ? Convert.ToDouble(reader["Tax"]) : 0,
+                                DiscountName = reader["DiscountName"]?.ToString(),
+                                Discount = reader["Discount"] != DBNull.Value ? Convert.ToDouble(reader["Discount"]) : 0,
+                                OtherDiscount = reader["OtherDiscount"] != DBNull.Value ? Convert.ToDouble(reader["OtherDiscount"]) : 0,
+                                DiscountAmount = reader["DiscountAmount"] != DBNull.Value ? Convert.ToDouble(reader["DiscountAmount"]) : 0,
+                                Balance = reader["Balance"] != DBNull.Value ? Convert.ToDouble(reader["Balance"]) : 0,
+                                ServiceConnectionFee = reader["ServiceConnectionFee"] != DBNull.Value ? Convert.ToDouble(reader["ServiceConnectionFee"]) : 0,
+                                Others1 = reader["Others1"]?.ToString(),
+                                OthersAmount1 = reader["OthersAmount1"] != DBNull.Value ? Convert.ToDouble(reader["OthersAmount1"]) : 0,
+                                Others2 = reader["Others2"]?.ToString(),
+                                OthersAmount2 = reader["OthersAmount2"] != DBNull.Value ? Convert.ToDouble(reader["OthersAmount2"]) : 0,
+                                AmountPaid = reader["AmountPaid"] != DBNull.Value ? Convert.ToDouble(reader["AmountPaid"]) : 0,
+                                IsArrears = reader["Is_Arrears"] != DBNull.Value && Convert.ToBoolean(reader["Is_Arrears"]),
+                            };
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("❌ Error fetching bill reading info: " + ex.Message);
-            }
 
-            return readingInfo;
+            return null;
         }
     }
 }

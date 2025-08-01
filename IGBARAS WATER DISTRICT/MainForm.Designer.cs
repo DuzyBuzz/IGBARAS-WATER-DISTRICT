@@ -36,14 +36,14 @@ namespace IGBARAS_WATER_DISTRICT
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             sidebarPanel = new Panel();
+            settingsButton = new Button();
             reportsButton = new Button();
             accountsButton = new Button();
             billingButton = new Button();
             panel1 = new Panel();
             panel7 = new Panel();
-            pictureBox1 = new PictureBox();
-            panel6 = new Panel();
             usernameLabel = new Label();
+            pictureBox1 = new PictureBox();
             panel5 = new Panel();
             panel4 = new Panel();
             panel3 = new Panel();
@@ -54,7 +54,6 @@ namespace IGBARAS_WATER_DISTRICT
             panel1.SuspendLayout();
             panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            panel6.SuspendLayout();
             SuspendLayout();
             // 
             // sidebarPanel
@@ -62,6 +61,7 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.AutoScroll = true;
             sidebarPanel.BackColor = Color.White;
             sidebarPanel.BorderStyle = BorderStyle.Fixed3D;
+            sidebarPanel.Controls.Add(settingsButton);
             sidebarPanel.Controls.Add(reportsButton);
             sidebarPanel.Controls.Add(accountsButton);
             sidebarPanel.Controls.Add(billingButton);
@@ -73,6 +73,22 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.Name = "sidebarPanel";
             sidebarPanel.Size = new Size(206, 961);
             sidebarPanel.TabIndex = 1;
+            // 
+            // settingsButton
+            // 
+            settingsButton.BackColor = SystemColors.ControlDark;
+            settingsButton.Dock = DockStyle.Bottom;
+            settingsButton.FlatAppearance.BorderSize = 0;
+            settingsButton.FlatStyle = FlatStyle.Popup;
+            settingsButton.Font = new Font("Arial", 12F);
+            settingsButton.Location = new Point(0, 867);
+            settingsButton.Margin = new Padding(50);
+            settingsButton.Name = "settingsButton";
+            settingsButton.Size = new Size(202, 45);
+            settingsButton.TabIndex = 14;
+            settingsButton.Text = "⚙️ Settings";
+            settingsButton.TextAlign = ContentAlignment.MiddleLeft;
+            settingsButton.UseVisualStyleBackColor = false;
             // 
             // reportsButton
             // 
@@ -129,7 +145,6 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
             panel1.Controls.Add(panel7);
-            panel1.Controls.Add(panel6);
             panel1.Controls.Add(panel5);
             panel1.Controls.Add(panel4);
             panel1.Controls.Add(panel3);
@@ -142,16 +157,30 @@ namespace IGBARAS_WATER_DISTRICT
             // 
             // panel7
             // 
+            panel7.Controls.Add(usernameLabel);
             panel7.Controls.Add(pictureBox1);
             panel7.Dock = DockStyle.Fill;
             panel7.Location = new Point(35, 15);
             panel7.Name = "panel7";
-            panel7.Size = new Size(130, 94);
+            panel7.Size = new Size(130, 127);
             panel7.TabIndex = 8;
+            // 
+            // usernameLabel
+            // 
+            usernameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            usernameLabel.AutoSize = true;
+            usernameLabel.Font = new Font("Arial", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            usernameLabel.Location = new Point(16, 101);
+            usernameLabel.Margin = new Padding(0);
+            usernameLabel.Name = "usernameLabel";
+            usernameLabel.Size = new Size(93, 19);
+            usernameLabel.TabIndex = 0;
+            usernameLabel.Text = "IGD Official";
+            usernameLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pictureBox1
             // 
-            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Dock = DockStyle.Top;
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Margin = new Padding(0);
@@ -160,28 +189,6 @@ namespace IGBARAS_WATER_DISTRICT
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
-            // 
-            // panel6
-            // 
-            panel6.Controls.Add(usernameLabel);
-            panel6.Dock = DockStyle.Bottom;
-            panel6.Location = new Point(35, 109);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(130, 33);
-            panel6.TabIndex = 7;
-            // 
-            // usernameLabel
-            // 
-            usernameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            usernameLabel.AutoSize = true;
-            usernameLabel.BackColor = Color.Transparent;
-            usernameLabel.Font = new Font("Arial Narrow", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            usernameLabel.Location = new Point(44, 3);
-            usernameLabel.Name = "usernameLabel";
-            usernameLabel.Size = new Size(52, 23);
-            usernameLabel.TabIndex = 0;
-            usernameLabel.Text = "label1";
-            usernameLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panel5
             // 
@@ -258,9 +265,8 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel7.ResumeLayout(false);
+            panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            panel6.ResumeLayout(false);
-            panel6.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -276,10 +282,10 @@ namespace IGBARAS_WATER_DISTRICT
         private Panel panel2;
         private Panel panel7;
         private PictureBox pictureBox1;
-        private Panel panel6;
-        private Label usernameLabel;
         public Panel mainPanel;
         private Button reloadButton;
         private Button reportsButton;
+        private Button settingsButton;
+        private Label usernameLabel;
     }
 }

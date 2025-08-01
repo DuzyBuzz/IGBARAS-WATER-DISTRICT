@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            tableLayoutPanel1 = new TableLayoutPanel();
-            label1 = new Label();
             tableLayoutPanel10 = new TableLayoutPanel();
             tableLayoutPanel9 = new TableLayoutPanel();
             refreshReportsButton = new Button();
@@ -74,7 +72,9 @@
             dailyCollectionExportButton = new Button();
             label6 = new Label();
             dailyCollectionPrintButton = new Button();
-            tableLayoutPanel1.SuspendLayout();
+            miniToolStrip = new ToolStrip();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            label1 = new Label();
             tableLayoutPanel10.SuspendLayout();
             tableLayoutPanel9.SuspendLayout();
             tableLayoutPanel11.SuspendLayout();
@@ -86,35 +86,8 @@
             tableLayoutPanel18.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)agingOfAccountDGV).BeginInit();
             tableLayoutPanel19.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
-            // 
-            // tableLayoutPanel1
-            // 
-            tableLayoutPanel1.ColumnCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(label1, 0, 0);
-            tableLayoutPanel1.Controls.Add(tableLayoutPanel10, 0, 1);
-            tableLayoutPanel1.Dock = DockStyle.Fill;
-            tableLayoutPanel1.Location = new Point(0, 0);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 2;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100.000008F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 875F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(1378, 931);
-            tableLayoutPanel1.TabIndex = 1;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Dock = DockStyle.Fill;
-            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(3, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(1372, 56);
-            label1.TabIndex = 1;
-            label1.Text = "IGBARAS WATER DISTRICT CONCESSIONAIRE";
-            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // tableLayoutPanel10
             // 
@@ -625,6 +598,47 @@
             dailyCollectionPrintButton.UseVisualStyleBackColor = false;
             dailyCollectionPrintButton.Click += dailyCollectionPrintButton_Click;
             // 
+            // miniToolStrip
+            // 
+            miniToolStrip.AccessibleName = "New item selection";
+            miniToolStrip.AccessibleRole = AccessibleRole.ButtonDropDown;
+            miniToolStrip.AutoSize = false;
+            miniToolStrip.CanOverflow = false;
+            miniToolStrip.Dock = DockStyle.None;
+            miniToolStrip.GripStyle = ToolStripGripStyle.Hidden;
+            miniToolStrip.Location = new Point(0, 0);
+            miniToolStrip.Name = "miniToolStrip";
+            miniToolStrip.Size = new Size(518, 20);
+            miniToolStrip.TabIndex = 24;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(label1, 0, 0);
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel10, 0, 1);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100.000008F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 875F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Size = new Size(1378, 931);
+            tableLayoutPanel1.TabIndex = 1;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Fill;
+            label1.Font = new Font("Arial", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(3, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(1372, 56);
+            label1.TabIndex = 1;
+            label1.Text = "IGBARAS WATER DISTRICT CONCESSIONAIRE";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // AccountsControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -633,8 +647,6 @@
             Name = "AccountsControl";
             Size = new Size(1378, 931);
             Load += AccountsControl_Load;
-            tableLayoutPanel1.ResumeLayout(false);
-            tableLayoutPanel1.PerformLayout();
             tableLayoutPanel10.ResumeLayout(false);
             tableLayoutPanel9.ResumeLayout(false);
             tableLayoutPanel11.ResumeLayout(false);
@@ -650,13 +662,13 @@
             ((System.ComponentModel.ISupportInitialize)agingOfAccountDGV).EndInit();
             tableLayoutPanel19.ResumeLayout(false);
             tableLayoutPanel19.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private TableLayoutPanel tableLayoutPanel1;
-        private Label label1;
         private TableLayoutPanel tableLayoutPanel10;
         private TableLayoutPanel tableLayoutPanel9;
         private Button refreshReportsButton;
@@ -668,18 +680,11 @@
         private Label label31;
         private TableLayoutPanel tableLayoutPanel67;
         private Panel panel5;
+        private Button button1;
         private ComboBox zoneComboBox;
         private Label label32;
         private Button clearButton;
         private DataGridView accountDataGridView;
-        private Button button1;
-        private ToolStrip toolStrip1;
-        private TableLayoutPanel tableLayoutPanel18;
-        private TableLayoutPanel tableLayoutPanel19;
-        private Button dailyCollectionExportButton;
-        private Label label6;
-        private Button dailyCollectionPrintButton;
-        public DataGridView agingOfAccountDGV;
         private DataGridViewTextBoxColumn accountno;
         private DataGridViewTextBoxColumn taxpercent;
         private DataGridViewTextBoxColumn fullname;
@@ -700,5 +705,15 @@
         private DataGridViewTextBoxColumn balancex;
         private DataGridViewCheckBoxColumn seniorcitizen;
         private DataGridViewCheckBoxColumn taxexempt;
+        private ToolStrip toolStrip1;
+        private TableLayoutPanel tableLayoutPanel18;
+        public DataGridView agingOfAccountDGV;
+        private TableLayoutPanel tableLayoutPanel19;
+        private Button dailyCollectionExportButton;
+        private Label label6;
+        private Button dailyCollectionPrintButton;
+        private ToolStrip miniToolStrip;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Label label1;
     }
 }
