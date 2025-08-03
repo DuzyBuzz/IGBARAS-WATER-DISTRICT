@@ -260,7 +260,6 @@ namespace IGBARAS_WATER_DISTRICT
             Controls.Add(mainPanel);
             Controls.Add(sidebarPanel);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximizeBox = false;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "IGBARAS Water District Billing";

@@ -57,5 +57,27 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
         {
             return comboBox.SelectedItem as DiscountItem;
         }
+        public static int GetSeniorCitizenDiscountPercent(int isSenior)
+        {
+            if (isSenior != 1)
+                return 0;
+
+            using (var connection = new OleDbConnection(DbConfig.ConnectionString))
+            {
+                string query = "SELECT Discount FROM Tb_Discount WHERE DiscountID = 11";
+                using (var command = new OleDbCommand(query, connection))
+                {
+                    connection.Open();
+                    var result = command.ExecuteScalar();
+                    if (result != null && int.TryParse(result.ToString(), out int percent))
+                    {
+                        return percent;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
     }
 }

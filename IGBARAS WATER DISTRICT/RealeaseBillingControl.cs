@@ -1,24 +1,10 @@
-﻿using DocumentFormat.OpenXml.VariantTypes;
-using IGBARAS_WATER_DISTRICT.Helpers;
-using Microsoft.VisualBasic;
+﻿using IGBARAS_WATER_DISTRICT.Helpers;
 using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static IGBARAS_WATER_DISTRICT.Helpers.RecentBillDetailsHelper;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IGBARAS_WATER_DISTRICT
 {
@@ -41,7 +27,7 @@ namespace IGBARAS_WATER_DISTRICT
         /// <param name="e"></param>
         private void printSaveButton_Click(object sender, EventArgs e)
         {
-            if (accountNumberTextBox.Text  == null)
+            if (accountNumberTextBox.Text == null)
             {
                 MessageBox.Show("No selected Account. Please select an account first.", "Missing Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -447,11 +433,11 @@ namespace IGBARAS_WATER_DISTRICT
                         INSERT INTO Tb_Billing (
                             BillNo, DateCreated, AccountNo, ServiceDescription, DateFrom, DateTo, PrevReading, PresentReading, 
                             DueDate, MinRate, [Rate11-20], [Rate21-30], [Rate31-40], [Rate41-Above], PenaltyRate, 
-                            Penalty, Tax, ServiceConnectionFee, Is_Arrears
+                            Penalty, Tax, ServiceConnectionFee, Is_Arrears, DiscountName, Discount, DiscountAmount, ArrearsAmount
                         ) VALUES (
                             @BillNo, @DateCreated, @AccountNo, @ServiceDescription, @DateFrom, @DateTo, @PrevReading, @PresentReading, 
                             @DueDate, @MinRate, @Rate11_20, @Rate21_30, @Rate31_40, @Rate41_Above, 
-                            @PenaltyRate, @Penalty, @Tax, @ServiceConnectionFee, @Is_Arrears
+                            @PenaltyRate, @Penalty, @Tax, @ServiceConnectionFee, @Is_Arrears, @DiscountName, @Discount, @DiscountAmount, @ArrearsAmount
                         )";
 
                                 using (var insertCmd = new OleDbCommand(insertQuery, connection))
@@ -482,12 +468,17 @@ namespace IGBARAS_WATER_DISTRICT
                                     insertCmd.Parameters.AddWithValue("@Rate21_30", rate21_30);
                                     insertCmd.Parameters.AddWithValue("@Rate31_40", rate31_40);
                                     insertCmd.Parameters.AddWithValue("@Rate41_Above", rate41_Above);
-                                
+
                                     insertCmd.Parameters.AddWithValue("@PenaltyRate", int.Parse(penaltyPercentLabel.Text.Trim().Replace("%", "")));
                                     insertCmd.Parameters.AddWithValue("@Penalty", decimal.Parse(penaltyAmountLabel.Text.Trim().Replace(",", "")));
                                     insertCmd.Parameters.AddWithValue("@Tax", int.Parse(taxExemptedPercentLabel.Text.Trim().Replace("%", "")));
                                     insertCmd.Parameters.AddWithValue("@ServiceConnectionFee", decimal.Parse(sfcInstallmentTextBox.Text.Trim()));
-                                    insertCmd.Parameters.AddWithValue("@Is_Arrears", decimal.Parse(sfcInstallmentTextBox.Text.Trim()));
+                                    insertCmd.Parameters.AddWithValue("@Is_Arrears", int.Parse(isArrearsLabel.Text.Trim()));
+                                    insertCmd.Parameters.AddWithValue("@DiscountName", discountNameLabel.Text.Trim());
+                                    insertCmd.Parameters.AddWithValue("@Discount", int.Parse(discountedPercentLabel.Text.Trim().Replace("%", "")));
+                                    insertCmd.Parameters.AddWithValue("@DiscountAmount", decimal.Parse(discountedAmountLabel.Text.Trim().Replace(",", "")));
+                                    insertCmd.Parameters.AddWithValue("@ArrearsAmount", decimal.Parse(arrearsAmountLabel.Text.Trim().Replace(",", "")));
+
 
                                     insertCmd.ExecuteNonQuery();
                                     MessageBox.Show("Billing record inserted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -601,7 +592,7 @@ namespace IGBARAS_WATER_DISTRICT
             minimumChargeLabel.Text = "0.00";
             penaltyAmountLabel.Text = "0.00";
             penaltyPercentLabel.Text = "0%";
-
+            checkBox1.Checked = false;
 
 
             isWithHoldingTaxLabel.Text = "0";
@@ -613,7 +604,7 @@ namespace IGBARAS_WATER_DISTRICT
             collectionPenaltyLabel.Text = "0.00";
             collectionArrearsAmountLabel.Text = "0.00";
             collectionTotalPaidAmointLabel.Text = "0.00";
-            taxExemptedPercentLabel2.Text = "asdasd%";
+            taxExemptedPercentLabel2.Text = "0%";
             arrearsAmountLabel2.Text = "0.00";
             totalAmountDueLabel2.Text = "0.00";
             penaltyPercentLabel2.Text = "0%";
@@ -635,6 +626,7 @@ namespace IGBARAS_WATER_DISTRICT
             string meterNo = selectedRow.Cells["meterNo"].Value?.ToString();
             string frdObj = selectedRow.Cells["firstReadingDate"].Value?.ToString();
             int taxExempt = Convert.ToInt32(selectedRow.Cells["taxExempt"].Value);
+            int IsSeniorCitizen = Convert.ToInt32(selectedRow.Cells["seniorCitizen"].Value);
             string dueExempted = selectedRow.Cells["dueExempt"].Value?.ToString();
             string status = selectedRow.Cells["status"].Value?.ToString();
 
@@ -647,6 +639,17 @@ namespace IGBARAS_WATER_DISTRICT
             {
                 fromReadingDateLabel.Text = ""; // or show a default/fallback message
             }
+            discountedPercentLabel.Text = $"{DiscountHelper.GetSeniorCitizenDiscountPercent(IsSeniorCitizen)}%";
+            if (IsSeniorCitizen == 1)
+            {
+                discountNameLabel.Text = "SENIOR CITIZEN";
+            }
+            else
+            {
+                discountNameLabel.Text = "";
+            }
+            defaultDiscount = discountedPercentLabel.Text;
+            defaultDiscountName = discountNameLabel.Text;
             firstReadingDateLabel.Text = frdObj;
             serviceIDLabel.Text = serviceID;
             dueExemptLabel.Text = dueExempted;
@@ -683,6 +686,31 @@ namespace IGBARAS_WATER_DISTRICT
                     fromReadingDateLabel.Text = $"{bill.DateTo:MMM-dd-yyyy}";
                     previousReadingTextBox.Text = $"{bill.PresentReading}";
                     arrearsAmountLabel.Text = $"{bill.Balance.ToString("N2")}";
+                    Debug.WriteLine($"{bill.Balance}");
+                    if (arrearsAmountLabel.Text != "0.00")
+                    {
+                        isArrearsLabel.Text = "-1";
+                    }
+                    else
+                    {
+                        isArrearsLabel.Text = "0";
+                    }
+                    if (currentTabLabel.Text == "Collection Reciept")
+                    {
+                        // Fix for CS0266: Explicitly cast 'double' to 'int' to resolve the type mismatch.
+                        int meterConsumed = Math.Max(0, (int)(bill.PresentReading - bill.PrevReading));
+                        Debug.WriteLine($"Meter consumed: {meterConsumed} cu.m");
+                        meterConsumedReadingTextBox.Text = meterConsumed.ToString();
+                        if (int.TryParse(serviceIDLabel.Text.Trim(), out int serviceId))
+                        {
+                            PopulateServiceRateLabels2(serviceId, meterConsumed);
+                        }
+                        dueDateLabel2.Text = bill.DueDate.ToString("MMMM dd, yyyy");
+                        collectionNameLabel.Text = fullname;
+                        collectionAddressLabel.Text = address;
+                        collectionBillingInvoiceTextBox.Text = bill.BillNo;
+
+                    }
 
                 }
                 else
@@ -1033,7 +1061,7 @@ namespace IGBARAS_WATER_DISTRICT
 
 
 
-        private void clearButton_Click(object sender, EventArgs e)
+        private async void clearButton_Click(object sender, EventArgs e)
         {
             if (accountDataGridView.DataSource is DataTable dt)
             {
@@ -1041,6 +1069,12 @@ namespace IGBARAS_WATER_DISTRICT
             }
 
             searchAccountNumberTextBox.Clear();
+            using (var loadingForm = new LoadingForm())
+            {
+                var task1 = DGVHelper.LoadDataToGridAsync(accountDataGridView, "Tb_Concessionaire", loadingForm);
+
+                await Task.WhenAll(task1);
+            }
         }
         private void accountNumberTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -1469,9 +1503,9 @@ namespace IGBARAS_WATER_DISTRICT
 
                         // Calculate penalty
                         decimal arrearsAmount = decimal.Parse(arrearsAmountLabel.Text.Trim()); // from billing record
-                        DateTime dueDate = DateTime.Now.Date.AddDays(14);
+                        DateTime dueDate = DateTime.TryParseExact(dueDateLabel2.Text, "MMMM dd, yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt) ? dt : DateTime.MinValue;
 
-                        decimal totalPenalty = SettingsHelper.CalculatePenaltyOnArrears(arrearsAmount);
+                        decimal totalPenalty = SettingsHelper.CalculateLatePaymentPenalty(chargeSubTotal, dueDate);
 
                         penaltyAmountLabel.Text = totalPenalty.ToString("N2");
                         penaltyPercentLabel.Text = arrearsAmount > 0 ?
@@ -1483,6 +1517,8 @@ namespace IGBARAS_WATER_DISTRICT
 
                         totalAmountDueLabel.Text = totalAmountDue.ToString("N2");
                         // You can now add this penalty to your total calculation
+
+
 
 
                     }
@@ -1606,21 +1642,12 @@ namespace IGBARAS_WATER_DISTRICT
                         // Display Final Total
                         subTotalAmountDueLabel.Text = chargeSubTotal.ToString("N2");
 
-                        // Calculate penalty
-                        decimal arrearsAmount = decimal.Parse(arrearsAmountLabel.Text.Trim()); // from billing record
-                        DateTime dueDate = DateTime.Now.Date.AddDays(14);
-
-                        decimal totalPenalty = SettingsHelper.CalculatePenaltyOnArrears(arrearsAmount);
-
-                        penaltyAmountLabel.Text = totalPenalty.ToString("N2");
-                        penaltyPercentLabel.Text = arrearsAmount > 0 ?
-                            $"{Math.Round((totalPenalty / arrearsAmount) * 100)}%" : "0%";
 
                         decimal scf = decimal.Parse(sfcInstallmentTextBox.Text.Trim());
                         // Display total amount due
-                        decimal totalAmountDue = chargeSubTotal + totalPenalty + scf;
+                        decimal totalAmountDue = chargeSubTotal + scf;
 
-                        totalAmountDueLabel.Text = totalAmountDue.ToString("N2");
+                        totalAmountDueLabel.Text = chargeSubTotal.ToString("N2");
                         // You can now add this penalty to your total calculation
 
 
@@ -1669,8 +1696,8 @@ namespace IGBARAS_WATER_DISTRICT
         private void ClearAmounts2()
         {
             // Clear discount and tax labels
-            discountedPercentLabel2.Text = "0";
-            discountedAmountLabel2.Text = "0";
+            discountedPercentLabel2.Text = "0%";
+            discountedAmountLabel2.Text = "0.00";
             taxExemptedPercentLabel2.Text = "0";
             taxAmountLabel2.Text = "0.00";
             arrearsAmountLabel2.Text = "0.00";
@@ -2528,7 +2555,7 @@ namespace IGBARAS_WATER_DISTRICT
             }
             else
             {
-                discountedPercentLabel.Text = "0%";
+                discountedPercentLabel2.Text = "0%";
             }
         }
 
@@ -2541,5 +2568,33 @@ namespace IGBARAS_WATER_DISTRICT
         {
 
         }
+
+        private string defaultDiscount;
+        private string defaultDiscountName;
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            // Parse meterConsumed safely
+            int meterConsumed = 0;
+            int.TryParse(meterConsumedReadingTextBox.Text?.Trim(), out meterConsumed);
+
+            // Parse serviceId safely
+            if (int.TryParse(serviceIDLabel.Text?.Trim(), out int serviceId))
+            {
+                if (checkBox1.Checked)
+                {
+                    discountedPercentLabel.Text = "100%";
+                    discountNameLabel.Text = "FREE WATER";
+                }
+                else
+                {
+                    discountedPercentLabel.Text = defaultDiscount;
+                    discountNameLabel.Text = defaultDiscountName;
+                }
+
+                // Always call Populate after setting discount
+                PopulateServiceRateLabels(serviceId, meterConsumed);
+            }
+        }
+    
     }
 }
