@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IGBARAS_WATER_DISTRICT.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,16 @@ namespace IGBARAS_WATER_DISTRICT
         public SettingsControl()
         {
             InitializeComponent();
+        }
+
+        private void SettingsControl_Load(object sender, EventArgs e)
+        {
+            PlaceholderHelper.AddPlaceholder(currentPasswordTextBox, "Current Password.");
+            PlaceholderHelper.AddPlaceholder(newPasswordTextBox, "New Password.");
+            PlaceholderHelper.AddPlaceholder(confirmPasswordTextBox, "Confirm Password");
+            fullnameTextBox.Text = $"{UserCredentials.Fullname}";
+            userNameTextBox.Text = $"{UserCredentials.Username}";
+
         }
     }
 }

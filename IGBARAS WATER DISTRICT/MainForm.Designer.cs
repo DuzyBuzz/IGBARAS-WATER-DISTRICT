@@ -36,6 +36,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             sidebarPanel = new Panel();
+            billSettingsButton = new Button();
             settingsButton = new Button();
             reportsButton = new Button();
             accountsButton = new Button();
@@ -50,7 +51,6 @@ namespace IGBARAS_WATER_DISTRICT
             panel2 = new Panel();
             logoutButton = new Button();
             mainPanel = new Panel();
-            billSettingsButton = new Button();
             sidebarPanel.SuspendLayout();
             panel1.SuspendLayout();
             panel7.SuspendLayout();
@@ -76,6 +76,23 @@ namespace IGBARAS_WATER_DISTRICT
             sidebarPanel.Size = new Size(206, 961);
             sidebarPanel.TabIndex = 1;
             // 
+            // billSettingsButton
+            // 
+            billSettingsButton.BackColor = SystemColors.ControlLight;
+            billSettingsButton.Dock = DockStyle.Top;
+            billSettingsButton.FlatAppearance.BorderSize = 0;
+            billSettingsButton.FlatStyle = FlatStyle.Popup;
+            billSettingsButton.Font = new Font("Arial", 12F);
+            billSettingsButton.Location = new Point(0, 299);
+            billSettingsButton.Margin = new Padding(50);
+            billSettingsButton.Name = "billSettingsButton";
+            billSettingsButton.Size = new Size(202, 45);
+            billSettingsButton.TabIndex = 15;
+            billSettingsButton.Text = "\U0001f9eeBill Settings";
+            billSettingsButton.TextAlign = ContentAlignment.MiddleLeft;
+            billSettingsButton.UseVisualStyleBackColor = false;
+            billSettingsButton.Click += billSettingsButton_Click;
+            // 
             // settingsButton
             // 
             settingsButton.BackColor = SystemColors.ControlDark;
@@ -91,6 +108,7 @@ namespace IGBARAS_WATER_DISTRICT
             settingsButton.Text = "⚙️ Settings";
             settingsButton.TextAlign = ContentAlignment.MiddleLeft;
             settingsButton.UseVisualStyleBackColor = false;
+            settingsButton.Click += settingsButton_Click;
             // 
             // reportsButton
             // 
@@ -253,23 +271,6 @@ namespace IGBARAS_WATER_DISTRICT
             mainPanel.Size = new Size(1378, 961);
             mainPanel.TabIndex = 3;
             mainPanel.Click += accountsButton_Click;
-            // 
-            // billSettingsButton
-            // 
-            billSettingsButton.BackColor = SystemColors.ControlLight;
-            billSettingsButton.Dock = DockStyle.Top;
-            billSettingsButton.FlatAppearance.BorderSize = 0;
-            billSettingsButton.FlatStyle = FlatStyle.Popup;
-            billSettingsButton.Font = new Font("Arial", 12F);
-            billSettingsButton.Location = new Point(0, 299);
-            billSettingsButton.Margin = new Padding(50);
-            billSettingsButton.Name = "billSettingsButton";
-            billSettingsButton.Size = new Size(202, 45);
-            billSettingsButton.TabIndex = 15;
-            billSettingsButton.Text = "\U0001f9eeBill Settings";
-            billSettingsButton.TextAlign = ContentAlignment.MiddleLeft;
-            billSettingsButton.UseVisualStyleBackColor = false;
-            billSettingsButton.Click += billSettingsButton_Click;
             // 
             // MainForm
             // 

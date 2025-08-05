@@ -611,6 +611,7 @@
             discountNameLabel.Size = new Size(86, 15);
             discountNameLabel.TabIndex = 34;
             discountNameLabel.Text = "discountname";
+            discountNameLabel.Visible = false;
             // 
             // checkBox1
             // 
@@ -4427,6 +4428,7 @@
             chequePanel.Controls.Add(bankNameTextBox);
             chequePanel.Controls.Add(checkNumberTextBox);
             chequePanel.Dock = DockStyle.Fill;
+            chequePanel.Enabled = false;
             chequePanel.Location = new Point(4, 453);
             chequePanel.Name = "chequePanel";
             chequePanel.Size = new Size(434, 66);

@@ -24,7 +24,8 @@ namespace IGBARAS_WATER_DISTRICT
                 { "RealeaseBilling", billingButton },
                 { "Accounts", accountsButton },
                 { "Reports", reportsButton },
-                { "BillSettings", billingButton },
+                { "BillSettings", billSettingsButton },
+                { "Settings", settingsButton },
 
             };
         }
