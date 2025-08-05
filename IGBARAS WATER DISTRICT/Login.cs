@@ -88,25 +88,34 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     conn.Open();
 
-                    string query = "SELECT userID, userName, fullName FROM Users WHERE userName = ? AND password = ?";
+                    string query = "SELECT userID, userName, fullName, password FROM Users WHERE userName = ?";
                     using (var cmd = new OleDbCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("?", username);
-                        cmd.Parameters.AddWithValue("?", password);
 
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                // Save credentials
-                                UserCredentials.UserId = Convert.ToInt32(reader["userID"]);
-                                UserCredentials.Username = reader["userName"].ToString();
-                                UserCredentials.Fullname = reader["fullName"].ToString();
+                                string dbUsername = reader["userName"].ToString();
+                                string dbPassword = reader["password"].ToString();
 
-                                // Proceed to main form
-                                var dashboard = new MainForm();
-                                dashboard.Show();
-                                this.Hide();
+                                // Case-sensitive comparison
+                                if (dbUsername == username && dbPassword == password)
+                                {
+                                    // Save credentials
+                                    UserCredentials.UserId = Convert.ToInt32(reader["userID"]);
+                                    UserCredentials.Username = dbUsername;
+                                    UserCredentials.Fullname = reader["fullName"].ToString();
+
+                                    var dashboard = new MainForm();
+                                    dashboard.Show();
+                                    this.Hide();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
                             }
                             else
                             {
@@ -119,10 +128,10 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
         }
-        
+
+
 
         private void userNameTextBox_TextChanged(object sender, EventArgs e)
         {

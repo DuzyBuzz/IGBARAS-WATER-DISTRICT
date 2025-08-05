@@ -24,6 +24,7 @@ namespace IGBARAS_WATER_DISTRICT
                 { "RealeaseBilling", billingButton },
                 { "Accounts", accountsButton },
                 { "Reports", reportsButton },
+                { "BillSettings", billingButton },
 
             };
         }
@@ -94,6 +95,7 @@ namespace IGBARAS_WATER_DISTRICT
         private void systemInformationButton_Click(object sender, EventArgs e) => LoadControl("SystemInformation");
         private void accountsButton_Click(object sender, EventArgs e) => LoadControl("Accounts");
         private void billingButton_Click(object sender, EventArgs e) => LoadControl("RealeaseBilling");
+        private void billSettingsButton_Click(object sender, EventArgs e) => LoadControl("BillSettings");
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -182,5 +184,7 @@ namespace IGBARAS_WATER_DISTRICT
         {
             LoadControl("Reports");
         }
+
+
     }
 }

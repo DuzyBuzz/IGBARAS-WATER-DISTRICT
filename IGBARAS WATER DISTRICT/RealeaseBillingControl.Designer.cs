@@ -355,7 +355,7 @@
             accountDataGridView = new DataGridView();
             accountno = new DataGridViewTextBoxColumn();
             fullname = new DataGridViewTextBoxColumn();
-            address = new DataGridViewTextBoxColumn();
+            businessAddress = new DataGridViewTextBoxColumn();
             zoneCode = new DataGridViewTextBoxColumn();
             serviceId = new DataGridViewTextBoxColumn();
             meterNo = new DataGridViewTextBoxColumn();
@@ -366,6 +366,7 @@
             status = new DataGridViewTextBoxColumn();
             panel6 = new Panel();
             panel2 = new Panel();
+            refreshPaymentsTodayButton = new Button();
             arrearsPenaltyLabel = new Label();
             firstReadingDateLabel = new Label();
             serviceIDLabel = new Label();
@@ -4430,7 +4431,6 @@
             chequePanel.Name = "chequePanel";
             chequePanel.Size = new Size(434, 66);
             chequePanel.TabIndex = 5;
-            chequePanel.Visible = false;
             // 
             // label55
             // 
@@ -4595,8 +4595,8 @@
             // tableLayoutPanel26
             // 
             tableLayoutPanel26.ColumnCount = 2;
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 68.8699341F));
-            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 31.130064F));
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 68.6567154F));
+            tableLayoutPanel26.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 31.3432827F));
             tableLayoutPanel26.Controls.Add(searchAccountNumberTextBox, 0, 1);
             tableLayoutPanel26.Controls.Add(tableLayoutPanel27, 1, 0);
             tableLayoutPanel26.Controls.Add(panel5, 1, 1);
@@ -4619,7 +4619,7 @@
             searchAccountNumberTextBox.Location = new Point(3, 43);
             searchAccountNumberTextBox.Margin = new Padding(3, 5, 3, 3);
             searchAccountNumberTextBox.Name = "searchAccountNumberTextBox";
-            searchAccountNumberTextBox.Size = new Size(317, 25);
+            searchAccountNumberTextBox.Size = new Size(316, 25);
             searchAccountNumberTextBox.TabIndex = 6;
             searchAccountNumberTextBox.TextChanged += searchAccountNumberTextBox_TextChanged;
             searchAccountNumberTextBox.KeyDown += searchAccountNumberTextBox_KeyDown;
@@ -4630,12 +4630,12 @@
             tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67.80822F));
             tableLayoutPanel27.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32.19178F));
             tableLayoutPanel27.Dock = DockStyle.Fill;
-            tableLayoutPanel27.Location = new Point(323, 0);
+            tableLayoutPanel27.Location = new Point(322, 0);
             tableLayoutPanel27.Margin = new Padding(0);
             tableLayoutPanel27.Name = "tableLayoutPanel27";
             tableLayoutPanel27.RowCount = 1;
             tableLayoutPanel27.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel27.Size = new Size(146, 36);
+            tableLayoutPanel27.Size = new Size(147, 36);
             tableLayoutPanel27.TabIndex = 29;
             // 
             // panel5
@@ -4644,16 +4644,16 @@
             panel5.Controls.Add(zoneComboBox);
             panel5.Controls.Add(clearButton);
             panel5.Dock = DockStyle.Fill;
-            panel5.Location = new Point(326, 39);
+            panel5.Location = new Point(325, 39);
             panel5.Name = "panel5";
-            panel5.Size = new Size(140, 29);
+            panel5.Size = new Size(141, 29);
             panel5.TabIndex = 30;
             // 
             // label32
             // 
             label32.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             label32.AutoSize = true;
-            label32.Location = new Point(33, 7);
+            label32.Location = new Point(34, 7);
             label32.Name = "label32";
             label32.Size = new Size(63, 15);
             label32.TabIndex = 29;
@@ -4664,7 +4664,7 @@
             // 
             zoneComboBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             zoneComboBox.FormattingEnabled = true;
-            zoneComboBox.Location = new Point(97, 3);
+            zoneComboBox.Location = new Point(98, 3);
             zoneComboBox.Margin = new Padding(3, 5, 3, 3);
             zoneComboBox.Name = "zoneComboBox";
             zoneComboBox.Size = new Size(40, 23);
@@ -4679,7 +4679,7 @@
             clearButton.FlatStyle = FlatStyle.Popup;
             clearButton.Font = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point, 0);
             clearButton.ForeColor = Color.Crimson;
-            clearButton.Location = new Point(3, 3);
+            clearButton.Location = new Point(4, 3);
             clearButton.Name = "clearButton";
             clearButton.Size = new Size(24, 25);
             clearButton.TabIndex = 24;
@@ -4707,7 +4707,7 @@
             accountDataGridView.BackgroundColor = Color.White;
             accountDataGridView.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             accountDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, address, zoneCode, serviceId, meterNo, firstReadingDate, taxExempt, dueExempt, seniorCitizen, status });
+            accountDataGridView.Columns.AddRange(new DataGridViewColumn[] { accountno, fullname, businessAddress, zoneCode, serviceId, meterNo, firstReadingDate, taxExempt, dueExempt, seniorCitizen, status });
             accountDataGridView.EnableHeadersVisualStyles = false;
             accountDataGridView.Location = new Point(3, 74);
             accountDataGridView.Name = "accountDataGridView";
@@ -4749,18 +4749,18 @@
             fullname.SortMode = DataGridViewColumnSortMode.NotSortable;
             fullname.Width = 350;
             // 
-            // address
+            // businessAddress
             // 
-            address.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            address.DataPropertyName = "Address";
+            businessAddress.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            businessAddress.DataPropertyName = "Address";
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            address.DefaultCellStyle = dataGridViewCellStyle3;
-            address.FillWeight = 300F;
-            address.HeaderText = "Address";
-            address.Name = "address";
-            address.ReadOnly = true;
-            address.Width = 300;
+            businessAddress.DefaultCellStyle = dataGridViewCellStyle3;
+            businessAddress.FillWeight = 300F;
+            businessAddress.HeaderText = "Business Address";
+            businessAddress.Name = "businessAddress";
+            businessAddress.ReadOnly = true;
+            businessAddress.Width = 300;
             // 
             // zoneCode
             // 
@@ -4864,6 +4864,7 @@
             // panel2
             // 
             panel2.AutoScroll = true;
+            panel2.Controls.Add(refreshPaymentsTodayButton);
             panel2.Controls.Add(arrearsPenaltyLabel);
             panel2.Controls.Add(firstReadingDateLabel);
             panel2.Controls.Add(serviceIDLabel);
@@ -4885,6 +4886,19 @@
             panel2.Size = new Size(1387, 334);
             panel2.TabIndex = 1;
             panel2.Paint += panel2_Paint;
+            // 
+            // refreshPaymentsTodayButton
+            // 
+            refreshPaymentsTodayButton.BackColor = SystemColors.MenuHighlight;
+            refreshPaymentsTodayButton.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            refreshPaymentsTodayButton.ForeColor = Color.White;
+            refreshPaymentsTodayButton.Location = new Point(1260, 13);
+            refreshPaymentsTodayButton.Name = "refreshPaymentsTodayButton";
+            refreshPaymentsTodayButton.Size = new Size(98, 28);
+            refreshPaymentsTodayButton.TabIndex = 51;
+            refreshPaymentsTodayButton.Text = " ↻  Refresh";
+            refreshPaymentsTodayButton.UseVisualStyleBackColor = false;
+            refreshPaymentsTodayButton.Click += refreshPaymentsTodayButton_Click;
             // 
             // arrearsPenaltyLabel
             // 
@@ -4925,6 +4939,7 @@
             latestBillNoLabel.Size = new Size(87, 14);
             latestBillNoLabel.TabIndex = 32;
             latestBillNoLabel.Text = "latest bill number";
+            latestBillNoLabel.Visible = false;
             // 
             // changeLabel
             // 
@@ -4937,16 +4952,18 @@
             changeLabel.TabIndex = 47;
             changeLabel.Text = "Change:";
             changeLabel.TextAlign = ContentAlignment.MiddleLeft;
+            changeLabel.Visible = false;
             // 
             // printlangmuna
             // 
             printlangmuna.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            printlangmuna.Location = new Point(1257, 13);
+            printlangmuna.Location = new Point(1089, 16);
             printlangmuna.Name = "printlangmuna";
             printlangmuna.Size = new Size(98, 28);
             printlangmuna.TabIndex = 47;
             printlangmuna.Text = "Debuging Print";
             printlangmuna.UseVisualStyleBackColor = true;
+            printlangmuna.Visible = false;
             printlangmuna.Click += printlangmuna_Click;
             // 
             // currentTabLabel
@@ -4967,20 +4984,20 @@
             paymentsOnThisDayDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             paymentsOnThisDayDataGridView.BackgroundColor = Color.White;
             paymentsOnThisDayDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            paymentsOnThisDayDataGridView.Location = new Point(701, 51);
+            paymentsOnThisDayDataGridView.Location = new Point(665, 51);
             paymentsOnThisDayDataGridView.Name = "paymentsOnThisDayDataGridView";
             paymentsOnThisDayDataGridView.ReadOnly = true;
             paymentsOnThisDayDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
             paymentsOnThisDayDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
-            paymentsOnThisDayDataGridView.Size = new Size(657, 264);
+            paymentsOnThisDayDataGridView.Size = new Size(693, 264);
             paymentsOnThisDayDataGridView.TabIndex = 45;
             // 
             // label36
             // 
             label36.AutoSize = true;
             label36.Font = new Font("Arial", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label36.Location = new Point(701, 16);
+            label36.Location = new Point(665, 16);
             label36.Name = "label36";
             label36.Size = new Size(280, 32);
             label36.TabIndex = 38;
@@ -5524,17 +5541,6 @@
         private Label label40;
         private Label label161;
         private Label firstReadingDateLabel;
-        private DataGridViewTextBoxColumn accountno;
-        private DataGridViewTextBoxColumn fullname;
-        private DataGridViewTextBoxColumn address;
-        private DataGridViewTextBoxColumn zoneCode;
-        private DataGridViewTextBoxColumn serviceId;
-        private DataGridViewTextBoxColumn meterNo;
-        private DataGridViewTextBoxColumn firstReadingDate;
-        private DataGridViewCheckBoxColumn taxExempt;
-        private DataGridViewCheckBoxColumn dueExempt;
-        private DataGridViewCheckBoxColumn seniorCitizen;
-        private DataGridViewTextBoxColumn status;
         private CheckBox checkBox1;
         private Label discountNameLabel;
         private Label arrearsPenaltyLabel;
@@ -5548,5 +5554,17 @@
         private DateTimePicker checkDateIssuedDateTimePicker;
         private Label label35;
         private Label label55;
+        private Button refreshPaymentsTodayButton;
+        private DataGridViewTextBoxColumn accountno;
+        private DataGridViewTextBoxColumn fullname;
+        private DataGridViewTextBoxColumn businessAddress;
+        private DataGridViewTextBoxColumn zoneCode;
+        private DataGridViewTextBoxColumn serviceId;
+        private DataGridViewTextBoxColumn meterNo;
+        private DataGridViewTextBoxColumn firstReadingDate;
+        private DataGridViewCheckBoxColumn taxExempt;
+        private DataGridViewCheckBoxColumn dueExempt;
+        private DataGridViewCheckBoxColumn seniorCitizen;
+        private DataGridViewTextBoxColumn status;
     }
 }
