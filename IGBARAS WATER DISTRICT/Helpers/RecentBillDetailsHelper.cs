@@ -19,10 +19,11 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
             public double Penalty { get; set; }
             public double Tax { get; set; }
             public string DiscountName { get; set; }
-            public double Discount { get; set; }
+            public int Discount { get; set; }
             public double OtherDiscount { get; set; }
             public double DiscountAmount { get; set; }
             public double Balance { get; set; }
+            public double ArrearsAmount { get; set; }
             public double ServiceConnectionFee { get; set; }
             public string Others1 { get; set; }
             public double OthersAmount1 { get; set; }
@@ -75,10 +76,12 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                                 Penalty = reader["Penalty"] != DBNull.Value ? Convert.ToDouble(reader["Penalty"]) : 0,
                                 Tax = reader["Tax"] != DBNull.Value ? Convert.ToDouble(reader["Tax"]) : 0,
                                 DiscountName = reader["DiscountName"]?.ToString(),
-                                Discount = reader["Discount"] != DBNull.Value ? Convert.ToDouble(reader["Discount"]) : 0,
+                                Discount = reader["Discount"] != DBNull.Value ? Convert.ToInt32(reader["Discount"]) : 0,
                                 OtherDiscount = reader["OtherDiscount"] != DBNull.Value ? Convert.ToDouble(reader["OtherDiscount"]) : 0,
                                 DiscountAmount = reader["DiscountAmount"] != DBNull.Value ? Convert.ToDouble(reader["DiscountAmount"]) : 0,
                                 Balance = reader["Balance"] != DBNull.Value ? Convert.ToDouble(reader["Balance"]) : 0,
+                                ArrearsAmount = reader["ArrearsAmount"] != DBNull.Value ? Convert.ToDouble(reader["ArrearsAmount"]) : 0,
+
                                 ServiceConnectionFee = reader["ServiceConnectionFee"] != DBNull.Value ? Convert.ToDouble(reader["ServiceConnectionFee"]) : 0,
                                 Others1 = reader["Others1"]?.ToString(),
                                 OthersAmount1 = reader["OthersAmount1"] != DBNull.Value ? Convert.ToDouble(reader["OthersAmount1"]) : 0,

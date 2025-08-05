@@ -17,7 +17,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
 
             using (var connection = new OleDbConnection(DbConfig.ConnectionString))
             {
-                string query = "SELECT TOP 1 TaxPercent, PenaltyPercent, PenaltyDuration FROM Tb_Settings";
+                string query = "SELECT TOP 1 TaxPercent, PenaltyPercent, PernaltyDuration FROM Tb_Settings";
 
                 using (var command = new OleDbCommand(query, connection))
                 {
@@ -28,7 +28,7 @@ namespace IGBARAS_WATER_DISTRICT.Helpers
                         {
                             settings.TaxPercent = reader["TaxPercent"] != DBNull.Value ? Convert.ToDouble(reader["TaxPercent"]) : 0;
                             settings.PenaltyPercent = reader["PenaltyPercent"] != DBNull.Value ? Convert.ToDouble(reader["PenaltyPercent"]) : 0;
-                            settings.PenaltyDuration = reader["PenaltyDuration"] != DBNull.Value ? Convert.ToInt32(reader["PenaltyDuration"]) : 0;
+                            settings.PenaltyDuration = reader["PernaltyDuration"] != DBNull.Value ? Convert.ToInt32(reader["PernaltyDuration"]) : 0;
                         }
                     }
                 }

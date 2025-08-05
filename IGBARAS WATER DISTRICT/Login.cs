@@ -88,7 +88,7 @@ namespace IGBARAS_WATER_DISTRICT
                 {
                     conn.Open();
 
-                    string query = "SELECT user_id, user_name, full_name FROM users WHERE user_name = ? AND password = ?";
+                    string query = "SELECT userID, userName, fullName FROM Users WHERE userName = ? AND password = ?";
                     using (var cmd = new OleDbCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("?", username);
@@ -99,9 +99,9 @@ namespace IGBARAS_WATER_DISTRICT
                             if (reader.Read())
                             {
                                 // Save credentials
-                                UserCredentials.UserId = Convert.ToInt32(reader["user_id"]);
-                                UserCredentials.Username = reader["user_name"].ToString();
-                                UserCredentials.Fullname = reader["full_name"].ToString();
+                                UserCredentials.UserId = Convert.ToInt32(reader["userID"]);
+                                UserCredentials.Username = reader["userName"].ToString();
+                                UserCredentials.Fullname = reader["fullName"].ToString();
 
                                 // Proceed to main form
                                 var dashboard = new MainForm();
